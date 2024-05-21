@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('noise_device');
         Schema::create('noise_device', function (Blueprint $table) {
             $table->id();
             $table->integer('project_id')->nullable();
