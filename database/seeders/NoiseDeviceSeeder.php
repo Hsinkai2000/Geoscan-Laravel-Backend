@@ -18,6 +18,7 @@ class NoiseDeviceSeeder extends Seeder
         NoiseDevice::create([
             "project_id" => 1,
             'device_id' => 'zz81889218',
+            'serial_number' => 9900,
             'brand' => 'SINUS TANGO',
             'remarks' => $faker->text(),
             'device_location' => 'zzKakiBukit',
