@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Noise_Device extends Model
+class NoiseDevice extends Model
 {
     use HasFactory;
     protected $table = 'noise_device';

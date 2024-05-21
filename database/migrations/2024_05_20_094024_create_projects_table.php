@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->integer('sound_quantity_active')->nullable();
             $table->float('sound_trigger_level')->nullable();
             $table->string('sound_remarks', 255)->nullable();
-            $table->string('status', 255)->nullable();
+            $table->string('status', 255)->nullable()->default('Draft');
             $table->string('layout_file_name', 255)->nullable();
             $table->string('layout_content_type', 255)->nullable();
             $table->integer('layout_file_size')->nullable();
