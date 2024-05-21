@@ -19,7 +19,7 @@ class ProjectSeeder extends Seeder
             'job_number' => 'zzHsinKaiTest',
             'client_name' => 'zzHsinKai',
             'billing_address' => 'zz Kaki Bukit',
-            'project_description' => 'zz Kaki Bukit project\'s description',
+            'project_description' => $faker->text(),
             'jobsite_location' => 'zz Kaki Bukit',
             'planning_area' => 'zz12345678',
             'status' => 'Ongoing',

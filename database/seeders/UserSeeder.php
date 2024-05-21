@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Faker\Guesser\Name;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
@@ -15,18 +16,13 @@ class UserSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
         $now = date("Y-m-d H:i:s");
-        Project::create([
-            'job_number' => 'zzHsinKaiTest',
-            'client_name' => 'zzHsinKai',
-            'billing_address' => 'zz Kaki Bukit',
-            'project_description' => 'zz Kaki Bukit project\'s description',
-            'jobsite_location' => 'zz Kaki Bukit',
-            'planning_area' => 'zz12345678',
-            'status' => 'Ongoing',
-            'sound_quantity_active' => 1,
+        User::create([
+            'user_type' => 'admin',
+            'username' => $faker->name(),
+            'email' => $faker->email(),
+            'encrypted_password' => bcrypt('abc123456'),
             'created_at' => $now,
-            'updated_at' => $now,
-            'project_type' => 'Hospital/Schools',
+            'updated_at' => $now
         ]);
     }
 }
