@@ -17,7 +17,7 @@ class Concentrator extends Model
     }
 
     // Define methods
-    public function hasRunningProject()
+    public function has_running_project()
     {
         return $this->project !== null && $this->project->isRunning();
     }

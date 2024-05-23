@@ -9,19 +9,19 @@ define("MESSAGE_TYPES", array(0x00, 0x01, 0x02, 0x03, 0x04));
 
 class GeoscanLib
 {
-    protected $device_id;
-    protected $summary;
-    protected $data;
-    protected $crc32;
-    protected $sound;
+    public $device_id;
+    public $summary;
+    public $data;
+    public $crc32;
+    public $sound;
 
     public function __construct($attributes = [])
     {
-        $this->device_id = $attributes['device_id'];
-        $this->summary = $attributes['summary'];
-        $this->data = $attributes['data'];
-        $this->crc32 = $attributes['crc32'];
-        $this->sound = $attributes['sound'];
+        $this->device_id = $attributes['device_id'] ?? null;
+        $this->summary = $attributes['summary'] ?? null;
+        $this->data = $attributes['data'] ?? null;
+        $this->crc32 = $attributes['crc32'] ?? null;
+        $this->sound = $attributes['sound'] ?? null;
     }
 
     public function params_not_valid()
@@ -41,18 +41,19 @@ class GeoscanLib
 
     public function message_type()
     {
-        return unpack("I", $this->summary)[0];
+        $unpacked_data = array_values(unpack("V1", $this->summary));
+        return $unpacked_data;
     }
 
     public function concentrator_id()
     {
-        $unpacked_device_id = unpack("II", $this->device_id);
+        $unpacked_device_id = array_values(unpack("VV", $this->device_id));
         return $unpacked_device_id[0] . $unpacked_device_id[1];
     }
 
-    public function concentrator($id)
+    public function concentrator()
     {
-        $concentrator = Concentrator::find($id)->first();
+        $concentrator = Concentrator::find($this->device_id)->first();
         if (!empty($concentrator)) {
             return $concentrator;
         }
@@ -66,10 +67,10 @@ class GeoscanLib
         $serial = null;
 
         if (($this->summary_values())[2] > 0x00FFFFFF) {
-            $data_array = unpack("CCCA", $data_pack);
+            $data_array = array_values(unpack("CCCA", $data_pack));
             $str_part = $data_array[3];
             $int_packed = pack("CCCC", [$data_array[0], $data_array[1], $data_array[2], 0]);
-            $int_part = unpack("V", $int_packed)[0];
+            $int_part = array_values(unpack("V", $int_packed))[0];
 
             $serial = "BJ" . $str_part . $int_part;
 
@@ -108,13 +109,13 @@ class GeoscanLib
 
     public function noise_data_value()
     {
-        return unpack("f", $this->data);
+        return array_values(unpack("f", $this->data));
     }
 
 
     public function summary_values()
     {
-        return unpack($this->unpack_format(), $this->summary);
+        return array_values(unpack($this->unpack_format(), $this->summary));
     }
 
 }
