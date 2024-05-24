@@ -5,7 +5,7 @@ namespace Libraries;
 use App\Models\NoiseDevice;
 use App\Models\Concentrator;
 
-define("MESSAGE_TYPES", array(0x00, 0x01, 0x02, 0x03, 0x04));
+define('MESSAGE_TYPES', array(0x00, 0x01, 0x02, 0x03, 0x04));
 
 class GeoscanLib
 {
@@ -41,23 +41,21 @@ class GeoscanLib
 
     public function message_type()
     {
-        $unpacked_data = array_values(unpack("V1", $this->summary));
-        return $unpacked_data[0];
+        $unpacked_data = unpack('VMessageType', $this->summary);
+        return $unpacked_data['MessageType'];
     }
 
     public function concentrator_id()
     {
-        debug_log("\n concentrator", [$this->device_id]);
-        $unpacked_device_id = array_values(unpack("V2", $this->device_id));
-        $concentrator_id = strtoupper(dechex($unpacked_device_id[0])) . strtoupper(dechex($unpacked_device_id[1]));
+        $unpacked_device_id = unpack('VConcentratorFrontValue/VConcentratorBackValue', $this->device_id);
+        $concentrator_id = strtoupper(dechex($unpacked_device_id['ConcentratorFrontValue'])) . strtoupper(dechex($unpacked_device_id['ConcentratorBackValue']));
 
-        debug_log("\n concentrator", [$concentrator_id]);
         return $concentrator_id;
     }
 
     public function concentrator()
     {
-        $concentrator = Concentrator::where("device_id", $this->concentrator_id())->first();
+        $concentrator = Concentrator::where('device_id', $this->concentrator_id())->first();
         if (!empty($concentrator)) {
             return $concentrator;
         }
@@ -66,17 +64,17 @@ class GeoscanLib
 
     public function noise_serial_number()
     {
-        $data_pack = pack("V", [($this->summary_values())[2]]);
+        $data_pack = pack('V', [($this->summary_values())['NoiseSerial']]);
 
         $serial = null;
 
         if (($this->summary_values())[2] > 0x00FFFFFF) {
-            $data_array = array_values(unpack("CCCA", $data_pack));
+            $data_array = array_values(unpack('CCCA', $data_pack));
             $str_part = $data_array[3];
-            $int_packed = pack("CCCC", [$data_array[0], $data_array[1], $data_array[2], 0]);
-            $int_part = array_values(unpack("V", $int_packed))[0];
+            $int_packed = pack('CCCC', [$data_array[0], $data_array[1], $data_array[2], 0]);
+            $int_part = array_values(unpack('V', $int_packed))[0];
 
-            $serial = "BJ" . $str_part . $int_part;
+            $serial = 'BJ' . $str_part . $int_part;
 
         } else {
             $serial = strval(($this->summary_values())[2]);
@@ -89,15 +87,15 @@ class GeoscanLib
     {
         switch ($this->message_type()) {
             case MESSAGE_TYPES[0]:
-                return "VVvv";
+                return 'VMessageType/VConcentratorHp/vAdcBattVolt/vCsqParam';
             case MESSAGE_TYPES[1]:
-                return "VVVVvv";
+                return 'VMessageType/VTimestamp/VNoiseSerial/VConcentratorHp/vAdcBattVolt/vCsqParam';
             // case MESSAGE_TYPES[2]:
-            //     return "VVvvLLCCCCSCCCCSCCCCffffCCCCCCCCfffVVV";
+            //     return 'VVvvLLCCCCSCCCCSCCCCffffCCCCCCCCfffVVV';
             // case MESSAGE_TYPES[3]:
-            //     return "VLLC";
+            //     return 'VLLC';
             // case MESSAGE_TYPES[4]:
-            //     return "VVvvLLCAAAAAAAAAAAAAAAAAAAAASCCCCCCSCCCCCCS";
+            //     return 'VVvvLLCAAAAAAAAAAAAAAAAAAAAASCCCCCCSCCCCCCS';
             default:
                 return null;
         }
@@ -113,13 +111,13 @@ class GeoscanLib
 
     public function noise_data_value()
     {
-        return array_values(unpack("f", $this->data));
+        return unpack('fNoiseData', $this->data);
     }
 
 
     public function summary_values()
     {
-        return array_values(unpack($this->unpack_format(), $this->summary));
+        return unpack($this->unpack_format(), $this->summary);
     }
 
 }
