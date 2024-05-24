@@ -44,7 +44,6 @@ class PagesController extends Controller
     private static function message_0_callback(GeoscanLib $geoscanLib)
     {
         $concentrator = $geoscanLib->concentrator();
-        debug_log('concentrator: ', [$concentrator]);
         self::check_message_0_conditions($concentrator);
 
 
@@ -58,13 +57,12 @@ class PagesController extends Controller
     private static function check_message_0_conditions($concentrator)
     {
         self::concentrator_empty($concentrator);
-        // self::concentrator_not_running($concentrator);
+        self::concentrator_not_running($concentrator);
     }
 
     private static function concentrator_empty($concentrator)
     {
         if ($concentrator == null) {
-            debug_log('concentrator is not available');
             self::render_error("Concentrator is not available");
         }
     }
