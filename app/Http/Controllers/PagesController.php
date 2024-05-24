@@ -15,6 +15,9 @@ class PagesController extends Controller
     public function input(Request $request)
     {
         $geoscanLib = new GeoscanLib($request->all());
+        if (!self::check_initial_conditions($geoscanLib)) {
+            return;
+        }
         debug_log('Message type: ', [$geoscanLib->message_type()]);
         switch ($geoscanLib->message_type()) {
             case 0x00:
@@ -50,6 +53,16 @@ class PagesController extends Controller
         $s_values = $geoscanLib->summary_values();
 
         debug_log('test', [$s_values]);
+        self::updateConcentrator($request, $s_values, $concentrator);
+    }
+
+    private static function message_1_callback(GeoscanLib $geoscanLib)
+    {
+
+    }
+
+    private static function updateConcentrator($request, $s_values, $concentrator)
+    {
         $updatedValues = [
             'last_assigned_ip_address' => $request->ip(),
             'last_communication_packet_sent' => self::getCurrentTime(),
@@ -58,13 +71,6 @@ class PagesController extends Controller
             'concentrator_csq' => $s_values['CsqParam'],
         ];
         $concentrator->update($updatedValues);
-
-
-
-    }
-    private static function message_1_callback(GeoscanLib $geoscanLib)
-    {
-
     }
 
     private static function getBatteryVoltage($s_values)
@@ -113,16 +119,21 @@ class PagesController extends Controller
 
     private static function check_initial_conditions(GeoscanLib $geoscanLib)
     {
-        self::check_params_valid($geoscanLib);
-        self::check_crc32_valid($geoscanLib);
-        return;
+        if (!self::check_params_valid($geoscanLib)) {
+            return false;
+        }
+        ;
+        if (!self::check_crc32_valid($geoscanLib)) {
+            return false;
+        }
+        return true;
     }
 
     private static function check_crc32_valid(GeoscanLib $geoscanLib)
     {
         if (!$geoscanLib->crc32_valid()) {
             self::render_error('CRC32 does not match');
-            return;
+            return false;
         }
     }
 
@@ -130,7 +141,7 @@ class PagesController extends Controller
     {
         if ($geoscanLib->params_not_valid()) {
             self::render_error('Not enough parameters in the request');
-            return;
+            return false;
         }
     }
 
