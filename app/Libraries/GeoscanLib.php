@@ -42,18 +42,22 @@ class GeoscanLib
     public function message_type()
     {
         $unpacked_data = array_values(unpack("V1", $this->summary));
-        return $unpacked_data;
+        return $unpacked_data[0];
     }
 
     public function concentrator_id()
     {
-        $unpacked_device_id = array_values(unpack("VV", $this->device_id));
-        return $unpacked_device_id[0] . $unpacked_device_id[1];
+        debug_log("\n concentrator", [$this->device_id]);
+        $unpacked_device_id = array_values(unpack("V2", $this->device_id));
+        $concentrator_id = strtoupper(dechex($unpacked_device_id[0])) . strtoupper(dechex($unpacked_device_id[1]));
+
+        debug_log("\n concentrator", [$concentrator_id]);
+        return $concentrator_id;
     }
 
     public function concentrator()
     {
-        $concentrator = Concentrator::find($this->device_id)->first();
+        $concentrator = Concentrator::where("device_id", $this->concentrator_id())->first();
         if (!empty($concentrator)) {
             return $concentrator;
         }

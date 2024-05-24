@@ -6,19 +6,23 @@ use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Libraries\GeoscanLib;
 
+
 class PagesController extends Controller
 {
+
     public function input(Request $request)
     {
         $debug = [];
         $geoscanLib = new GeoscanLib($request->all());
-        self::check_initial_conditions($geoscanLib);
-        array_push($debug, ["message type" => $geoscanLib->message_type()]);
+        debug_log("\n\n\n\n\n\n");
+        debug_log('Message type: ', [$geoscanLib->message_type()]);
         switch ($geoscanLib->message_type()) {
             case 0x00:
+                debug_log('inside message 0', []);
                 self::message_0_callback($geoscanLib);
                 break;
             case 0x01:
+                debug_log('inside message 1', []);
                 self::message_1_callback($geoscanLib);
                 break;
             // case 0x02:
@@ -31,6 +35,7 @@ class PagesController extends Controller
             //     self::message_4_callback($geoscanLib);
             //     break;
             default:
+                debug_log('inside message default', []);
                 break;
         }
         return self::render_message($debug);
@@ -39,6 +44,7 @@ class PagesController extends Controller
     private static function message_0_callback(GeoscanLib $geoscanLib)
     {
         $concentrator = $geoscanLib->concentrator();
+        debug_log('concentrator: ', [$concentrator]);
         self::check_message_0_conditions($concentrator);
 
 
@@ -52,12 +58,13 @@ class PagesController extends Controller
     private static function check_message_0_conditions($concentrator)
     {
         self::concentrator_empty($concentrator);
-        self::concentrator_not_running($concentrator);
+        // self::concentrator_not_running($concentrator);
     }
 
     private static function concentrator_empty($concentrator)
     {
-        if (empty($concentrator)) {
+        if ($concentrator == null) {
+            debug_log('concentrator is not available');
             self::render_error("Concentrator is not available");
         }
     }
@@ -95,6 +102,6 @@ class PagesController extends Controller
     }
     private static function render_error(string $error_message)
     {
-        return response()->json(["error" => $error_message], Response::HTTP_UNPROCESSABLE_ENTITY);
+        return response()->json(["error" => $error_message], Response::HTTP_UNPROCESSABLE_ENTITY)->send();
     }
 }
