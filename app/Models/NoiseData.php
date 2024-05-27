@@ -11,10 +11,12 @@ class NoiseData extends Model
     use HasFactory;
 
     protected $table = 'noise_data';
-    protected $fillable = ['measurement_point_id', 'leq', 'received_at', 'created_at', 'updated_at', 'sound'];
+    protected $fillable = ['measurement_point_id', 'leq', 'received_at', 'created_at', 'updated_at'];
 
-    public function measurement_point(): BelongsTo
+    public function measurementPoint(): BelongsTo
     {
-        return $this->belongsTo(MeasurementPoint::class, 'measurement_point_id');
+        return $this->belongsTo(MeasurementPoint::class, 'id', 'measurement_point_id');
     }
+
+
 }

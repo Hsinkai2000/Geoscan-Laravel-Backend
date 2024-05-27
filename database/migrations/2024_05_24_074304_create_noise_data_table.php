@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->integer('measurement_point_id')->nullable();
             $table->float('leq')->nullable();
             $table->dateTime('received_at')->nullable();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 

@@ -64,29 +64,30 @@ class PagesController extends Controller
         $concentrator = $geoscanLib->concentrator();
         debug_log("noise device: ", [$noise_meter]);
         if (!self::check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)) {
-            debug_log("inside");
+            debug_log("failed conditional check");
             return;
         }
+        $measurement_point = $noise_meter->measurementPoint;
         $s_values = $geoscanLib->summary_values();
         $noise_data = self::noise_data_params($geoscanLib, $s_values);
-        $noise_meter->noise_data()->save($noise_data);
+        $measurement_point->noiseData()->save($noise_data);
         self::updateConcentrator($request, $s_values, $concentrator);
 
         $ndevice_params = [
             'inst_leq' => $noise_data->leq,
         ];
-        if ($noise_meter->dose_flag_reset()) {
+        if ($measurement_point->dose_flag_reset()) {
             $ndevice_params = array_merge($ndevice_params, [
                 'leq_temp' => $noise_data->leq,
                 'dose_flag' => 0,
             ]);
         }
-        self::update_noise_meter($noise_meter, $ndevice_params);
-        $noise_meter->check_last_data_for_alert();
+        // self::update_measurement_point($measurement_point, $ndevice_params);
+        // $measurement_point->check_last_data_for_alert();
         render_message("ok");
     }
 
-    private static function update_noise_meter($noise_meter, $ndevice_params)
+    private static function update_measurement_point($noise_meter, $ndevice_params)
     {
         $noise_meter->update($ndevice_params);
     }
@@ -132,10 +133,9 @@ class PagesController extends Controller
 
         // Create a new NoiseData object
         $noise_data = new NoiseData([
-            'project_id' => $geoscanLib->noise_meter()->project_id,
+            'measurement_point_id' => $geoscanLib->noise_meter()->measurementPoint->id,
             'leq' => $noise_leq,
-            'received_at' => $time->format('Y-m-d H:i:s'),
-            'sound' => null
+            'received_at' => $time->format('Y-m-d H:i:s')
         ]);
 
         return $noise_data;
