@@ -2,7 +2,7 @@
 
 namespace Libraries;
 
-use App\Models\NoiseDevice;
+use App\Models\NoiseMeter;
 use App\Models\Concentrator;
 
 define('MESSAGE_TYPES', array(0x00, 0x01, 0x02, 0x03, 0x04));
@@ -49,7 +49,7 @@ class GeoscanLib
     {
         $unpacked_device_id = unpack('VConcentratorFrontValue/VConcentratorBackValue', $this->device_id);
         $concentrator_id = strtoupper(dechex($unpacked_device_id['ConcentratorFrontValue'])) . strtoupper(dechex($unpacked_device_id['ConcentratorBackValue']));
-
+        debug_log("concentrator_id", [$concentrator_id]);
         return $concentrator_id;
     }
 
@@ -68,18 +68,18 @@ class GeoscanLib
 
         $serial = null;
 
-        if (($this->summary_values())[2] > 0x00FFFFFF) {
-            $data_array = array_values(unpack('CCCA', $data_pack));
+        if (($this->summary_values())['NoiseSerial'] > 0x00FFFFFF) {
+            $data_array = array_values(unpack('C3chars/Astring', $data_pack));
             $str_part = $data_array[3];
-            $int_packed = pack('CCCC', [$data_array[0], $data_array[1], $data_array[2], 0]);
+
+            $int_packed = pack('C4', $data_array[0], $data_array[1], $data_array[2], 0);
             $int_part = array_values(unpack('V', $int_packed))[0];
 
             $serial = 'BJ' . $str_part . $int_part;
 
         } else {
-            $serial = strval(($this->summary_values())[2]);
+            $serial = strval(($this->summary_values())['NoiseSerial']);
         }
-
         return $serial;
     }
 
@@ -103,9 +103,9 @@ class GeoscanLib
 
     }
 
-    public function noise_device($noise_serial_number)
+    public function noise_meter()
     {
-        return NoiseDevice::where('serial_number', $noise_serial_number)->first();
+        return NoiseMeter::where('serial_number', $this->noise_serial_number())->first();
 
     }
 
