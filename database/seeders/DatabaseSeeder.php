@@ -16,8 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             ProjectSeeder::class,
-            NoiseDeviceSeeder::class,
+            NoiseMeterSeeder::class,
             ConcentratorSeeder::class,
+            MeasurementPointSeeder::class,
         ]);
     }
 }

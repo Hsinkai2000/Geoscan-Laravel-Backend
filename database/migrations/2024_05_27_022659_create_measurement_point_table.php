@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use PhpOption\None;
 
 return new class extends Migration {
     /**
@@ -11,14 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::dropIfExists('noise_device');
-        Schema::create('noise_device', function (Blueprint $table) {
+        Schema::dropIfExists('measurement_points');
+        Schema::create('measurement_points', function (Blueprint $table) {
             $table->id();
             $table->integer('project_id')->nullable();
-            $table->string('device_id', 255)->nullable();
-            $table->string('serial_number', 255)->nullable();
-            $table->string('brand', 255)->nullable();
-            $table->string('last_calibration_date', 20)->nullable();
+            $table->integer('noise_meter_id')->nullable();
+            $table->integer('concentrator_id')->nullable();
+            $table->string('point_name', 255)->nullable();
             $table->string('remarks', 255)->nullable();
             $table->float('inst_leq')->nullable()->default(0);
             $table->integer('leq_temp')->nullable()->default(0);
@@ -31,10 +29,9 @@ return new class extends Migration {
             $table->dateTime('leq_12_hours_last_alert_at')->nullable();
             $table->dateTime('dose_70_last_alert_at')->nullable();
             $table->dateTime('dose_100_last_alert_at')->nullable();
-            $table->dateTime('last_calibrated_at')->nullable();
+            $table->dateTime('last_alert')->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
-            $table->dateTime('last_alert')->nullable();
         });
     }
 
@@ -43,6 +40,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('noise_device');
+        Schema::dropIfExists('measurement_points');
     }
 };
