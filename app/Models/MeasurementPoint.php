@@ -106,6 +106,7 @@ class MeasurementPoint extends Model
         $last_noise_data = $this->noiseData()->latest()->first();
 
         [$leq_5mins_should_alert, $limit] = $this->leq_5_mins_exceed_and_alert($last_noise_data);
+        debug_log("should alert", [$leq_5mins_should_alert, $limit]);
         if ($leq_5mins_should_alert) {
             $this->send_alert();
         }

@@ -15,26 +15,32 @@ class SoundLimit extends Model
     protected $fillable = [
         'category',
         'measurement_point_id',
+
         'mon_sat_7am_7pm_leq5min',
         'mon_sat_7pm_10pm_leq5min',
-        'mon_sat_10pm_7am_leq5min',
+        'mon_sat_10pm_12am_leq5min',
+        'mon_sat_12am_7am_leq5min',
+        // 'mon_sat_10pm_7am_leq5min',
+
         'sun_ph_7am_7pm_leq5min',
         'sun_ph_7pm_10pm_leq5min',
-        'sun_ph_10pm_7am_leq5min',
+        'sun_ph_10pm_12am_leq5min',
+        'sun_ph_12am_7am_leq5min',
+        // 'sun_ph_10pm_7am_leq5min',
+
         'mon_sat_7am_7pm_leq12hr',
         'mon_sat_7pm_10pm_leq12hr',
-        'mon_sat_10pm_7am_leq12hr',
+        'mon_sat_10pm_12am_leq12hr',
+        'mon_sat_12am_7am_leq12hr',
+        // 'mon_sat_10pm_7am_leq12hr',
+
         'sun_ph_7am_7pm_leq12hr',
         'sun_ph_7pm_10pm_leq12hr',
-        'sun_ph_10pm_7am_leq12hr',
-        // 'mon_sat_10pm_12am_leq5min',
-        // 'mon_sat_12am_7am_leq5min',
-        // 'sun_ph_10pm_12am_leq5min',
-        // 'sun_ph_12am_7am_leq5min',
-        // 'mon_sat_10pm_12am_leq12hr',
-        // 'mon_sat_12am_7am_leq12hr',
-        // 'sun_ph_10pm_12am_leq12hr',
-        // 'sun_ph_12am_7am_leq12hr',
+        'sun_ph_10pm_12am_leq12hr',
+        'sun_ph_12am_7am_leq12hr',
+        // 'sun_ph_10pm_7am_leq12hr',
+
+
         'created_at',
         'updated_at',
     ];
@@ -47,16 +53,16 @@ class SoundLimit extends Model
     private function sound_limits_values_5min()
     {
         return [
-            "mon_sat" => [$this->mon_sat_7am_7pm_leq5min, $this->mon_sat_7pm_10pm_leq5min, $this->mon_sat_10pm_7am_leq5min],
-            "sun_ph" => [$this->sun_ph_7am_7pm_leq5min, $this->sun_ph_7pm_10pm_leq5min, $this->sun_ph_10pm_7am_leq5min]
+            "mon_sat" => [$this->mon_sat_7am_7pm_leq5min, $this->mon_sat_7pm_10pm_leq5min, $this->mon_sat_10pm_12am_leq5min, $this->mon_sat_12am_7am_leq5min],
+            "sun_ph" => [$this->sun_ph_7am_7pm_leq5min, $this->sun_ph_7pm_10pm_leq5min, $this->sun_ph_10pm_12am_leq5min, $this->sun_ph_12am_7am_leq5min]
         ];
     }
 
     private function sound_limits_values_12hr()
     {
         return [
-            "mon_sat" => [$this->mon_sat_7am_7pm_leq12hr, $this->mon_sat_7pm_10pm_leq12hr, $this->mon_sat_10pm_7am_leq12hr],
-            "sun_ph" => [$this->sun_ph_7am_7pm_leq12hr, $this->sun_ph_7pm_10pm_leq12hr, $this->sun_ph_10pm_7am_leq12hr]
+            "mon_sat" => [$this->mon_sat_7am_7pm_leq12hr, $this->mon_sat_7pm_10pm_leq12hr, $this->mon_sat_10pm_12am_leq12hr, $this->mon_sat_12am_7am_leq12hr],
+            "sun_ph" => [$this->sun_ph_7am_7pm_leq12hr, $this->sun_ph_7pm_10pm_leq12hr, $this->sun_ph_10pm_12am_leq12hr, $this->sun_ph_12am_7am_leq12hr]
         ];
 
     }
@@ -64,7 +70,8 @@ class SoundLimit extends Model
     private static $time_mapper = [
         '7am_7pm' => 0,
         '7pm_10pm' => 1,
-        '10pm_7am' => 2,
+        '10pm_12am' => 2,
+        '12am_7am' => 3,
     ];
 
     private function time_to_keys($last_data_datetime)
@@ -99,8 +106,10 @@ class SoundLimit extends Model
             return '7am_7pm';
         } elseif ($hour >= 19 && $hour <= 21) {
             return '7pm_10pm';
-        } elseif ($hour >= 22 || $hour < 7) {
-            return '10pm_7am';
+        } elseif ($hour >= 22) {
+            return '10pm_12am';
+        } else {
+            return '12am_7am';
         }
     }
 }

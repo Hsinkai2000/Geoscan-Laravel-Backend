@@ -17,52 +17,47 @@ return new class extends Migration {
             $table->integer('measurement_point_id')->nullable()->index();
 
             $table->float('mon_sat_7am_7pm_leq5min')->default(90)->nullable();
-            ;
+
             $table->float('mon_sat_7pm_10pm_leq5min')->default(70)->nullable();
-            ;
-            $table->float('mon_sat_10pm_7am_leq5min')->default(55)->nullable();
-            ;
+
+            $table->float('mon_sat_10pm_12am_leq5min')->default(55)->nullable();
+
+            $table->float('mon_sat_12am_7am_leq5min')->default(55)->nullable();
+
+            // $table->float('mon_sat_10pm_7am_leq5min')->default(55)->nullable();
+
 
             $table->float('sun_ph_7am_7pm_leq5min')->default(75)->nullable();
-            ;
+
             $table->float('sun_ph_7pm_10pm_leq5min')->default(55)->nullable();
-            ;
-            $table->float('sun_ph_10pm_7am_leq5min')->default(55)->nullable();
-            ;
+
+            $table->float('sun_ph_10pm_12am_leq5min')->default(55)->nullable();
+
+            $table->float('sun_ph_12am_7am_leq5min')->default(55)->nullable();
+
+            // $table->float('sun_ph_10pm_7am_leq5min')->default(55)->nullable();
+
 
             $table->float('mon_sat_7am_7pm_leq12hr')->default(75)->nullable();
-            ;
+
             $table->float('mon_sat_7pm_10pm_leq12hr')->default(65)->nullable();
-            ;
-            $table->float('mon_sat_10pm_7am_leq12hr')->default(55)->nullable();
-            ;
+
+            $table->float('mon_sat_10pm_12am_leq12hr')->default(55)->nullable();
+
+            $table->float('mon_sat_12am_7am_leq12hr')->default(55)->nullable();
+
+            // $table->float('mon_sat_10pm_7am_leq12hr')->default(55)->nullable();
+
 
             $table->float('sun_ph_7am_7pm_leq12hr')->default(75)->nullable();
-            ;
+
             $table->float('sun_ph_7pm_10pm_leq12hr')->default(140)->nullable();
-            ;
-            $table->float('sun_ph_10pm_7am_leq12hr')->default(140)->nullable();
-            ;
 
-            // $table->float('mon_sat_10pm_12am_leq5min')->default(55)->nullable();
-            // ;
-            // $table->float('mon_sat_12am_7am_leq5min')->default(55)->nullable();
-            // ;
+            $table->float('sun_ph_10pm_12am_leq12hr')->default(140)->nullable();
 
-            // $table->float('sun_ph_10pm_12am_leq5min')->default(55)->nullable();
-            // ;
-            // $table->float('sun_ph_12am_7am_leq5min')->default(55)->nullable();
-            // ;
+            $table->float('sun_ph_12am_7am_leq12hr')->default(140)->nullable();
 
-            // $table->float('mon_sat_10pm_12am_leq12hr')->default(55)->nullable();
-            // ;
-            // $table->float('mon_sat_12am_7am_leq12hr')->default(55)->nullable();
-            // ;
-
-            // $table->float('sun_ph_10pm_12am_leq12hr')->default(140)->nullable();
-            // ;
-            // $table->float('sun_ph_12am_7am_leq12hr')->default(140)->nullable();
-            // ;
+            // $table->float('sun_ph_10pm_7am_leq12hr')->default(140)->nullable();
 
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
