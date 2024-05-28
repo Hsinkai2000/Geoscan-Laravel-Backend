@@ -34,6 +34,10 @@ class MeasurementPoint extends Model
     {
         return $this->hasMany(NoiseData::class, 'measurement_point_id', 'id');
     }
+    public function soundLimit(): HasOne
+    {
+        return $this->hasOne(SoundLimit::class, 'measurement_point_id', 'id');
+    }
 
     public function hasProject()
     {
@@ -75,9 +79,37 @@ class MeasurementPoint extends Model
         return $time->format('H') < 12;
     }
 
+    private function leq5_last_alert_allowed($last_received_datetime)
+    {
+        $last_received_datetime = new DateTime($last_received_datetime);
+        $leq_5_mins_last_alert_at = new DateTime($this->leq_5_mins_last_alert_at);
+        if (!is_null($this->leq_5_mins_last_alert_at) || ($last_received_datetime->getTimestamp() - $leq_5_mins_last_alert_at->getTimestamp()) <= 3 * 3600) {
+            return false;
+        }
+        return true;
+    }
+
+    private function leq_5_mins_exceed_and_alert($last_noise_data = null)
+    {
+        $limit = $this->soundLimit->leq5_limit($last_noise_data->received_at);
+        $should_alert = $last_noise_data->leq >= $limit && $this->leq5_last_alert_allowed($last_noise_data->received_at);
+        return [$should_alert, $limit];
+    }
+
+    private function send_alert()
+    {
+        return;
+    }
+
     public function check_last_data_for_alert()
     {
-        $last_leq = $this->noiseData->latest()->first();
+        $last_noise_data = $this->noiseData()->latest()->first();
 
+        [$leq_5mins_should_alert, $limit] = $this->leq_5_mins_exceed_and_alert($last_noise_data);
+        if ($leq_5mins_should_alert) {
+            $this->send_alert();
+        }
+
+        return;
     }
 }
