@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             NoiseMeterSeeder::class,
             ConcentratorSeeder::class,
             MeasurementPointSeeder::class,
+            SoundLimitSeeder::class,
         ]);
     }
 }
