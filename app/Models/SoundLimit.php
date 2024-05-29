@@ -93,7 +93,21 @@ class SoundLimit extends Model
         return $limit;
     }
 
-    public function leq12_limit($last_data_datetime_string)
+    public function leq1h_limit($last_data_datetime_string)
+    {
+        $last_data_datetime = new DateTime($last_data_datetime_string);
+        if ($this->category == 'Residential buildings') {
+            [$day, $time_range] = $this->time_to_keys($last_data_datetime);
+            $time_map = self::$time_mapper[$time_range];
+            if ($time_map != 0 && $day == 'mon_sat') {
+                $limit = $this->sound_limits_values_12hr()[$day][$time_map];
+                return $limit;
+            }
+        }
+        return 140.0;
+    }
+
+    public function leq12h_limit($last_data_datetime_string)
     {
         $last_data_datetime = new DateTime($last_data_datetime_string);
     }
