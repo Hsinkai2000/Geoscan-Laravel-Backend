@@ -83,33 +83,81 @@ class SoundLimit extends Model
         return [$day, $time_range];
     }
 
-    public function leq5_limit($last_data_datetime_string)
+    public function getTimeRange($last_data_datetime_string)
     {
         $last_data_datetime = new DateTime($last_data_datetime_string);
         [$day, $time_range] = $this->time_to_keys($last_data_datetime);
+        return [$day, $time_range];
+    }
+
+    public function leq5_limit($last_data_datetime_string)
+    {
+        [$day, $time_range] = $this->getTimeRange($last_data_datetime_string);
         $time_map = self::$time_mapper[$time_range];
         $limit = $this->sound_limits_values_5min()[$day][$time_map];
-        debug_log("leq5 limit:", [$limit]);
         return $limit;
     }
 
-    public function leq1h_limit($last_data_datetime_string)
+    public function leq1h_limit($last_data_datetime)
     {
-        $last_data_datetime = new DateTime($last_data_datetime_string);
-        if ($this->category == 'Residential buildings') {
-            [$day, $time_range] = $this->time_to_keys($last_data_datetime);
-            $time_map = self::$time_mapper[$time_range];
-            if ($time_map != 0 && $day == 'mon_sat') {
-                $limit = $this->sound_limits_values_12hr()[$day][$time_map];
-                return $limit;
-            }
+        [$day, $time_range] = $this->time_to_keys($last_data_datetime);
+        $time_map = self::$time_mapper[$time_range];
+        if (!($this->category == 'Residential buildings' && $time_map != 0 && $day == 'mon_sat')) {
+            return 140.0;
         }
-        return 140.0;
+        $limit = $this->sound_limits_values_12hr()[$day][$time_map];
+        return $limit;
     }
 
-    public function leq12h_limit($last_data_datetime_string)
+    public function leq12h_limit($last_data_datetime)
+    {
+        [$day, $time_range] = $this->time_to_keys($last_data_datetime);
+        $time_map = self::$time_mapper[$time_range];
+        if ($this->category == 'Residential buildings' && $time_map != 0) {
+            return 140.0;
+        }
+        $limit = $this->sound_limits_values_12hr()[$day][$time_map];
+        return $limit;
+    }
+
+    private function check_transition_days($last_data_datetime_string)
     {
         $last_data_datetime = new DateTime($last_data_datetime_string);
+        $day_of_week = $last_data_datetime->format('w');
+        if ($day_of_week == 0 || $day_of_week == 1) {
+            return $day_of_week;
+        }
+        return null;
+    }
+
+    private function set_to_previous_night_1159pm($date)
+    {
+        // Subtract one day
+        $date->modify('-1 day');
+        // Set time to 11:59 PM
+        $date->setTime(23, 59, 0);
+        return $date;
+    }
+
+    public function check_12_1_hour_limit_type($last_data_datetime_string)
+    {
+        debug_log('timemap111', [$last_data_datetime_string]);
+        $day_of_week = $this->check_transition_days($last_data_datetime_string);
+        $last_data_datetime = new DateTime($last_data_datetime_string);
+        [$day, $time_range] = $this->time_to_keys($last_data_datetime);
+        $time_map = self::$time_mapper[$time_range];
+
+        if ($day_of_week != null && $time_map == 3) {#morning on sun and mon: take prev night limit
+            $last_data_datetime = $this->set_to_previous_night_1159pm($last_data_datetime);
+            [$day, $time_range] = $this->time_to_keys($last_data_datetime);
+            $time_map = self::$time_mapper[$time_range];
+        }
+
+        debug_log('timemap', [$time_map]);
+        if ($this->category == 'Residential buildings' && $time_map != 0 && $day == 'mon_sat') {
+            return ['1', $last_data_datetime];
+        }
+        return ['12', $last_data_datetime];
     }
 
     private function getTimeRangeText(DateTime $time)
