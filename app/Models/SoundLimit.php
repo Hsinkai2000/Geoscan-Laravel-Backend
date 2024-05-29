@@ -141,7 +141,6 @@ class SoundLimit extends Model
 
     public function check_12_1_hour_limit_type($last_data_datetime_string)
     {
-        debug_log('timemap111', [$last_data_datetime_string]);
         $day_of_week = $this->check_transition_days($last_data_datetime_string);
         $last_data_datetime = new DateTime($last_data_datetime_string);
         [$day, $time_range] = $this->time_to_keys($last_data_datetime);
@@ -153,7 +152,6 @@ class SoundLimit extends Model
             $time_map = self::$time_mapper[$time_range];
         }
 
-        debug_log('timemap', [$time_map]);
         if ($this->category == 'Residential buildings' && $time_map != 0 && $day == 'mon_sat') {
             return ['1', $last_data_datetime];
         }

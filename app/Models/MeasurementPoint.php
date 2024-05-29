@@ -103,17 +103,24 @@ class MeasurementPoint extends Model
         }
 
         if ($leq_5mins_should_alert) {
+            $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
+            $this->save();
             $this->send_alert(5);
-        } else if ($leq_12_should_alert) {
+        }
+        if ($leq_12_should_alert) {
+            $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
+            $this->save();
             $this->send_alert(12);
         } else if ($leq_1_should_alert) {
+            $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
+            $this->save();
             $this->send_alert(1);
         }
 
     }
     private function send_alert($alert_value)
     {
-
+        debug_log("ALERT SENT");
     }
 
 
@@ -129,7 +136,7 @@ class MeasurementPoint extends Model
     {
         $twelve_hr_leq = $this->calc_12_hour_leq();
         $limit = $this->soundLimit->leq12h_limit($last_data_datetime);
-        $should_alert = $twelve_hr_leq >= $limit && $this->leq_last_alert_allowed($this->leq_12_hour_last_alert_at, $last_data_datetime);
+        $should_alert = $twelve_hr_leq >= $limit && $this->leq_last_alert_allowed($this->leq_12_hours_last_alert_at, $last_noise_data->received_at);
         debug_log("12hrleq : leq12hr should alert:leq12hr limit ", [$twelve_hr_leq, $should_alert, $limit]);
         return [$should_alert, $limit];
     }
@@ -138,7 +145,7 @@ class MeasurementPoint extends Model
     {
         $one_hr_leq = $this->calc_1_hour_leq();
         $limit = $this->soundLimit->leq1h_limit($last_data_datetime);
-        $should_alert = $one_hr_leq >= $limit && $this->leq_last_alert_allowed($this->leq_1_hour_last_alert_at, $last_data_datetime);
+        $should_alert = $one_hr_leq >= $limit && $this->leq_last_alert_allowed($this->leq_1_hour_last_alert_at, $last_noise_data->received_at);
         debug_log("one_hr_leq : leq1hr should alert:leq1hr limit ", [$one_hr_leq, $should_alert, $limit]);
         return [$should_alert, $limit];
     }
@@ -171,9 +178,7 @@ class MeasurementPoint extends Model
         $noise_data = $this->noiseData();
         $last_noise_data_base_hour = new Datetime($noise_data->latest()->first()->received_at);
         $last_noise_data_base_hour->setTime($last_noise_data_base_hour->format("H"), 0, 0);
-        debug_log('base hr', [$last_noise_data_base_hour]);
         $hour_to_now_leqs = $this->noiseData()->where('received_at', '>=', $last_noise_data_base_hour)->get()->reverse();
-        debug_log('base hr', [$hour_to_now_leqs]);
         return $hour_to_now_leqs;
     }
 
@@ -184,7 +189,6 @@ class MeasurementPoint extends Model
 
         $last_noise_data_date = $this->get_current_date();
         [$start_datetime, $end_datetime] = $this->get_final_time_start_stop($last_noise_data_date, $time_range);
-        debug_log("start_date : end date", [$start_datetime, $end_datetime]);
         return [$start_datetime, $end_datetime];
     }
 
@@ -222,7 +226,6 @@ class MeasurementPoint extends Model
     {
         $sum = 0.0;
         $hour_to_now_leqs = $this->get_hour_to_now_leq();
-        debug_log('hour leq: ', [$hour_to_now_leqs]);
         for ($data_index = 0; $data_index < count($hour_to_now_leqs); $data_index++) {
             $current_leq = $hour_to_now_leqs[$data_index]->leq;
             $sum += round($this->linearise_leq($current_leq), 1);
@@ -232,10 +235,12 @@ class MeasurementPoint extends Model
         return $one_hr_leq;
     }
 
-    private function leq_last_alert_allowed($leq_freq_last_alert_at, $last_received_datetime)
+    private function leq_last_alert_allowed($leq_freq_last_alert_at, $last_received_datetime_string)
     {
+        $last_received_datetime = new DateTime($last_received_datetime_string);
         $leq_mins_last_alert_at = new DateTime($leq_freq_last_alert_at);
-        if (!is_null($leq_freq_last_alert_at) || ($last_received_datetime->getTimestamp() - $leq_mins_last_alert_at->getTimestamp()) <= 3 * 3600) {
+
+        if (!is_null($leq_freq_last_alert_at) && ($last_received_datetime->getTimestamp() - $leq_mins_last_alert_at->getTimestamp()) <= 3 * 3600) {
             return false;
         }
         return true;
