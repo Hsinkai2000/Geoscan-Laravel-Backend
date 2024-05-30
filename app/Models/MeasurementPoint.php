@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Exception;
+use App\Mail\EmailAlert;
+use App\Services\TwilioService;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Mail;
 
 class MeasurementPoint extends Model
 {
@@ -30,11 +34,11 @@ class MeasurementPoint extends Model
 
     public function concentrator(): HasOne
     {
-        return $this->hasOne(Concentrator::class, 'concentrator_id', 'id');
+        return $this->hasOne(Concentrator::class, 'id', 'concentrator_id');
     }
     public function noiseMeter(): HasOne
     {
-        return $this->hasOne(NoiseMeter::class, 'noise_meter_id', 'id');
+        return $this->hasOne(NoiseMeter::class, 'id', 'noise_meter_id');
     }
 
     public function noiseData(): HasMany
@@ -102,25 +106,69 @@ class MeasurementPoint extends Model
             [$leq_1_should_alert, $limit] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
         }
 
+        $data = [
+            "client_name" => $this->project->contact->contact_person_name,
+            "jobsite_location" => $this->project->jobsite_location,
+            "serial_number" => $this->noiseMeter->serial_number,
+            "leq_value" => $last_noise_data->leq,
+            "exceeded_limit" => $limit,
+            "leq_type" => null,
+            "exceeded_time" => $last_noise_data->received_at,
+        ];
+
         if ($leq_5mins_should_alert) {
-            $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
-            $this->save();
-            $this->send_alert(5);
+            // $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
+            // $this->save();
+            $data["leq_type"] = "5min";
+            $this->send_alert($data);
         }
         if ($leq_12_should_alert) {
-            $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
-            $this->save();
-            $this->send_alert(12);
+            // $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
+            // $this->save();
+            $data["leq_type"] = "12hours";
+            $this->send_alert($data);
         } else if ($leq_1_should_alert) {
-            $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
-            $this->save();
-            $this->send_alert(1);
+            // $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
+            // $this->save();
+            $data["leq_type"] = "1hour";
+            $this->send_alert($data);
         }
 
     }
-    private function send_alert($alert_value)
+    private function send_alert($data)
     {
-        debug_log("ALERT SENT");
+        [$phone_number, $email] = $this->project->get_contact_details();
+        $this->send_email($data, $email);
+        $this->send_sms($data, $phone_number);
+    }
+
+    private function send_email($data, $email)
+    {
+        $email = $this->project->contact->email;
+
+        if (!empty($email)) {
+            try {
+                $email_response = Mail::to($email)->send(new EmailAlert($data));
+                if ($email_response != null) {
+
+                    $email_messageid = $email_response->getSymfonySentMessage()->getMessageId();
+                    $email_messagedebug = $email_response->getSymfonySentMessage()->getDebug();
+
+                    error_log("alert email sent to User: {$data['client_name']} {$email}");
+                }
+            } catch (Exception $e) {
+                $error_log = $e->getMessage();
+                debug_log($e->getMessage());
+            }
+        }
+    }
+
+    private function send_sms($data, $phone_number)
+    {
+        $phone_number = $this->project->contact->phone_number;
+        debug_log("sms send", [$this->project->contact->phone_number]);
+        // $twilio_service = new TwilioService();
+        // $sms_response = $twilio_service->sendMessage($this->project()->contact()->phone_number, $message);
     }
 
 

@@ -70,19 +70,19 @@ class PagesController extends Controller
         $measurement_point = $noise_meter->measurementPoint;
         $s_values = $geoscanLib->summary_values();
         $noise_data = self::noise_data_params($geoscanLib, $s_values);
-        $measurement_point->noiseData()->save($noise_data);
-        self::updateConcentrator($request, $s_values, $concentrator);
+        // $measurement_point->noiseData()->save($noise_data);
+        // self::updateConcentrator($request, $s_values, $concentrator);
 
-        $ndevice_params = [
-            'inst_leq' => $noise_data->leq,
-        ];
-        if ($measurement_point->dose_flag_reset()) {
-            $ndevice_params = array_merge($ndevice_params, [
-                'leq_temp' => $noise_data->leq,
-                'dose_flag' => 0,
-            ]);
-        }
-        self::update_measurement_point($measurement_point, $ndevice_params);
+        // $ndevice_params = [
+        //     'inst_leq' => $noise_data->leq,
+        // ];
+        // if ($measurement_point->dose_flag_reset()) {
+        //     $ndevice_params = array_merge($ndevice_params, [
+        //         'leq_temp' => $noise_data->leq,
+        //         'dose_flag' => 0,
+        //     ]);
+        // }
+        // self::update_measurement_point($measurement_point, $ndevice_params);
         $measurement_point->check_last_data_for_alert();
         render_message("ok");
     }

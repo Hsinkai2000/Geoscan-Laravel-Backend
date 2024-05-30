@@ -21,7 +21,7 @@ class Project extends Model
     {
         return $this->hasMany(MeasurementPoint::class, 'project_id', 'id');
     }
-    public function contacts(): HasOne
+    public function contact(): HasOne
     {
         return $this->hasOne(Contact::class, 'project_id', 'id');
     }
@@ -30,5 +30,10 @@ class Project extends Model
     public function isRunning()
     {
         return $this->status === 'Ongoing';
+    }
+
+    public function get_contact_details()
+    {
+        return [$this->contact->phone_number, $this->contact->email];
     }
 }

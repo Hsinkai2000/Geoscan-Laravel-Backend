@@ -16,11 +16,19 @@ class TwilioController extends Controller
 
     public function callback(Request $request)
     {
-        $to = $request->input('to');
-        $message = $request->input('message');
+        $postData = $request->all();
+        if (isset($postData['SmsSid']) && isset($postData['SmsStatus'])) {
+            $TwilioSMSsid = $postData['SmsSid'];
+            $TwilioSMSstatus = 'Twilio ' . $postData['SmsStatus'];
 
-        $this->twilio->sendMessage($to, $message);
+            DB::table('lvl_1_alert_records')->where('sms_messageid', $TwilioSMSsid)->update([
+                'sms_status_updated' => date("Y-m-d H:i:s"),
+                'sms_status' => $TwilioSMSstatus,
+            ]);
 
-        return response()->json(['message' => 'SMS sent successfully']);
+            return response('{"Success"}', 200);
+        } else
+            return response('{"error":"Missing parameters in the request"}', 400);
+
     }
 }
