@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Project extends Model
 {
@@ -19,6 +20,10 @@ class Project extends Model
     public function measurement_point(): HasMany
     {
         return $this->hasMany(MeasurementPoint::class, 'project_id', 'id');
+    }
+    public function contacts(): HasOne
+    {
+        return $this->hasOne(Contact::class, 'project_id', 'id');
     }
 
     // Define methods
