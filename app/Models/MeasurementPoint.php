@@ -138,7 +138,7 @@ class MeasurementPoint extends Model
     private function send_alert($data)
     {
         [$phone_number, $email] = $this->project->get_contact_details();
-        $this->send_email($data, $email);
+        [$email_messageid, $email_messagedebug] = $this->send_email($data, $email);
         $this->send_sms($data, $phone_number);
     }
 
@@ -149,18 +149,14 @@ class MeasurementPoint extends Model
         if (!empty($email)) {
             try {
                 $email_response = Mail::to($email)->send(new EmailAlert($data));
-                if ($email_response != null) {
-
-                    $email_messageid = $email_response->getSymfonySentMessage()->getMessageId();
-                    $email_messagedebug = $email_response->getSymfonySentMessage()->getDebug();
-
-                    error_log("alert email sent to User: {$data['client_name']} {$email}");
-                }
+                $email_messageid = $email_response->getSymfonySentMessage()->getMessageId();
+                $email_messagedebug = $email_response->getSymfonySentMessage()->getDebug();
             } catch (Exception $e) {
                 $error_log = $e->getMessage();
-                debug_log($e->getMessage());
+                $email_messagedebug($e->getMessage());
             }
         }
+        return [$email_messageid, $email_messagedebug];
     }
 
     private function send_sms($data, $phone_number)
