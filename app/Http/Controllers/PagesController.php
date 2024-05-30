@@ -82,14 +82,14 @@ class PagesController extends Controller
                 'dose_flag' => 0,
             ]);
         }
-        // self::update_measurement_point($measurement_point, $ndevice_params);
-        // $measurement_point->check_last_data_for_alert();
+        self::update_measurement_point($measurement_point, $ndevice_params);
+        $measurement_point->check_last_data_for_alert();
         render_message("ok");
     }
 
-    private static function update_measurement_point($noise_meter, $ndevice_params)
+    private static function update_measurement_point($measurement_point, $ndevice_params)
     {
-        $noise_meter->update($ndevice_params);
+        $measurement_point->update($ndevice_params);
     }
 
     private static function updateConcentrator($request, $s_values, $concentrator)
