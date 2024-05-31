@@ -2,29 +2,34 @@
 
 namespace App\Models;
 
-use Exception;
 use App\Mail\EmailAlert;
 use App\Services\TwilioService;
 use DateTime;
+use Exception;
+use function PHPUnit\Framework\isNull;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class MeasurementPoint extends Model
 {
     use HasFactory;
 
+    const SMS_TEMPLATE = 'sms.sms_leq_limit_exceeded';
+
     protected $table = 'measurement_points';
+
     protected $fillable = ['project_id', 'noise_meter_id', 'concentrator_id', 'noise_data_id', 'point_name', 'remarks', 'inst_leq', 'leq_temp', 'dose_flag', 'device_latling', 'device_location', 'noise_alert_at', 'leq_5_mins_last_alert_at', 'leq_1_hour_last_alert_at', 'leq_12_hours_last_alert_at', 'dose_70_last_alert_at', 'dose_100_last_alert_at', 'last_alert', 'created_at', 'updated_at'];
 
     private static $timeSlots = [
         '7am_7pm' => ['start' => '07:00', 'end' => '18:59'],
         '7pm_10pm' => ['start' => '19:00', 'end' => '06:59'],
         '10pm_12am' => ['start' => '19:00', 'end' => '06:59'],
-        '12am_7am' => ['start' => '19:00', 'end' => '06:59']
+        '12am_7am' => ['start' => '19:00', 'end' => '06:59'],
     ];
 
     public function project(): BelongsTo
@@ -60,7 +65,6 @@ class MeasurementPoint extends Model
         return $this->project->isRunning();
     }
 
-
     public function dose_flag_reset()
     {
         $last_leq = $this->noiseData()->latest()->first();
@@ -76,7 +80,7 @@ class MeasurementPoint extends Model
         }
         return false;
     }
-    function dose_reset_hours($time)
+    public function dose_reset_hours($time)
     {
         if ($this->is_leq12($time)) {
             return [7, 19];
@@ -85,7 +89,7 @@ class MeasurementPoint extends Model
         }
     }
 
-    function is_leq12($time)
+    public function is_leq12($time)
     {
         return $time->format('H') < 12;
     }
@@ -133,13 +137,23 @@ class MeasurementPoint extends Model
             $data["leq_type"] = "1hour";
             $this->send_alert($data);
         }
-
     }
     private function send_alert($data)
     {
         [$phone_number, $email] = $this->project->get_contact_details();
         [$email_messageid, $email_messagedebug] = $this->send_email($data, $email);
-        $this->send_sms($data, $phone_number);
+        [$sms_messageid, $sms_status] = $this->send_sms($data, $phone_number);
+        DB::table('alert_logs')->insert([
+            'event_timestamp' => $data["exceeded_time"],
+            'email_messageId' => $email_messageid,
+            'email_debug' => $email_messagedebug,
+
+            'sms_messageId' => $sms_messageid,
+            'sms_status' => $sms_status,
+
+            'created_at' => date("Y-m-d H:i:s"),
+        ]);
+
     }
 
     private function send_email($data, $email)
@@ -152,7 +166,7 @@ class MeasurementPoint extends Model
                 $email_messageid = $email_response->getSymfonySentMessage()->getMessageId();
                 $email_messagedebug = $email_response->getSymfonySentMessage()->getDebug();
             } catch (Exception $e) {
-                $error_log = $e->getMessage();
+                debug_log('error sending email', [$e->getMessage()]);
                 $email_messagedebug($e->getMessage());
             }
         }
@@ -161,12 +175,26 @@ class MeasurementPoint extends Model
 
     private function send_sms($data, $phone_number)
     {
-        $phone_number = $this->project->contact->phone_number;
-        debug_log("sms send", [$this->project->contact->phone_number]);
-        // $twilio_service = new TwilioService();
-        // $sms_response = $twilio_service->sendMessage($this->project()->contact()->phone_number, $message);
-    }
+        $sms_messageid = '';
+        $sms_status = 'SMS not sent';
+        if (!empty($phone_number)) {
+            $phone_number = "+65" . $phone_number;
+            try {
+                $twilio_service = new TwilioService();
+                $sms_response = $twilio_service->sendMessage($phone_number, self::SMS_TEMPLATE, $data);
+                if (isNull($sms_response->sid)) {
+                    $sms_messageid = $sms_response->sid;
+                    $sms_status = "SMS sending";
+                }
 
+            } catch (Exception $e) {
+                debug_log("Message not sent", [$e->getMessage()]);
+            }
+        } else {
+            debug_log("No phone number found");
+        }
+        return [$sms_messageid, $sms_status];
+    }
 
     private function leq_5_mins_exceed_and_alert($last_noise_data = null)
     {

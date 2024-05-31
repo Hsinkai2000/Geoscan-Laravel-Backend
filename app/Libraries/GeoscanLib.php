@@ -2,8 +2,8 @@
 
 namespace Libraries;
 
-use App\Models\NoiseMeter;
 use App\Models\Concentrator;
+use App\Models\NoiseMeter;
 
 define('MESSAGE_TYPES', array(0x00, 0x01, 0x02, 0x03, 0x04));
 
@@ -49,7 +49,6 @@ class GeoscanLib
     {
         $unpacked_device_id = unpack('VConcentratorFrontValue/VConcentratorBackValue', $this->device_id);
         $concentrator_id = strtoupper(dechex($unpacked_device_id['ConcentratorFrontValue'])) . strtoupper(dechex($unpacked_device_id['ConcentratorBackValue']));
-        debug_log("concentrator_id", [$concentrator_id]);
         return $concentrator_id;
     }
 
@@ -100,7 +99,6 @@ class GeoscanLib
                 return null;
         }
 
-
     }
 
     public function noise_meter()
@@ -113,7 +111,6 @@ class GeoscanLib
     {
         return unpack('fNoiseData', $this->data);
     }
-
 
     public function summary_values()
     {

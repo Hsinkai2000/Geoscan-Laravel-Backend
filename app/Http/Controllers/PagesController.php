@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\NoiseData;
 use DateTime;
 use DateTimeZone;
-use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Libraries\GeoscanLib;
-
 
 class PagesController extends Controller
 {
@@ -49,7 +47,7 @@ class PagesController extends Controller
     {
         $concentrator = $geoscanLib->concentrator();
         if (!self::check_message_0_conditions($concentrator)) {
-            debug_log("failed");
+            debug_log("message_0_callback failed");
             return;
         }
         $s_values = $geoscanLib->summary_values();
@@ -62,7 +60,6 @@ class PagesController extends Controller
     {
         $noise_meter = $geoscanLib->noise_meter();
         $concentrator = $geoscanLib->concentrator();
-        debug_log("noise device: ", [$noise_meter]);
         if (!self::check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)) {
             debug_log("failed conditional check");
             return;
@@ -135,12 +132,11 @@ class PagesController extends Controller
         $noise_data = new NoiseData([
             'measurement_point_id' => $geoscanLib->noise_meter()->measurementPoint->id,
             'leq' => $noise_leq,
-            'received_at' => $time->format('Y-m-d H:i:s')
+            'received_at' => $time->format('Y-m-d H:i:s'),
         ]);
 
         return $noise_data;
     }
-
 
     private static function check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)
     {
@@ -151,7 +147,6 @@ class PagesController extends Controller
             self::concentrator_empty($concentrator)
         );
     }
-
 
     private static function noise_meter_empty($noise_meter, $geoscanLib)
     {
@@ -185,8 +180,6 @@ class PagesController extends Controller
         );
     }
 
-
-
     private static function concentrator_empty($concentrator)
     {
         if ($concentrator == null) {
@@ -210,7 +203,6 @@ class PagesController extends Controller
             self::check_crc32_valid($geoscanLib)
         );
     }
-
 
     private static function check_params_valid(GeoscanLib $geoscanLib)
     {

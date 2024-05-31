@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\TwilioService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TwilioController extends Controller
 {
@@ -21,14 +22,14 @@ class TwilioController extends Controller
             $TwilioSMSsid = $postData['SmsSid'];
             $TwilioSMSstatus = 'Twilio ' . $postData['SmsStatus'];
 
-            DB::table('lvl_1_alert_records')->where('sms_messageid', $TwilioSMSsid)->update([
+            DB::table('alert_logs')->where('sms_messageId', $TwilioSMSsid)->update([
                 'sms_status_updated' => date("Y-m-d H:i:s"),
                 'sms_status' => $TwilioSMSstatus,
             ]);
 
             return response('{"Success"}', 200);
-        } else
+        } else {
             return response('{"error":"Missing parameters in the request"}', 400);
-
+        }
     }
 }

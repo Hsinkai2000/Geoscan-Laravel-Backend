@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Twilio\Rest\Client;
+use View;
 
 class TwilioService
 {
@@ -15,15 +16,26 @@ class TwilioService
             config('services.twilio.token')
         );
     }
-
-    public function sendMessage($to, $message)
+    public function sendMessage($to, $template, $data)
     {
-        return $this->twilio->messages->create($to, [
-            'from' => config('services.twilio.from'),
-            'body' => $message,
-            'riskCheck' => 'disable',
-            'statusCallback' => config('services.twilio.callback_url'),
-        ]);
+        try {
+            $message = view($template, ['data' => $data])->render();
+
+            $response = $this->twilio->messages->create($to, [
+                'from' => config('services.twilio.from'),
+                'body' => $message,
+                'riskCheck' => 'disable',
+                // 'statusCallback' => config("TWILIO_CALL_BACK_URL"),
+            ]);
+
+            debug_log("SMS sent successfully to to: {$data["client_name"]}");
+
+            return $response;
+        } catch (\Exception $e) {
+            debug_log("Error sending SMS to $to: " . $e->getMessage());
+
+            return null;
+        }
     }
 
 }

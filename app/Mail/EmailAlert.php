@@ -2,14 +2,11 @@
 
 namespace App\Mail;
 
-use App\Models\MeasurementPoint;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Mail\Mailables\Address;
 
 class EmailAlert extends Mailable
 {
@@ -24,7 +21,6 @@ class EmailAlert extends Mailable
     {
         $this->data = $data;
     }
-
 
     /**
      * Get the message envelope.
@@ -41,7 +37,6 @@ class EmailAlert extends Mailable
      */
     public function content(): Content
     {
-        debug_log('data', [$this->data]);
         return new Content(
             view: 'emails.mail_leq_limit_exceeded',
         );

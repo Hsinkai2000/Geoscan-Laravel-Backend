@@ -10,7 +10,6 @@ class AlertLog extends Model
     use HasFactory;
 
     protected $fillable = [
-        'alert_rule',
         'event_timestamp',
         'email_messageId',
         'email_debug',
@@ -23,4 +22,9 @@ class AlertLog extends Model
         'event_timestamp' => 'datetime',
         'sms_status_updated' => 'datetime',
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
 }
