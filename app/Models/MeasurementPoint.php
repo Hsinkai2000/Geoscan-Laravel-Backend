@@ -283,8 +283,13 @@ class MeasurementPoint extends Model
     private function get_hour_to_now_leq()
     {
         $last_noise_data_base_hour = $this->getLastLeqData()->received_at;
+
         $last_noise_data_base_hour->setTime($last_noise_data_base_hour->format("H"), 0, 0);
-        $hour_to_now_leqs = $this->noiseData()->where('received_at', '>=', $last_noise_data_base_hour)->get()->reverse();
+
+        $last_noise_data_base_end_hour = clone $last_noise_data_base_hour;
+        $last_noise_data_base_end_hour->modify('+1 hour');
+
+        $hour_to_now_leqs = $this->noiseData()->whereBetween('received_at', [$last_noise_data_base_hour, $last_noise_data_base_end_hour])->get()->reverse();
         return $hour_to_now_leqs;
     }
 
