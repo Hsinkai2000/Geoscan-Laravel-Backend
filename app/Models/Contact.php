@@ -22,7 +22,19 @@ class Contact extends Model
         'alert_status',
         'days_of_alert',
         'alert_start_hour',
-        'alert_end_hour'
+        'alert_end_hour',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $casts = [
+        'id' => 'integer',
+        'project_id' => 'integer',
+        'alert_status' => 'integer',
+        'alert_start_hour' => 'integer',
+        'alert_end_hour' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function project(): BelongsTo

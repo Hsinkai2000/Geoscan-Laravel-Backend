@@ -2,20 +2,31 @@
 
 namespace App\Models;
 
-use DateTime;
-use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-
 class NoiseMeter extends Model
 {
     use HasFactory;
     protected $table = 'noise_meters';
-    protected $fillable = ['serial_number', 'brand', 'last_calibration_date', 'remarks', 'created_at', 'updated_at'];
 
+    protected $fillable = [
+        'serial_number',
+        'brand',
+        'last_calibration_date',
+        'remarks',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $casts = [
+        'id' => 'integer',
+        'last_calibration_date' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function measurementPoint(): BelongsTo
     {
