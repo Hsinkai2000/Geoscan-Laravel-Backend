@@ -156,21 +156,21 @@ class MeasurementPoint extends Model
         ];
 
         if ($leq_5mins_should_alert) {
-            // $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
-            // $this->save();
+            $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
+            $this->save();
             $data["leq_type"] = "5min";
-            // $this->send_alert($data);
+            $this->send_alert($data);
         }
         if ($leq_12_should_alert) {
-            // $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
-            // $this->save();
+            $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
+            $this->save();
             $data["leq_type"] = "12hours";
-            // $this->send_alert($data);
+            $this->send_alert($data);
         } else if ($leq_1_should_alert) {
-            // $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
-            // $this->save();
+            $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
+            $this->save();
             $data["leq_type"] = "1hour";
-            // $this->send_alert($data);
+            $this->send_alert($data);
         }
     }
     private function send_alert($data)
