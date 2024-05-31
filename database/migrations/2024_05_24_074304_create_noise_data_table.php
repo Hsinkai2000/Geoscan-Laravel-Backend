@@ -10,15 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::dropIfExists('noise_data');
-        Schema::create('noise_data', function (Blueprint $table) {
-            $table->id();
-            $table->integer('measurement_point_id')->nullable();
-            $table->float('leq')->nullable();
-            $table->dateTime('received_at')->nullable();
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
-        });
+        if (!Schema::hasTable('noise_data')) {
+            Schema::create('noise_data', function (Blueprint $table) {
+                $table->id();
+                $table->integer('measurement_point_id')->nullable();
+                $table->float('leq')->nullable();
+                $table->dateTime('received_at')->nullable();
+                $table->dateTime('created_at');
+                $table->dateTime('updated_at');
+            });
+        }
     }
 
     /**

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ConcentratorSeeder::class,
             MeasurementPointSeeder::class,
             SoundLimitSeeder::class,
+            ContactSeeder::class,
         ]);
     }
 }

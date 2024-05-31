@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DateTime;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SoundLimit extends Model
@@ -40,9 +40,31 @@ class SoundLimit extends Model
         'sun_ph_12am_7am_leq12hr',
         // 'sun_ph_10pm_7am_leq12hr',
 
-
         'created_at',
         'updated_at',
+    ];
+
+    protected $casts = [
+        'id' => 'integer',
+        'measurement_point_id' => 'integer',
+        'mon_sat_7am_7pm_leq5min' => 'float',
+        'mon_sat_7pm_10pm_leq5min' => 'float',
+        'mon_sat_10pm_12am_leq5min' => 'float',
+        'mon_sat_12am_7am_leq5min' => 'float',
+        'sun_ph_7am_7pm_leq5min' => 'float',
+        'sun_ph_7pm_10pm_leq5min' => 'float',
+        'sun_ph_10pm_12am_leq5min' => 'float',
+        'sun_ph_12am_7am_leq5min' => 'float',
+        'mon_sat_7am_7pm_leq12hr' => 'float',
+        'mon_sat_7pm_10pm_leq12hr' => 'float',
+        'mon_sat_10pm_12am_leq12hr' => 'float',
+        'mon_sat_12am_7am_leq12hr' => 'float',
+        'sun_ph_7am_7pm_leq12hr' => 'float',
+        'sun_ph_7pm_10pm_leq12hr' => 'float',
+        'sun_ph_10pm_12am_leq12hr' => 'float',
+        'sun_ph_12am_7am_leq12hr' => 'float',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function measurementPoint(): BelongsTo
@@ -54,7 +76,7 @@ class SoundLimit extends Model
     {
         return [
             "mon_sat" => [$this->mon_sat_7am_7pm_leq5min, $this->mon_sat_7pm_10pm_leq5min, $this->mon_sat_10pm_12am_leq5min, $this->mon_sat_12am_7am_leq5min],
-            "sun_ph" => [$this->sun_ph_7am_7pm_leq5min, $this->sun_ph_7pm_10pm_leq5min, $this->sun_ph_10pm_12am_leq5min, $this->sun_ph_12am_7am_leq5min]
+            "sun_ph" => [$this->sun_ph_7am_7pm_leq5min, $this->sun_ph_7pm_10pm_leq5min, $this->sun_ph_10pm_12am_leq5min, $this->sun_ph_12am_7am_leq5min],
         ];
     }
 
@@ -62,7 +84,7 @@ class SoundLimit extends Model
     {
         return [
             "mon_sat" => [$this->mon_sat_7am_7pm_leq12hr, $this->mon_sat_7pm_10pm_leq12hr, $this->mon_sat_10pm_12am_leq12hr, $this->mon_sat_12am_7am_leq12hr],
-            "sun_ph" => [$this->sun_ph_7am_7pm_leq12hr, $this->sun_ph_7pm_10pm_leq12hr, $this->sun_ph_10pm_12am_leq12hr, $this->sun_ph_12am_7am_leq12hr]
+            "sun_ph" => [$this->sun_ph_7am_7pm_leq12hr, $this->sun_ph_7pm_10pm_leq12hr, $this->sun_ph_10pm_12am_leq12hr, $this->sun_ph_12am_7am_leq12hr],
         ];
 
     }
@@ -83,9 +105,8 @@ class SoundLimit extends Model
         return [$day, $time_range];
     }
 
-    public function getTimeRange($last_data_datetime_string)
+    public function getTimeRange($last_data_datetime)
     {
-        $last_data_datetime = new DateTime($last_data_datetime_string);
         [$day, $time_range] = $this->time_to_keys($last_data_datetime);
         return [$day, $time_range];
     }
@@ -120,9 +141,8 @@ class SoundLimit extends Model
         return $limit;
     }
 
-    private function check_transition_days($last_data_datetime_string)
+    private function check_transition_days($last_data_datetime)
     {
-        $last_data_datetime = new DateTime($last_data_datetime_string);
         $day_of_week = $last_data_datetime->format('w');
         if ($day_of_week == 0 || $day_of_week == 1) {
             return $day_of_week;
@@ -139,14 +159,13 @@ class SoundLimit extends Model
         return $date;
     }
 
-    public function check_12_1_hour_limit_type($last_data_datetime_string)
+    public function check_12_1_hour_limit_type($last_data_datetime)
     {
-        $day_of_week = $this->check_transition_days($last_data_datetime_string);
-        $last_data_datetime = new DateTime($last_data_datetime_string);
+        $day_of_week = $this->check_transition_days($last_data_datetime);
         [$day, $time_range] = $this->time_to_keys($last_data_datetime);
         $time_map = self::$time_mapper[$time_range];
 
-        if ($day_of_week != null && $time_map == 3) {#morning on sun and mon: take prev night limit
+        if ($day_of_week != null && $time_map == 3) { #morning on sun and mon: take prev night limit
             $last_data_datetime = $this->set_to_previous_night_1159pm($last_data_datetime);
             [$day, $time_range] = $this->time_to_keys($last_data_datetime);
             $time_map = self::$time_mapper[$time_range];

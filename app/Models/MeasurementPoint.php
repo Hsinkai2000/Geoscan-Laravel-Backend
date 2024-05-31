@@ -2,25 +2,73 @@
 
 namespace App\Models;
 
+use App\Mail\EmailAlert;
+use App\Services\TwilioService;
 use DateTime;
+use Exception;
+use function PHPUnit\Framework\isNull;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class MeasurementPoint extends Model
 {
     use HasFactory;
 
+    const SMS_TEMPLATE = 'sms.sms_leq_limit_exceeded';
+
     protected $table = 'measurement_points';
-    protected $fillable = ['project_id', 'noise_meter_id', 'concentrator_id', 'noise_data_id', 'point_name', 'remarks', 'inst_leq', 'leq_temp', 'dose_flag', 'device_latling', 'device_location', 'noise_alert_at', 'leq_5_mins_last_alert_at', 'leq_1_hour_last_alert_at', 'leq_12_hours_last_alert_at', 'dose_70_last_alert_at', 'dose_100_last_alert_at', 'last_alert', 'created_at', 'updated_at'];
+
+    protected $fillable = [
+        'project_id',
+        'noise_meter_id',
+        'concentrator_id',
+        'point_name',
+        'remarks',
+        'inst_leq',
+        'leq_temp',
+        'dose_flag',
+        'device_latling',
+        'device_location',
+        'noise_alert_at',
+        'leq_5_mins_last_alert_at',
+        'leq_1_hour_last_alert_at',
+        'leq_12_hours_last_alert_at',
+        'dose_70_last_alert_at',
+        'dose_100_last_alert_at',
+        'last_alert',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $casts = [
+        'id' => 'integer',
+        'project_id' => 'integer',
+        'noise_meter_id' => 'integer',
+        'concentrator_id' => 'integer',
+        'inst_leq' => 'float',
+        'leq_temp' => 'integer',
+        'dose_flag' => 'decimal:11',
+        'noise_alert_at' => 'datetime',
+        'leq_5_mins_last_alert_at' => 'datetime',
+        'leq_1_hour_last_alert_at' => 'datetime',
+        'leq_12_hours_last_alert_at' => 'datetime',
+        'dose_70_last_alert_at' => 'datetime',
+        'dose_100_last_alert_at' => 'datetime',
+        'last_alert' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     private static $timeSlots = [
         '7am_7pm' => ['start' => '07:00', 'end' => '18:59'],
         '7pm_10pm' => ['start' => '19:00', 'end' => '06:59'],
         '10pm_12am' => ['start' => '19:00', 'end' => '06:59'],
-        '12am_7am' => ['start' => '19:00', 'end' => '06:59']
+        '12am_7am' => ['start' => '19:00', 'end' => '06:59'],
     ];
 
     public function project(): BelongsTo
@@ -30,11 +78,11 @@ class MeasurementPoint extends Model
 
     public function concentrator(): HasOne
     {
-        return $this->hasOne(Concentrator::class, 'concentrator_id', 'id');
+        return $this->hasOne(Concentrator::class, 'id', 'concentrator_id');
     }
     public function noiseMeter(): HasOne
     {
-        return $this->hasOne(NoiseMeter::class, 'noise_meter_id', 'id');
+        return $this->hasOne(NoiseMeter::class, 'id', 'noise_meter_id');
     }
 
     public function noiseData(): HasMany
@@ -55,33 +103,28 @@ class MeasurementPoint extends Model
     {
         return $this->project->isRunning();
     }
-
-
     public function dose_flag_reset()
     {
-        $last_leq = $this->noiseData()->latest()->first();
-        $received_at = new DateTime($last_leq->received_at);
+        $lastLeq = $this->getLastLeqData();
 
-        $hour = $received_at->format('H');
-        $min = $received_at->format('i');
+        if ($lastLeq) {
+            $last_date_time = $lastLeq->received_at;
+            $resetHours = $this->doseResetHours($last_date_time);
+            $hour = $last_date_time->format('H');
+            $minute = $last_date_time->format('i');
 
-        $reset_hours = $this->dose_reset_hours($received_at);
-
-        if (in_array($hour, $reset_hours) && ($min < 6)) {
-            return true;
+            return in_array($hour, $resetHours) && ($minute < 6);
         }
+
         return false;
     }
-    function dose_reset_hours($time)
+
+    public function doseResetHours($time)
     {
-        if ($this->is_leq12($time)) {
-            return [7, 19];
-        } else {
-            return array_merge(range(0, 6), range(19, 23));
-        }
+        return $this->isLeq12($time) ? [7, 19] : array_merge(range(0, 6), range(19, 23));
     }
 
-    function is_leq12($time)
+    public function isLeq12($time)
     {
         return $time->format('H') < 12;
     }
@@ -90,7 +133,7 @@ class MeasurementPoint extends Model
     {
         $leq_12_should_alert = false;
         $leq_1_should_alert = false;
-        $last_noise_data = $this->noiseData()->latest()->first();
+        $last_noise_data = $this->getLastLeqData();
 
         [$leq_5mins_should_alert, $limit] = $this->leq_5_mins_exceed_and_alert($last_noise_data);
 
@@ -102,27 +145,91 @@ class MeasurementPoint extends Model
             [$leq_1_should_alert, $limit] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
         }
 
+        $data = [
+            "client_name" => $this->project->contact->contact_person_name,
+            "jobsite_location" => $this->project->jobsite_location,
+            "serial_number" => $this->noiseMeter->serial_number,
+            "leq_value" => $last_noise_data->leq,
+            "exceeded_limit" => $limit,
+            "leq_type" => null,
+            "exceeded_time" => $last_noise_data->received_at,
+        ];
+
         if ($leq_5mins_should_alert) {
             $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
             $this->save();
-            $this->send_alert(5);
+            $data["leq_type"] = "5min";
+            $this->send_alert($data);
         }
         if ($leq_12_should_alert) {
             $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
             $this->save();
-            $this->send_alert(12);
+            $data["leq_type"] = "12hours";
+            $this->send_alert($data);
         } else if ($leq_1_should_alert) {
             $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
             $this->save();
-            $this->send_alert(1);
+            $data["leq_type"] = "1hour";
+            $this->send_alert($data);
         }
-
     }
-    private function send_alert($alert_value)
+    private function send_alert($data)
     {
-        debug_log("ALERT SENT");
+        [$phone_number, $email] = $this->project->get_contact_details();
+
+        [$email_messageid, $email_messagedebug] = $this->send_email($data, $email);
+        [$sms_messageid, $sms_status] = $this->send_sms($data, $phone_number);
+
+        DB::table('alert_logs')->insert([
+            'event_timestamp' => $data["exceeded_time"],
+            'email_messageId' => $email_messageid,
+            'email_debug' => $email_messagedebug,
+            'sms_messageId' => $sms_messageid,
+            'sms_status' => $sms_status,
+            'created_at' => now(),
+        ]);
+
     }
 
+    private function send_email($data, $email)
+    {
+        $email = $this->project->contact->email;
+
+        if (!empty($email)) {
+            try {
+                $email_response = Mail::to($email)->send(new EmailAlert($data));
+                $email_messageid = $email_response->getSymfonySentMessage()->getMessageId();
+                $email_messagedebug = $email_response->getSymfonySentMessage()->getDebug();
+            } catch (Exception $e) {
+                debug_log('error sending email', [$e->getMessage()]);
+                $email_messagedebug($e->getMessage());
+            }
+        }
+        return [$email_messageid, $email_messagedebug];
+    }
+
+    private function send_sms($data, $phone_number)
+    {
+        $sms_messageid = '';
+        $sms_status = 'SMS not sent';
+        if (!empty($phone_number)) {
+            $phone_number = "+65" . $phone_number;
+            try {
+                $twilio_service = new TwilioService();
+                $sms_response = $twilio_service->sendMessage($phone_number, self::SMS_TEMPLATE, $data);
+                if (isNull($sms_response->sid)) {
+                    $sms_messageid = $sms_response->sid;
+                    $sms_status = "SMS sending";
+                }
+
+            } catch (Exception $e) {
+                debug_log("Message not sent", [$e->getMessage()]);
+            }
+        } else {
+            debug_log("No phone number found");
+        }
+        return [$sms_messageid, $sms_status];
+    }
 
     private function leq_5_mins_exceed_and_alert($last_noise_data = null)
     {
@@ -152,7 +259,7 @@ class MeasurementPoint extends Model
 
     private function get_current_date($param = null)
     {
-        $last_noise_data_datetime = new DateTime($this->noiseData()->latest()->first()->received_at);
+        $last_noise_data_datetime = $this->getLastLeqData()->received_at;
         return $param == null ? $last_noise_data_datetime->format('Y-m-d') : $last_noise_data_datetime->modify($param)->format('Y-m-d');
     }
 
@@ -175,16 +282,20 @@ class MeasurementPoint extends Model
 
     private function get_hour_to_now_leq()
     {
-        $noise_data = $this->noiseData();
-        $last_noise_data_base_hour = new Datetime($noise_data->latest()->first()->received_at);
+        $last_noise_data_base_hour = $this->getLastLeqData()->received_at;
+
         $last_noise_data_base_hour->setTime($last_noise_data_base_hour->format("H"), 0, 0);
-        $hour_to_now_leqs = $this->noiseData()->where('received_at', '>=', $last_noise_data_base_hour)->get()->reverse();
+
+        $last_noise_data_base_end_hour = clone $last_noise_data_base_hour;
+        $last_noise_data_base_end_hour->modify('+1 hour');
+
+        $hour_to_now_leqs = $this->noiseData()->whereBetween('received_at', [$last_noise_data_base_hour, $last_noise_data_base_end_hour])->get()->reverse();
         return $hour_to_now_leqs;
     }
 
     private function get_timesslot_start_end_datetime()
     {
-        $noise_data_curr_time_string = $this->noiseData()->latest()->first()->received_at;
+        $noise_data_curr_time_string = $this->getLastLeqData()->received_at;
         [$day, $time_range] = $this->soundLimit->getTimeRange($noise_data_curr_time_string);
 
         $last_noise_data_date = $this->get_current_date();
@@ -209,40 +320,44 @@ class MeasurementPoint extends Model
         return round(10 * log10($avg_leq), 1);
     }
 
-    private function calc_12_hour_leq()
+    private function calc_leq($data)
     {
         $sum = 0.0;
-        $timeslot_to_now_leqs = $this->get_timeslot_to_now_leq();
-        for ($data_index = 0; $data_index < count($timeslot_to_now_leqs); $data_index++) {
-            $current_leq = $timeslot_to_now_leqs[$data_index]->leq;
-            $sum += round($this->linearise_leq($current_leq), 1);
+        foreach ($data as $leqData) {
+            $currentLeq = $leqData->leq;
+            $sum += round($this->linearise_leq($currentLeq), 1);
         }
-        $avg_leq = $sum / count($timeslot_to_now_leqs);
-        $twelve_hr_leq = $this->convert_to_db($avg_leq);
-        return $twelve_hr_leq;
+
+        $avgLeq = $sum / count($data);
+        $calculatedLeq = $this->convert_to_db($avgLeq);
+
+        return $calculatedLeq;
+    }
+
+    private function calc_12_hour_leq()
+    {
+        $timeslot_to_now_leqs = $this->get_timeslot_to_now_leq();
+        return $this->calc_leq($timeslot_to_now_leqs);
     }
 
     private function calc_1_hour_leq()
     {
-        $sum = 0.0;
         $hour_to_now_leqs = $this->get_hour_to_now_leq();
-        for ($data_index = 0; $data_index < count($hour_to_now_leqs); $data_index++) {
-            $current_leq = $hour_to_now_leqs[$data_index]->leq;
-            $sum += round($this->linearise_leq($current_leq), 1);
-        }
-        $avg_leq = $sum / count($hour_to_now_leqs);
-        $one_hr_leq = $this->convert_to_db($avg_leq);
-        return $one_hr_leq;
+        return $this->calc_leq($hour_to_now_leqs);
     }
 
-    private function leq_last_alert_allowed($leq_freq_last_alert_at, $last_received_datetime_string)
+    private function leq_last_alert_allowed($leq_freq_last_alert_at, $last_received_datetime)
     {
-        $last_received_datetime = new DateTime($last_received_datetime_string);
-        $leq_mins_last_alert_at = new DateTime($leq_freq_last_alert_at);
 
-        if (!is_null($leq_freq_last_alert_at) && ($last_received_datetime->getTimestamp() - $leq_mins_last_alert_at->getTimestamp()) <= 3 * 3600) {
+        if (!is_null($leq_freq_last_alert_at) && ($last_received_datetime->getTimestamp() - $leq_freq_last_alert_at->getTimestamp()) <= 3 * 3600) {
             return false;
         }
         return true;
     }
+
+    public function getLastLeqData()
+    {
+        return $this->noiseData()->latest()->first();
+    }
+
 }

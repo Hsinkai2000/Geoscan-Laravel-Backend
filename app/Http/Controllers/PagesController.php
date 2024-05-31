@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Concentrator;
 use App\Models\NoiseData;
 use DateTime;
 use DateTimeZone;
-use Illuminate\Http\Response;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Libraries\GeoscanLib;
-
 
 class PagesController extends Controller
 {
@@ -16,144 +17,174 @@ class PagesController extends Controller
     public function input(Request $request)
     {
         $geoscanLib = new GeoscanLib($request->all());
-        if (!self::initial_conditions_valid($geoscanLib)) {
-            debug_log('inside initial condition', []);
+        if (!$this->initial_conditions_valid($geoscanLib)) {
             return;
         }
-        debug_log('Message type: ', [$geoscanLib->message_type()]);
         switch ($geoscanLib->message_type()) {
             case 0x00:
                 debug_log('inside message 0', []);
-                self::message_0_callback($request, $geoscanLib);
+                $this->message_0_callback($request, $geoscanLib);
                 break;
             case 0x01:
                 debug_log('inside message 1', []);
-                self::message_1_callback($request, $geoscanLib);
+                $this->message_1_callback($request, $geoscanLib);
                 break;
-            // case 0x02:
-            //     self::message_2_callback($geoscanLib);
-            //     break;
-            // case 0x03:
-            //     self::message_3_callback($geoscanLib);
-            //     break;
-            // case 0x04:
-            //     self::message_4_callback($geoscanLib);
-            //     break;
             default:
                 debug_log('inside message default', []);
                 break;
         }
     }
 
-    private static function message_0_callback($request, GeoscanLib $geoscanLib)
+    private function message_0_callback($request, GeoscanLib $geoscanLib)
     {
-        $concentrator = $geoscanLib->concentrator();
-        if (!self::check_message_0_conditions($concentrator)) {
-            debug_log("failed");
-            return;
-        }
-        $s_values = $geoscanLib->summary_values();
-        self::updateConcentrator($request, $s_values, $concentrator);
+        try {
+            $concentrator = $geoscanLib->concentrator();
+            if (!$this->check_message_0_conditions($concentrator)) {
+                debug_log("message_0_callback failed");
+                return;
+            }
+            $s_values = $geoscanLib->summary_values();
+            $this->updateConcentrator($request, $s_values, $concentrator);
 
-        render_message("ok");
+            render_message("ok");
+        } catch (Exception $e) {
+            Log::error('Error in message0Callback', ['exception' => $e]);
+        }
     }
 
-    private static function message_1_callback($request, GeoscanLib $geoscanLib)
+    private function message_1_callback($request, GeoscanLib $geoscanLib)
     {
-        $noise_meter = $geoscanLib->noise_meter();
-        $concentrator = $geoscanLib->concentrator();
-        debug_log("noise device: ", [$noise_meter]);
-        if (!self::check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)) {
-            debug_log("failed conditional check");
-            return;
-        }
-        $measurement_point = $noise_meter->measurementPoint;
-        $s_values = $geoscanLib->summary_values();
-        $noise_data = self::noise_data_params($geoscanLib, $s_values);
-        $measurement_point->noiseData()->save($noise_data);
-        self::updateConcentrator($request, $s_values, $concentrator);
+        try {
+            $noise_meter = $geoscanLib->noise_meter();
+            $concentrator = $geoscanLib->concentrator();
+            if (!$this->check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)) {
+                debug_log("failed conditional check");
+                return;
+            }
+            $measurement_point = $noise_meter->measurementPoint;
+            $s_values = $geoscanLib->summary_values();
+            $noise_data = $this->noise_data_params($geoscanLib, $s_values);
+            $existing_noise_data = NoiseData::where('received_at', $noise_data->received_at)->where('measurement_point_id', $measurement_point->id)->first();
+            if (is_null($existing_noise_data)) {
+                $measurement_point->noiseData()->save($noise_data);
+                $this->updateConcentrator($request, $s_values, $concentrator);
 
-        $ndevice_params = [
-            'inst_leq' => $noise_data->leq,
-        ];
-        if ($measurement_point->dose_flag_reset()) {
-            $ndevice_params = array_merge($ndevice_params, [
-                'leq_temp' => $noise_data->leq,
+                $ndevice_params = $this->prepareNdeviceParams($noise_data, $measurement_point);
+                $this->update_measurement_point($measurement_point, $ndevice_params);
+            } else {
+                $existing_noise_data->update($noise_data->toArray());
+            }
+            $measurement_point->check_last_data_for_alert();
+
+            render_message("ok");
+        } catch (Exception $e) {
+            Log::error('Error in message1Callback', ['exception' => $e]);
+        }
+    }
+
+    private function prepareNdeviceParams($noiseData, $measurementPoint)
+    {
+        $ndeviceParams = ['inst_leq' => $noiseData->leq];
+
+        if ($measurementPoint->dose_flag_reset()) {
+            $ndeviceParams = array_merge($ndeviceParams, [
+                'leq_temp' => $noiseData->leq,
                 'dose_flag' => 0,
             ]);
         }
-        self::update_measurement_point($measurement_point, $ndevice_params);
-        $measurement_point->check_last_data_for_alert();
-        render_message("ok");
+
+        return $ndeviceParams;
     }
 
-    private static function update_measurement_point($measurement_point, $ndevice_params)
+    private function update_measurement_point($measurement_point, $ndevice_params)
     {
-        $measurement_point->update($ndevice_params);
-    }
-
-    private static function updateConcentrator($request, $s_values, $concentrator)
-    {
-        $updatedValues = [
-            'last_assigned_ip_address' => $request->ip(),
-            'last_communication_packet_sent' => self::getCurrentTime(),
-            'battery_voltage' => self::getBatteryVoltage($s_values),
-            'concentrator_hp' => $s_values['ConcentratorHp'],
-            'concentrator_csq' => $s_values['CsqParam'],
-        ];
-        $concentrator->update($updatedValues);
-    }
-
-    private static function getBatteryVoltage($s_values)
-    {
-        if (!empty($s_values['AdcBattVolt'])) {
-            return $s_values['AdcBattVolt'] / 100.00;
+        try {
+            $measurement_point->update($ndevice_params);
+        } catch (Exception $e) {
+            Log::error('Failed to update measurement point', [
+                'measurement point id' => $measurement_point->id,
+                'error' => $e->getMessage(),
+            ]);
         }
-        return null;
     }
 
-    private static function getCurrentTime()
+    private function updateConcentrator(Request $request, array $s_values, Concentrator $concentrator)
+    {
+        try {
+            $updatedValues = $this->prepareUpdatedValues($request, $s_values);
+            $concentrator->update($updatedValues);
+            Log::info('Concentrator updated successfully', ['concentrator_id' => $concentrator->id]);
+        } catch (\Exception $e) {
+            Log::error('Failed to update concentrator', [
+                'concentrator_id' => $concentrator->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function prepareUpdatedValues(Request $request, array $s_values)
+    {
+        return [
+            'last_assigned_ip_address' => $request->ip(),
+            'last_communication_packet_sent' => $this->getCurrentTime(),
+            'battery_voltage' => $this->getBatteryVoltage($s_values),
+            'concentrator_hp' => $s_values['ConcentratorHp'] ?? null,
+            'concentrator_csq' => $s_values['CsqParam'] ?? null,
+        ];
+    }
+
+    private function getBatteryVoltage($s_values)
+    {
+        return isset($s_values['AdcBattVolt']) ? $s_values['AdcBattVolt'] / 100.00 : null;
+    }
+
+    private function getCurrentTime()
     {
         $currentTime = new DateTime('now', new DateTimeZone('UTC'));
         $currentTime->modify('+8 hours');
         return $currentTime->format('Y-m-d H:i:s');
     }
 
-    private static function noise_data_params($geoscanLib, $s_values)
+    private function noise_data_params($geoscanLib, $s_values)
     {
-        $noise_data_value = $geoscanLib->noise_data_value();
-        $noise_leq = empty($noise_data_value) ? -1 : round($noise_data_value['NoiseData'], 2);
+        try {
+            $noise_data_value = $geoscanLib->noise_data_value();
+            $noise_leq = empty($noise_data_value) ? -1 : round($noise_data_value['NoiseData'], 2);
 
-        // Compute round_time with proper ceiling behavior
-        $round_time = ceil($s_values['Timestamp'] / 300);
+            $round_time = ceil($s_values['Timestamp'] / 300);
 
-        // Convert round_time to seconds and create DateTime object
-        $seconds = 300 * $round_time;
-        $time = (new DateTime())->setTimestamp($seconds);
+            $seconds = 300 * $round_time;
+            $time = (new DateTime())->setTimestamp($seconds);
 
-        // Create a new NoiseData object
-        $noise_data = new NoiseData([
-            'measurement_point_id' => $geoscanLib->noise_meter()->measurementPoint->id,
-            'leq' => $noise_leq,
-            'received_at' => $time->format('Y-m-d H:i:s')
-        ]);
+            $noise_data = new NoiseData([
+                'measurement_point_id' => $geoscanLib->noise_meter()->measurementPoint->id,
+                'leq' => $noise_leq,
+                'received_at' => $time->format('Y-m-d H:i:s'),
+            ]);
 
-        return $noise_data;
+            return $noise_data;
+        } catch (\Exception $e) {
+            Log::error('Error creating noise data parameters', [
+                'error' => $e->getMessage(),
+                's_values' => $s_values,
+                'geoscanLib' => $geoscanLib,
+            ]);
+            throw $e;
+        }
+
     }
 
-
-    private static function check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)
+    private function check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)
     {
         return !(
-            self::noise_meter_empty($noise_meter, $geoscanLib) ||
-            self::noise_meter_project_empty($noise_meter) ||
-            self::noise_meter_project_not_running($noise_meter) ||
-            self::concentrator_empty($concentrator)
+            $this->noise_meter_empty($noise_meter, $geoscanLib) ||
+            $this->noise_meter_project_empty($noise_meter) ||
+            $this->noise_meter_project_not_running($noise_meter) ||
+            $this->concentrator_empty($concentrator)
         );
     }
 
-
-    private static function noise_meter_empty($noise_meter, $geoscanLib)
+    private function noise_meter_empty($noise_meter, $geoscanLib)
     {
         if ($noise_meter == null) {
             render_error('noise device is not available ' . $geoscanLib->noise_serial_number());
@@ -161,7 +192,7 @@ class PagesController extends Controller
         }
     }
 
-    private static function noise_meter_project_empty($noise_meter)
+    private function noise_meter_project_empty($noise_meter)
     {
         if (!$noise_meter->hasProject()) {
             render_error('Noise device is not in a project');
@@ -169,7 +200,7 @@ class PagesController extends Controller
         }
     }
 
-    private static function noise_meter_project_not_running($noise_meter)
+    private function noise_meter_project_not_running($noise_meter)
     {
         if (!$noise_meter->has_running_project()) {
             render_error('Project is not currently running');
@@ -177,17 +208,15 @@ class PagesController extends Controller
         }
     }
 
-    private static function check_message_0_conditions($concentrator)
+    private function check_message_0_conditions($concentrator)
     {
         return !(
-            self::concentrator_empty($concentrator) ||
-            self::concentrator_not_running($concentrator)
+            $this->concentrator_empty($concentrator) ||
+            $this->concentrator_not_running($concentrator)
         );
     }
 
-
-
-    private static function concentrator_empty($concentrator)
+    private function concentrator_empty($concentrator)
     {
         if ($concentrator == null) {
             render_error('Concentrator is not available');
@@ -195,7 +224,7 @@ class PagesController extends Controller
         }
     }
 
-    private static function concentrator_not_running($concentrator)
+    private function concentrator_not_running($concentrator)
     {
         if (!$concentrator->has_running_project()) {
             render_error('Project is not currently running');
@@ -203,16 +232,15 @@ class PagesController extends Controller
         }
     }
 
-    private static function initial_conditions_valid(GeoscanLib $geoscanLib)
+    private function initial_conditions_valid(GeoscanLib $geoscanLib)
     {
         return (
-            self::check_params_valid($geoscanLib) &&
-            self::check_crc32_valid($geoscanLib)
+            $this->check_params_valid($geoscanLib) &&
+            $this->check_crc32_valid($geoscanLib)
         );
     }
 
-
-    private static function check_params_valid(GeoscanLib $geoscanLib)
+    private function check_params_valid(GeoscanLib $geoscanLib)
     {
         if ($geoscanLib->params_not_valid()) {
             render_error('Not enough parameters in the request');
@@ -221,7 +249,7 @@ class PagesController extends Controller
         return true;
     }
 
-    private static function check_crc32_valid(GeoscanLib $geoscanLib)
+    private function check_crc32_valid(GeoscanLib $geoscanLib)
     {
         if (!$geoscanLib->crc32_valid()) {
             render_error('CRC32 does not match');
