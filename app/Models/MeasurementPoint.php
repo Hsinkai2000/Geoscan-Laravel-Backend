@@ -135,22 +135,22 @@ class MeasurementPoint extends Model
         $leq_1_should_alert = false;
         $last_noise_data = $this->getLastLeqData();
 
-        [$leq_5mins_should_alert, $limit] = $this->leq_5_mins_exceed_and_alert($last_noise_data);
+        [$leq_5mins_should_alert, $leq5limit] = $this->leq_5_mins_exceed_and_alert($last_noise_data);
 
         [$decision, $last_data_datetime] = $this->soundLimit->check_12_1_hour_limit_type($last_noise_data->received_at);
 
         if ($decision == '12') {
-            [$leq_12_should_alert, $limit] = $this->leq_12_hours_exceed_and_alert($last_noise_data, $last_data_datetime);
+            [$leq_12_should_alert, $leq12hlimit, $calculated12hLeq] = $this->leq_12_hours_exceed_and_alert($last_noise_data, $last_data_datetime);
         } else {
-            [$leq_1_should_alert, $limit] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
+            [$leq_1_should_alert, $leq1hlimit, $calculated1hLeq] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
         }
 
         $data = [
             "client_name" => $this->project->contact->contact_person_name,
             "jobsite_location" => $this->project->jobsite_location,
             "serial_number" => $this->noiseMeter->serial_number,
-            "leq_value" => $last_noise_data->leq,
-            "exceeded_limit" => $limit,
+            "leq_value" => null,
+            "exceeded_limit" => null,
             "leq_type" => null,
             "exceeded_time" => $last_noise_data->received_at,
         ];
@@ -159,17 +159,23 @@ class MeasurementPoint extends Model
             $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
             $this->save();
             $data["leq_type"] = "5min";
+            $data["exceeded_limit"] = $leq5limit;
+            $data["leq_value"] = $last_noise_data->leq;
             $this->send_alert($data);
         }
         if ($leq_12_should_alert) {
             $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
             $this->save();
             $data["leq_type"] = "12hours";
+            $data["exceeded_limit"] = $leq12hlimit;
+            $data["leq_value"] = $calculated12hLeq;
             $this->send_alert($data);
         } else if ($leq_1_should_alert) {
             $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
             $this->save();
             $data["leq_type"] = "1hour";
+            $data["exceeded_limit"] = $leq1hlimit;
+            $data["leq_value"] = $calculated1hLeq;
             $this->send_alert($data);
         }
     }
@@ -245,7 +251,7 @@ class MeasurementPoint extends Model
         $limit = $this->soundLimit->leq12h_limit($last_data_datetime);
         $should_alert = $twelve_hr_leq >= $limit && $this->leq_last_alert_allowed($this->leq_12_hours_last_alert_at, $last_noise_data->received_at);
         debug_log("12hrleq : leq12hr should alert:leq12hr limit ", [$twelve_hr_leq, $should_alert, $limit]);
-        return [$should_alert, $limit];
+        return [$should_alert, $limit, $twelve_hr_leq];
     }
 
     private function leq_1_hour_exceed_and_alert($last_noise_data = null, $last_data_datetime)
@@ -254,7 +260,7 @@ class MeasurementPoint extends Model
         $limit = $this->soundLimit->leq1h_limit($last_data_datetime);
         $should_alert = $one_hr_leq >= $limit && $this->leq_last_alert_allowed($this->leq_1_hour_last_alert_at, $last_noise_data->received_at);
         debug_log("one_hr_leq : leq1hr should alert:leq1hr limit ", [$one_hr_leq, $should_alert, $limit]);
-        return [$should_alert, $limit];
+        return [$should_alert, $limit, $one_hr_leq];
     }
 
     private function get_current_date($param = null)
