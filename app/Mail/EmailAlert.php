@@ -27,9 +27,15 @@ class EmailAlert extends Mailable
      */
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: "Leq{$this->data['leq_type']} Alert",
-        );
+        if ($this->data['type'] == 'leq') {
+            return new Envelope(
+                subject: "Leq{$this->data['leq_type']} Alert",
+            );
+        } else if ($data['type'] = 'dose') {
+            return new Envelope(
+                subject: "Dose >{$this->data['dose_limit']}% Alert",
+            );
+        }
     }
 
     /**
@@ -37,9 +43,16 @@ class EmailAlert extends Mailable
      */
     public function content(): Content
     {
-        return new Content(
-            view: 'emails.mail_leq_limit_exceeded',
-        );
+        if ($this->data['type'] == 'leq') {
+            return new Content(
+                view: 'emails.mail_leq_limit_exceeded',
+            );
+        } else if ($data['type'] = 'dose') {
+            return new Content(
+                view: "emails.mail_dose_limit_exceeded",
+            );
+        }
+
     }
 
     /**

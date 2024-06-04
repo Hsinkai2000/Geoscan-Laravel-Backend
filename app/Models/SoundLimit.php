@@ -123,7 +123,7 @@ class SoundLimit extends Model
     {
         [$day, $time_range] = $this->time_to_keys($last_data_datetime);
         $time_map = self::$time_mapper[$time_range];
-        if (!($this->category == 'Residential buildings' && $time_map != 0 && $day == 'mon_sat')) {
+        if (!($this->is_residential() && $time_map != 0 && $day == 'mon_sat')) {
             return 140.0;
         }
         $limit = $this->sound_limits_values_12hr()[$day][$time_map];
@@ -134,7 +134,7 @@ class SoundLimit extends Model
     {
         [$day, $time_range] = $this->time_to_keys($last_data_datetime);
         $time_map = self::$time_mapper[$time_range];
-        if ($this->category == 'Residential buildings' && $time_map != 0) {
+        if ($this->is_residential() && $time_map != 0) {
             return 140.0;
         }
         $limit = $this->sound_limits_values_12hr()[$day][$time_map];
@@ -171,10 +171,10 @@ class SoundLimit extends Model
             $time_map = self::$time_mapper[$time_range];
         }
 
-        if ($this->category == 'Residential buildings' && $time_map != 0 && $day == 'mon_sat') {
-            return ['1', $last_data_datetime];
+        if ($this->is_residential() && $time_map != 0 && $day == 'mon_sat') {
+            return ['1h', $last_data_datetime];
         }
-        return ['12', $last_data_datetime];
+        return ['12h', $last_data_datetime];
     }
 
     private function getTimeRangeText(DateTime $time)
@@ -190,5 +190,25 @@ class SoundLimit extends Model
         } else {
             return '12am_7am';
         }
+    }
+
+    public function calculate_dose_perc($calculatedLeq, $limit)
+    {
+        return round(100 * pow(10, ($calculatedLeq - $limit) / 10), 2);
+    }
+
+    public function is_residential()
+    {
+        return $this->category == "Residential" ? true : false;
+    }
+
+    public function is_7am_7pm($time_range)
+    {
+        return $time_range == '7am_7pm' ? true : false;
+    }
+
+    public function is_mon_sat($day)
+    {
+        return $day == 'mon_sat' ? true : false;
     }
 }
