@@ -23,5 +23,5 @@ function linearise_leq($leq)
 
 function convert_to_db($avg_leq)
 {
-    return round(10 * log10($avg_leq), 1);
+    return 10 * log10($avg_leq);
 }

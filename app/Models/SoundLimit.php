@@ -192,9 +192,11 @@ class SoundLimit extends Model
         }
     }
 
-    public function calculate_dose_perc($calculatedLeq, $limit)
+    public function calculate_dose_perc($calculatedLeq, $limit, $num_blanks, $base)
     {
-        return round(100 * pow(10, ($calculatedLeq - $limit) / 10), 2);
+        $dose_calculation_part1 = pow(10, $calculatedLeq / 10);
+        $dose_calculation_part2 = ($base - $num_blanks) / ((pow(10, $limit / 10)) * $base);
+        return round(min(100, 100 * $dose_calculation_part1 * $dose_calculation_part2), 2);
     }
 
     public function is_residential()

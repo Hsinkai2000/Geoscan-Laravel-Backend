@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class MeasurementPoint extends Model
@@ -130,8 +129,11 @@ class MeasurementPoint extends Model
 
     public function check_last_data_for_alert()
     {
+        $num_blanks = 0;
         $leq_12_should_alert = false;
         $leq_1_should_alert = false;
+        $dose_100_should_alert = false;
+        $dose_70_should_alert = false;
         $calculated_dose_percentage = null;
         $last_noise_data = $this->getLastLeqData();
         $soundLimit = $this->soundLimit;
@@ -141,15 +143,14 @@ class MeasurementPoint extends Model
         [$decision, $last_data_datetime] = $soundLimit->check_12_1_hour_limit_type($last_noise_data->received_at);
 
         if ($decision == '12h') {
-            [$leq_12_should_alert, $leq12hlimit, $calculated12hLeq] = $this->leq_12_hours_exceed_and_alert($last_noise_data, $last_data_datetime);
-            $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated12hLeq, $leq12hlimit);
+            [$leq_12_should_alert, $leq12hlimit, $calculated12hLeq, $num_blanks] = $this->leq_12_hours_exceed_and_alert($last_noise_data, $last_data_datetime);
+            $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated12hLeq, $leq12hlimit, $num_blanks, 144);
+            debug_log('dose 12h limit', [$leq12hlimit]);
         } else {
-            [$leq_1_should_alert, $leq1hlimit, $calculated1hLeq] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
-
-            $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated1hLeq, $leq1hlimit);
-
+            [$leq_1_should_alert, $leq1hlimit, $calculated1hLeq, $num_blanks] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
+            $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated1hLeq, $leq1hlimit, $num_blanks, 12);
+            debug_log('dose 1h limit', [$leq1hlimit]);
         }
-
         $data = [
             "client_name" => $this->project->contact->contact_person_name,
             "jobsite_location" => $this->project->jobsite_location,
@@ -163,18 +164,20 @@ class MeasurementPoint extends Model
             "calculated_dose" => $calculated_dose_percentage,
             "measurement_point_name" => $this->point_name,
         ];
+        $dose_70_should_alert = $this->last_alert_allowed($this->dose_70_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 70 && $calculated_dose_percentage < 100;
+        $dose_100_should_alert = $this->last_alert_allowed($this->dose_100_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 100;
+        debug_log('dose_val : dose 70 should alert : dose 100 should alert', [$calculated_dose_percentage, $dose_70_should_alert, $dose_100_should_alert]);
 
-        if ($calculated_dose_percentage >= 100) {
-            if ($this->last_alert_allowed($this->dose_100_last_alert_at, $last_noise_data->received_at)) {
-                $data["dose_limit"] = '100';
-                $this->send_alert($data);
-            }
+        if ($dose_100_should_alert) {
+            $data["dose_limit"] = '100';
+            $this->dose_100_last_alert_at = $last_noise_data->received_at;
+            $this->send_alert($data);
 
-        } else if ($calculated_dose_percentage >= 70) {
-            if ($this->last_alert_allowed($this->dose_70_last_alert_at, $last_noise_data->received_at)) {
-                $data["dose_limit"] = '70';
-                $this->send_alert($data);
-            }
+        } else if ($dose_70_should_alert) {
+            $data["dose_limit"] = '70';
+            $this->dose_70_last_alert_at = $last_noise_data->received_at;
+            $this->send_alert($data);
+
         }
 
         $data["type"] = 'leq';
@@ -189,13 +192,13 @@ class MeasurementPoint extends Model
             $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
             $data["leq_type"] = "12hours";
             $data["exceeded_limit"] = $leq12hlimit;
-            $data["leq_value"] = $calculated12hLeq;
+            $data["leq_value"] = round($calculated12hLeq, 1);
             $this->send_alert($data);
         } else if ($leq_1_should_alert) {
             $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
             $data["leq_type"] = "1hour";
             $data["exceeded_limit"] = $leq1hlimit;
-            $data["leq_value"] = $calculated1hLeq;
+            $data["leq_value"] = round($calculated1hLeq, 1);
             $this->send_alert($data);
         }
 
@@ -207,16 +210,16 @@ class MeasurementPoint extends Model
         [$phone_number, $email] = $this->project->get_contact_details();
 
         [$email_messageid, $email_messagedebug] = $this->send_email($data, $email);
-        [$sms_messageid, $sms_status] = $this->send_sms($data, $phone_number);
+        // [$sms_messageid, $sms_status] = $this->send_sms($data, $phone_number);
 
-        DB::table('alert_logs')->insert([
-            'event_timestamp' => $data["exceeded_time"],
-            'email_messageId' => $email_messageid,
-            'email_debug' => $email_messagedebug,
-            'sms_messageId' => $sms_messageid,
-            'sms_status' => $sms_status,
-            'created_at' => now(),
-        ]);
+        // DB::table('alert_logs')->insert([
+        //     'event_timestamp' => $data["exceeded_time"],
+        //     'email_messageId' => $email_messageid,
+        //     'email_debug' => $email_messagedebug,
+        //     'sms_messageId' => $sms_messageid,
+        //     'sms_status' => $sms_status,
+        //     'created_at' => now(),
+        // ]);
 
     }
 
@@ -274,20 +277,20 @@ class MeasurementPoint extends Model
 
     private function leq_12_hours_exceed_and_alert($last_noise_data = null, $last_data_datetime)
     {
-        $twelve_hr_leq = $this->calc_12_hour_leq();
+        [$twelve_hr_leq, $num_blanks] = $this->calc_12_hour_leq();
         $limit = $this->soundLimit->leq12h_limit($last_data_datetime);
-        $should_alert = $twelve_hr_leq >= $limit && $this->last_alert_allowed($this->leq_12_hours_last_alert_at, $last_noise_data->received_at);
-        debug_log("12hrleq : leq12hr should alert:leq12hr limit ", [$twelve_hr_leq, $should_alert, $limit]);
-        return [$should_alert, $limit, $twelve_hr_leq];
+        $should_alert = round($twelve_hr_leq, 1) >= $limit && $this->last_alert_allowed($this->leq_12_hours_last_alert_at, $last_noise_data->received_at);
+        debug_log("12hrleq : leq12hr should alert:leq12hr limit ", [round($twelve_hr_leq, 1), $should_alert, $limit]);
+        return [$should_alert, $limit, $twelve_hr_leq, $num_blanks];
     }
 
     private function leq_1_hour_exceed_and_alert($last_noise_data = null, $last_data_datetime)
     {
-        $one_hr_leq = $this->calc_1_hour_leq();
+        [$one_hr_leq, $num_blanks] = $this->calc_1_hour_leq();
         $limit = $this->soundLimit->leq1h_limit($last_data_datetime);
-        $should_alert = $one_hr_leq >= $limit && $this->last_alert_allowed($this->leq_1_hour_last_alert_at, $last_noise_data->received_at);
-        debug_log("one_hr_leq : leq1hr should alert:leq1hr limit ", [$one_hr_leq, $should_alert, $limit]);
-        return [$should_alert, $limit, $one_hr_leq];
+        $should_alert = round($one_hr_leq, 1) >= $limit && $this->last_alert_allowed($this->leq_1_hour_last_alert_at, $last_noise_data->received_at);
+        debug_log("one_hr_leq : leq1hr should alert:leq1hr limit ", [round($one_hr_leq, 1), $should_alert, $limit]);
+        return [$should_alert, $limit, $one_hr_leq, $num_blanks];
     }
 
     private function get_current_date($param = null)
@@ -358,13 +361,15 @@ class MeasurementPoint extends Model
     private function calc_12_hour_leq()
     {
         $timeslot_to_now_leqs = $this->get_timeslot_to_now_leq();
-        return $this->calc_leq($timeslot_to_now_leqs);
+        $num_blanks = 144 - count($timeslot_to_now_leqs);
+        return [$this->calc_leq($timeslot_to_now_leqs), $num_blanks];
     }
 
     private function calc_1_hour_leq()
     {
         $hour_to_now_leqs = $this->get_hour_to_now_leq();
-        return $this->calc_leq($hour_to_now_leqs);
+        $num_blanks = 12 - count($hour_to_now_leqs);
+        return [$this->calc_leq($hour_to_now_leqs), $num_blanks];
     }
 
     private function last_alert_allowed($freq_last_alert_at, $last_received_datetime)
