@@ -65,15 +65,15 @@ class PagesController extends Controller
             $s_values = $geoscanLib->summary_values();
             $noise_data = $this->noise_data_params($geoscanLib, $s_values);
             $existing_noise_data = NoiseData::where('received_at', $noise_data->received_at)->where('measurement_point_id', $measurement_point->id)->first();
-            // if (is_null($existing_noise_data)) {
-            //     $measurement_point->noiseData()->save($noise_data);
-            //     $this->updateConcentrator($request, $s_values, $concentrator);
+            if (is_null($existing_noise_data)) {
+                $measurement_point->noiseData()->save($noise_data);
+                $this->updateConcentrator($request, $s_values, $concentrator);
 
-            //     $ndevice_params = $this->prepareNdeviceParams($noise_data, $measurement_point);
-            //     $this->update_measurement_point($measurement_point, $ndevice_params);
-            // } else {
-            //     $existing_noise_data->update($noise_data->toArray());
-            // }
+                $ndevice_params = $this->prepareNdeviceParams($noise_data, $measurement_point);
+                $this->update_measurement_point($measurement_point, $ndevice_params);
+            } else {
+                $existing_noise_data->update($noise_data->toArray());
+            }
             $measurement_point->check_last_data_for_alert();
 
             render_message("ok");

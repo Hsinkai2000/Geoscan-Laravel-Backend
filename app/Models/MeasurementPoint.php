@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class MeasurementPoint extends Model
@@ -210,16 +211,16 @@ class MeasurementPoint extends Model
         [$phone_number, $email] = $this->project->get_contact_details();
 
         [$email_messageid, $email_messagedebug] = $this->send_email($data, $email);
-        // [$sms_messageid, $sms_status] = $this->send_sms($data, $phone_number);
+        [$sms_messageid, $sms_status] = $this->send_sms($data, $phone_number);
 
-        // DB::table('alert_logs')->insert([
-        //     'event_timestamp' => $data["exceeded_time"],
-        //     'email_messageId' => $email_messageid,
-        //     'email_debug' => $email_messagedebug,
-        //     'sms_messageId' => $sms_messageid,
-        //     'sms_status' => $sms_status,
-        //     'created_at' => now(),
-        // ]);
+        DB::table('alert_logs')->insert([
+            'event_timestamp' => $data["exceeded_time"],
+            'email_messageId' => $email_messageid,
+            'email_debug' => $email_messagedebug,
+            'sms_messageId' => $sms_messageid,
+            'sms_status' => $sms_status,
+            'created_at' => now(),
+        ]);
 
     }
 
