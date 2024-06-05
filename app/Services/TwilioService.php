@@ -25,7 +25,7 @@ class TwilioService
                 'from' => config('services.twilio.from'),
                 'body' => $message,
                 'riskCheck' => 'disable',
-                // 'statusCallback' => config("TWILIO_CALL_BACK_URL"),
+                // 'statusCallback' => config('services.twilio.callback_url'),
             ]);
 
             debug_log("SMS sent successfully to to: {$data["client_name"]}");
