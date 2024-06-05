@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -13,9 +14,9 @@ return new class extends Migration {
         if (!Schema::hasTable('noise_data')) {
             Schema::create('noise_data', function (Blueprint $table) {
                 $table->id();
-                $table->integer('measurement_point_id')->nullable();
+                $table->integer('measurement_point_id')->nullable()->index();
                 $table->float('leq')->nullable();
-                $table->dateTime('received_at')->nullable();
+                $table->dateTime('received_at')->nullable()->indxe();
                 $table->dateTime('created_at');
                 $table->dateTime('updated_at');
             });

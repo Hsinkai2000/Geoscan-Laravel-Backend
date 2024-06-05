@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -13,9 +14,9 @@ return new class extends Migration {
         Schema::dropIfExists('measurement_points');
         Schema::create('measurement_points', function (Blueprint $table) {
             $table->id();
-            $table->integer('project_id')->nullable();
-            $table->integer('noise_meter_id')->nullable();
-            $table->integer('concentrator_id')->nullable();
+            $table->integer('project_id')->nullable()->index();
+            $table->integer('noise_meter_id')->nullable()->index();
+            $table->integer('concentrator_id')->nullable()->index();
             $table->string('point_name', 255)->nullable();
             $table->string('remarks', 255)->nullable();
             $table->float('inst_leq')->nullable()->default(0);
