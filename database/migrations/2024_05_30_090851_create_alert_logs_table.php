@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::dropIfExists('alert_logs');
         Schema::create('alert_logs', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('event_timestamp')->nullable();
+            $table->dateTime('event_timestamp');
             $table->string('email_messageId', 255)->nullable();
             $table->text('email_debug')->nullable();
             $table->string('sms_messageId', 255)->nullable();
             $table->dateTime('sms_status_updated')->nullable();
             $table->string('sms_status', 255)->nullable();
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 

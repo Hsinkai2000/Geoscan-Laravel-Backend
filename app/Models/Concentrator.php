@@ -20,9 +20,7 @@ class Concentrator extends Model
         'battery_voltage',
         'last_communication_packet_sent',
         'last_assigned_ip_address',
-        'hardware_revision_number',
         'remarks',
-        'status',
         'created_at',
         'updated_at',
     ];

@@ -14,28 +14,14 @@ return new class extends Migration
         Schema::dropIfExists('projects');
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('job_number', 255)->nullable();
-            $table->string('client_name', 255)->nullable();
-            $table->string('billing_address', 255)->nullable();
+            $table->string('job_number', 255);
+            $table->string('client_name', 255);
             $table->string('project_description', 255)->nullable();
-            $table->string('jobsite_location', 255)->nullable();
-            $table->string('planning_area', 255)->nullable();
-            $table->integer('vibration_quantity_active')->nullable();
-            $table->float('vibration_trigger_level')->nullable();
-            $table->string('vibration_remarks', 255)->nullable();
-            $table->integer('sound_quantity_active')->nullable();
-            $table->float('sound_trigger_level')->nullable();
-            $table->string('sound_remarks', 255)->nullable();
+            $table->string('jobsite_location', 255);
+            $table->string('BCA Reference Number', 255)->nullable();
             $table->string('status', 255)->nullable()->default('Draft');
-            $table->string('layout_file_name', 255)->nullable();
-            $table->string('layout_content_type', 255)->nullable();
-            $table->integer('layout_file_size')->nullable();
-            $table->dateTime('layout_updated_at')->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
-            $table->string('project_type')->nullable();
-            $table->float('pjtLat')->nullable();
-            $table->float('pjtLng')->nullable();
             $table->dateTime('completed_at')->nullable();
         });
     }

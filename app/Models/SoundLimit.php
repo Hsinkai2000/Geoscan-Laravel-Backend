@@ -13,9 +13,8 @@ class SoundLimit extends Model
     protected $table = 'sound_limits';
 
     protected $fillable = [
-        'category',
         'measurement_point_id',
-
+        'category',
         'mon_sat_7am_7pm_leq5min',
         'mon_sat_7pm_10pm_leq5min',
         'mon_sat_10pm_12am_leq5min',

@@ -33,15 +33,12 @@ class MeasurementPoint extends Model
         'inst_leq',
         'leq_temp',
         'dose_flag',
-        'device_latling',
         'device_location',
-        'noise_alert_at',
         'leq_5_mins_last_alert_at',
         'leq_1_hour_last_alert_at',
         'leq_12_hours_last_alert_at',
         'dose_70_last_alert_at',
         'dose_100_last_alert_at',
-        'last_alert',
         'created_at',
         'updated_at',
     ];
@@ -54,13 +51,11 @@ class MeasurementPoint extends Model
         'inst_leq' => 'float',
         'leq_temp' => 'integer',
         'dose_flag' => 'decimal:11',
-        'noise_alert_at' => 'datetime',
         'leq_5_mins_last_alert_at' => 'datetime',
         'leq_1_hour_last_alert_at' => 'datetime',
         'leq_12_hours_last_alert_at' => 'datetime',
         'dose_70_last_alert_at' => 'datetime',
         'dose_100_last_alert_at' => 'datetime',
-        'last_alert' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -220,6 +215,7 @@ class MeasurementPoint extends Model
             'sms_messageId' => $sms_messageid,
             'sms_status' => $sms_status,
             'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
     }
