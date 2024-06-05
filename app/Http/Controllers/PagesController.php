@@ -8,6 +8,7 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Libraries\GeoscanLib;
 
@@ -63,18 +64,20 @@ class PagesController extends Controller
             }
             $measurement_point = $noise_meter->measurementPoint;
             $s_values = $geoscanLib->summary_values();
-            $noise_data = $this->noise_data_params($geoscanLib, $s_values);
-            $existing_noise_data = NoiseData::where('received_at', $noise_data->received_at)->where('measurement_point_id', $measurement_point->id)->first();
-            if (is_null($existing_noise_data)) {
-                $measurement_point->noiseData()->save($noise_data);
+            $noise_data_params = $this->noise_data_params($geoscanLib, $s_values);
+
+            try {
+                debug_log('laksjdlakds', [$noise_data_params]);
+                $noise_data_id = DB::table('noise_data')->insertGetId($noise_data_params);
+                $noise_data = NoiseData::find($noise_data_id);
                 $this->updateConcentrator($request, $s_values, $concentrator);
 
                 $ndevice_params = $this->prepareNdeviceParams($noise_data, $measurement_point);
                 $this->update_measurement_point($measurement_point, $ndevice_params);
                 $measurement_point->check_last_data_for_alert();
-                render_message("ok");
-            } else {
-                render_error("Duplicate Entry");
+                render_message("Record Successfully updated");
+            } catch (Exception $e) {
+                render_error("Duplicate Noise Data Entry" . $e->getMessage());
             }
 
         } catch (Exception $e) {
@@ -156,11 +159,13 @@ class PagesController extends Controller
             $seconds = 300 * $round_time;
             $time = (new DateTime())->setTimestamp($seconds);
 
-            $noise_data = new NoiseData([
+            $noise_data = [
                 'measurement_point_id' => $geoscanLib->noise_meter()->measurementPoint->id,
                 'leq' => $noise_leq,
                 'received_at' => $time->format('Y-m-d H:i:s'),
-            ]);
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
 
             return $noise_data;
         } catch (\Exception $e) {
