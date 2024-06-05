@@ -16,11 +16,15 @@ class AlertLog extends Model
         'sms_messageId',
         'sms_status_updated',
         'sms_status',
+        'created_at',
+        'updated_at',
     ];
 
     protected $casts = [
         'event_timestamp' => 'datetime',
         'sms_status_updated' => 'datetime',
+        'created_at',
+        'updated_at',
     ];
 
     public function __construct(array $attributes = [])

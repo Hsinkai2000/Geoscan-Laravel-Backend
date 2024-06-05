@@ -15,10 +15,11 @@ return new class extends Migration
         if (!Schema::hasTable('noise_data')) {
             Schema::create('noise_data', function (Blueprint $table) {
                 $table->id();
-                $table->integer('measurement_point_id')->nullable();
-                $table->float('leq')->nullable();
-                $table->dateTime('received_at')->nullable();
-                $table->timestamps();
+                $table->integer('measurement_point_id');
+                $table->float('leq');
+                $table->dateTime('received_at');
+                $table->dateTime('created_at');
+                $table->dateTime('updated_at');
 
                 $table->unique(['measurement_point_id', 'received_at']);
                 $table->index('measurement_point_id');

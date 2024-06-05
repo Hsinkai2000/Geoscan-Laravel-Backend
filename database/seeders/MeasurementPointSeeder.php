@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\MeasurementPoint;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MeasurementPointSeeder extends Seeder
@@ -21,7 +20,7 @@ class MeasurementPointSeeder extends Seeder
             'concentrator_id' => 1,
             'point_name' => 'zz81889218',
             'remarks' => $faker->text(),
-            'device_location' => 'zzKakiBukit'
+            'device_location' => 'zzKakiBukit',
         ]);
     }
 }
