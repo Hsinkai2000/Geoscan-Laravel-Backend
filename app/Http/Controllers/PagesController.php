@@ -71,12 +71,12 @@ class PagesController extends Controller
 
                 $ndevice_params = $this->prepareNdeviceParams($noise_data, $measurement_point);
                 $this->update_measurement_point($measurement_point, $ndevice_params);
+                $measurement_point->check_last_data_for_alert();
+                render_message("ok");
             } else {
-                $existing_noise_data->update($noise_data->toArray());
+                render_error("Duplicate Entry");
             }
-            $measurement_point->check_last_data_for_alert();
 
-            render_message("ok");
         } catch (Exception $e) {
             Log::error('Error in message1Callback', ['exception' => $e]);
         }
