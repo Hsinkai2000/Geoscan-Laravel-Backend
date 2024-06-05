@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -26,7 +27,6 @@ return new class extends Migration {
 
             // $table->float('mon_sat_10pm_7am_leq5min')->default(55)->nullable();
 
-
             $table->float('sun_ph_7am_7pm_leq5min')->default(75)->nullable();
 
             $table->float('sun_ph_7pm_10pm_leq5min')->default(55)->nullable();
@@ -37,7 +37,6 @@ return new class extends Migration {
 
             // $table->float('sun_ph_10pm_7am_leq5min')->default(55)->nullable();
 
-
             $table->float('mon_sat_7am_7pm_leq12hr')->default(75)->nullable();
 
             $table->float('mon_sat_7pm_10pm_leq12hr')->default(65)->nullable();
@@ -47,7 +46,6 @@ return new class extends Migration {
             $table->float('mon_sat_12am_7am_leq12hr')->default(55)->nullable();
 
             // $table->float('mon_sat_10pm_7am_leq12hr')->default(55)->nullable();
-
 
             $table->float('sun_ph_7am_7pm_leq12hr')->default(75)->nullable();
 
