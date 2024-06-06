@@ -40,16 +40,14 @@ class PagesController extends Controller
     {
         try {
             $concentrator = $geoscanLib->concentrator();
-            if (!$this->check_message_0_conditions($concentrator)) {
-                debug_log("message_0_callback failed");
-                return;
-            }
+            $this->check_message_0_conditions($concentrator);
             $s_values = $geoscanLib->summary_values();
             $this->updateConcentrator($request, $s_values, $concentrator);
 
             render_message("ok");
         } catch (Exception $e) {
             Log::error('Error in message0Callback', ['exception' => $e]);
+            render_error($e->getMessage());
         }
     }
 
@@ -58,16 +56,15 @@ class PagesController extends Controller
         try {
             $noise_meter = $geoscanLib->noise_meter();
             $concentrator = $geoscanLib->concentrator();
-            if (!$this->check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)) {
-                debug_log("failed conditional check");
-                return;
-            }
+
+            $this->check_message_1_conditions($noise_meter, $geoscanLib, $concentrator);
+
             $measurement_point = $noise_meter->measurementPoint;
             $s_values = $geoscanLib->summary_values();
             $noise_data_params = $this->noise_data_params($geoscanLib, $s_values);
 
             try {
-                debug_log('laksjdlakds', [$noise_data_params]);
+
                 $noise_data_id = DB::table('noise_data')->insertGetId($noise_data_params);
                 $noise_data = NoiseData::find($noise_data_id);
                 $this->updateConcentrator($request, $s_values, $concentrator);
@@ -75,13 +72,15 @@ class PagesController extends Controller
                 $ndevice_params = $this->prepareNdeviceParams($noise_data, $measurement_point);
                 $this->update_measurement_point($measurement_point, $ndevice_params);
                 $measurement_point->check_last_data_for_alert();
+
                 render_message("Record Successfully updated");
             } catch (Exception $e) {
-                render_error("Duplicate Noise Data Entry" . $e->getMessage());
+                throw new Exception("Error processing noise data : " . $e->getMessage());
             }
 
         } catch (Exception $e) {
             Log::error('Error in message1Callback', ['exception' => $e]);
+            render_error($e->getMessage());
         }
     }
 
@@ -181,50 +180,76 @@ class PagesController extends Controller
 
     private function check_message_1_conditions($noise_meter, $geoscanLib, $concentrator)
     {
-        return !(
-            $this->noise_meter_empty($noise_meter, $geoscanLib) ||
-            $this->noise_meter_project_empty($noise_meter) ||
-            $this->noise_meter_project_not_running($noise_meter) ||
-            $this->concentrator_empty($concentrator)
-        );
+        try {
+            $this->noise_meter_not_valid($noise_meter, $geoscanLib);
+            $this->measurement_point_empty($noise_meter);
+            $this->concentrator_not_valid($concentrator);
+            $this->measurement_point_no_project($noise_meter->measurementPoint);
+            $this->measurement_point_no_running_project($noise_meter->measurementPoint);
+            $this->noise_meter_concentrator_same_measurement_point($noise_meter->measurementPoint, $concentrator->measurementPoint);
+            $this->measurement_point_has_soundLimits($noise_meter->measurementPoint);
+        } catch (Exception $e) {
+            throw $e;
+        };
     }
 
-    private function noise_meter_empty($noise_meter, $geoscanLib)
+    private function noise_meter_concentrator_same_measurement_point($nm_measurement_point, $c_measurement_point)
+    {
+        if ($nm_measurement_point->id != $c_measurement_point->id) {
+            throw new Exception('Different Measurement points tied for noise meter and concentrator');
+        }
+    }
+
+    private function measurement_point_no_project($measurement_point)
+    {
+        if ($measurement_point && !$measurement_point->hasProject()) {
+            throw new Exception('Measurement point is not tied to a project');
+        }
+    }
+
+    private function measurement_point_no_running_project($measurement_point)
+    {
+        if ($measurement_point && !$measurement_point->has_running_project()) {
+            throw new Exception('Project is not Ongoing');
+        }
+    }
+
+    private function noise_meter_not_valid($noise_meter, $geoscanLib)
     {
         if ($noise_meter == null) {
-            render_error('noise device is not available ' . $geoscanLib->noise_serial_number());
+            throw new Exception('Noise device is not available ' . $geoscanLib->noise_serial_number());
             return true;
         }
     }
 
-    private function noise_meter_project_empty($noise_meter)
+    private function measurement_point_empty($noise_meter)
     {
-        if (!$noise_meter->hasProject()) {
-            render_error('Noise device is not in a project');
-            return true;
+        if (!$noise_meter->measurementPoint) {
+            throw new Exception('Noise device is not tied to measurement point');
         }
     }
 
-    private function noise_meter_project_not_running($noise_meter)
+    private function measurement_point_has_soundLimits($measurement_point)
     {
-        if (!$noise_meter->has_running_project()) {
-            render_error('Project is not currently running');
-            return true;
+        if (!$measurement_point->soundLimit) {
+            throw new Exception('Measurement Point does not have associated sound limits');
         }
     }
 
     private function check_message_0_conditions($concentrator)
     {
-        return !(
-            $this->concentrator_empty($concentrator) ||
-            $this->concentrator_not_running($concentrator)
-        );
+        try {
+            $this->concentrator_not_valid($concentrator);
+            $this->concentrator_not_running($concentrator);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
-    private function concentrator_empty($concentrator)
+    private function concentrator_not_valid($concentrator)
     {
         if ($concentrator == null) {
-            render_error('Concentrator is not available');
+            throw new Exception('Concentrator is not available');
             return true;
         }
     }
@@ -232,7 +257,7 @@ class PagesController extends Controller
     private function concentrator_not_running($concentrator)
     {
         if (!$concentrator->has_running_project()) {
-            render_error('Project is not currently running');
+            throw new Exception('Project is not currently running');
             return true;
         }
     }

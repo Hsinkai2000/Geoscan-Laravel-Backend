@@ -30,7 +30,7 @@ class Project extends Model
     // Define methods
     public function isRunning()
     {
-        return $this->status === 'Ongoing';
+        return $this->status == 'Ongoing';
     }
 
     public function get_contact_details()
