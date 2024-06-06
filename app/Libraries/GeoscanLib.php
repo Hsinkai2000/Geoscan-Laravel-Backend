@@ -4,6 +4,7 @@ namespace Libraries;
 
 use App\Models\Concentrator;
 use App\Models\NoiseMeter;
+use Exception;
 
 define('MESSAGE_TYPES', array(0x00, 0x01, 0x02, 0x03, 0x04));
 
@@ -47,18 +48,26 @@ class GeoscanLib
 
     public function concentrator_id()
     {
-        $unpacked_device_id = unpack('VConcentratorFrontValue/VConcentratorBackValue', $this->device_id);
-        $concentrator_id = strtoupper(dechex($unpacked_device_id['ConcentratorFrontValue'])) . strtoupper(dechex($unpacked_device_id['ConcentratorBackValue']));
-        return $concentrator_id;
+        try {
+            $unpacked_device_id = unpack('VConcentratorFrontValue/VConcentratorBackValue', $this->device_id);
+            $concentrator_id = strtoupper(dechex($unpacked_device_id['ConcentratorFrontValue'])) . strtoupper(dechex($unpacked_device_id['ConcentratorBackValue']));
+            return $concentrator_id;
+        } catch (Exception $e) {
+            throw new Exception('device_id > 64 bits');
+        }
     }
 
     public function concentrator()
     {
-        $concentrator = Concentrator::where('device_id', $this->concentrator_id())->first();
-        if (!empty($concentrator)) {
-            return $concentrator;
+        try {
+            $concentrator = Concentrator::where('device_id', $this->concentrator_id())->first();
+            if (!empty($concentrator)) {
+                return $concentrator;
+            }
+            return null;
+        } catch (Exception $e) {
+            throw $e;
         }
-        return null;
     }
 
     public function noise_serial_number()
