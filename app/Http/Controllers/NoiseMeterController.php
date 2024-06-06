@@ -24,6 +24,15 @@ class NoiseMeterController extends Controller
         }
     }
 
+    public function index()
+    {
+        try {
+            render_message(["noise_meters" => NoiseMeter::all()]);
+        } catch (Exception $e) {
+            render_error($e->getMessage());
+        }
+    }
+
     // public function get(Request $request)
     // {
     //     try {

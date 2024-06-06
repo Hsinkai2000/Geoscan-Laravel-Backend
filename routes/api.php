@@ -10,4 +10,6 @@ Route::post("/twilio/callback", [TwilioController::class, 'callback']);
 
 Route::prefix('/api')->group(function () {
     Route::post("/noisemeter/", [NoiseMeterController::class, 'create']);
+    Route::get("/noisemeter/", [NoiseMeterController::class, 'index']);
+    Route::get("/noisemeter/{id}", [NoiseMeterController::class, 'get']);
 });
