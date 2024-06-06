@@ -160,6 +160,7 @@ class MeasurementPoint extends Model
             "calculated_dose" => $calculated_dose_percentage,
             "measurement_point_name" => $this->point_name,
         ];
+
         $dose_70_should_alert = $this->last_alert_allowed($this->dose_70_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 70 && $calculated_dose_percentage < 100;
         $dose_100_should_alert = $this->last_alert_allowed($this->dose_100_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 100;
         debug_log('dose_val : dose 70 should alert : dose 100 should alert', [$calculated_dose_percentage, $dose_70_should_alert, $dose_100_should_alert]);

@@ -38,19 +38,9 @@ class NoiseMeter extends Model
         return $this->hasMany(NoiseData::class, 'noise_meter_id');
     }
 
-    public function project_data(): HasMany
+    public function hasMeasurementPoint()
     {
-        $project_id = $this->project_id ?? "NULL";
-        return $this->hasMany(NoiseDatum::class, 'project_id', 'project_id')->where('project_id', $project_id);
+        return $this->measurementPoint;
     }
 
-    public function hasProject()
-    {
-        return $this->measurementPoint->hasProject() !== null;
-    }
-
-    public function has_running_project()
-    {
-        return $this->measurementPoint->has_running_project();
-    }
 }

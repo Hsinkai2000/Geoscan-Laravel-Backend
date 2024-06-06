@@ -46,13 +46,14 @@ class Concentrator extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function measurement_point(): BelongsTo
+    public function measurementPoint(): BelongsTo
     {
-        return $this->belongsTo(MeasurementPoint::class, 'concentrator_id');
+        return $this->belongsTo(MeasurementPoint::class, 'id', 'concentrator_id');
     }
 
     public function has_running_project()
     {
-        return $this->project !== null && $this->project->isRunning();
+        $project = $this->project;
+        return $project !== null && $project->isRunning();
     }
 }
