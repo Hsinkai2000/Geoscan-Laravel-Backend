@@ -46,7 +46,6 @@ class PagesController extends Controller
 
             render_message("ok");
         } catch (Exception $e) {
-            Log::error('Error in message0Callback', ['exception' => $e]);
             render_error($e->getMessage());
         }
     }
@@ -79,7 +78,6 @@ class PagesController extends Controller
             }
 
         } catch (Exception $e) {
-            Log::error('Error in message1Callback', ['exception' => $e]);
             render_error($e->getMessage());
         }
     }

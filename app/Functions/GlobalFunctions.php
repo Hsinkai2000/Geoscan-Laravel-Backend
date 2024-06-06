@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 function debug_log($message, array $context = [])
 {
@@ -13,7 +14,10 @@ function render_message($message)
 }
 function render_error(string $error_message)
 {
-    response()->json(['error' => $error_message], Response::HTTP_UNPROCESSABLE_ENTITY)->send();
+    Log::error('Error', ['exception' => $error_message]);
+    response()->json(['error' => $error_message],
+        Response::HTTP_UNPROCESSABLE_ENTITY)->send();
+
 }
 
 function linearise_leq($leq)
