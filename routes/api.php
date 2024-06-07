@@ -3,6 +3,7 @@
 use App\Http\Controllers\ConcentratorController;
 use App\Http\Controllers\NoiseMeterController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TwilioController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,15 @@ Route::prefix('/api')->group(function () {
         Route::get("/{id}", [ConcentratorController::class, 'get']);
         Route::patch("/{id}", [ConcentratorController::class, 'update']);
         Route::delete("/{id}", [ConcentratorController::class, 'delete']);
+
+    });
+
+    Route::prefix('/project')->group(function () {
+        Route::post("/", [ProjectController::class, 'create']);
+        Route::get("/", [ProjectController::class, 'index']);
+        Route::get("/{id}", [ProjectController::class, 'get']);
+        Route::patch("/{id}", [ProjectController::class, 'update']);
+        Route::delete("/{id}", [ProjectController::class, 'delete']);
 
     });
 });
