@@ -7,6 +7,7 @@ use App\Http\Controllers\NoiseDataController;
 use App\Http\Controllers\NoiseMeterController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SoundLimitController;
 use App\Http\Controllers\TwilioController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,7 +50,7 @@ Route::prefix('/api')->group(function () {
 
     });
 
-    Route::prefix('/contacts')->group(function () {
+    Route::prefix('/contact')->group(function () {
         Route::post("/", [ContactsController::class, 'create']);
         Route::get("/", [ContactsController::class, 'index']);
         Route::get("/{id}", [ContactsController::class, 'get']);
@@ -64,6 +65,15 @@ Route::prefix('/api')->group(function () {
         Route::get("/{id}", [NoiseDataController::class, 'get']);
         Route::patch("/{id}", [NoiseDataController::class, 'update']);
         Route::delete("/{id}", [NoiseDataController::class, 'delete']);
+
+    });
+
+    Route::prefix('/sound-limit')->group(function () {
+        Route::post("/", [SoundLimitController::class, 'create']);
+        Route::get("/", [SoundLimitController::class, 'index']);
+        Route::get("/{id}", [SoundLimitController::class, 'get']);
+        Route::patch("/{id}", [SoundLimitController::class, 'update']);
+        Route::delete("/{id}", [SoundLimitController::class, 'delete']);
 
     });
 });
