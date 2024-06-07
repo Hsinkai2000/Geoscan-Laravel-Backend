@@ -23,6 +23,7 @@ Route::prefix('/api')->group(function () {
         Route::get("/", [ConcentratorController::class, 'index']);
         Route::get("/{id}", [ConcentratorController::class, 'get']);
         Route::patch("/{id}", [ConcentratorController::class, 'update']);
+        Route::delete("/{id}", [ConcentratorController::class, 'delete']);
 
     });
 });

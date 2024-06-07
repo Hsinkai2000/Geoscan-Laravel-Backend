@@ -70,6 +70,19 @@ class ConcentratorController extends Controller
 
     public function delete(Request $request)
     {
+        try {
+            $id = $request->route('id');
+            $concentrator = Concentrator::find($id);
+            if (!$concentrator) {
+                return render_unprocessable_entity("Unable to find concentrator with id " . $id);
+            }
+            if (!$concentrator->delete()) {
+                throw new Exception("Unable to delete concentrator");
+            }
+            return render_ok(["concentrator" => $concentrator]);
 
+        } catch (Exception $e) {
+            return render_error($e->getMessage());
+        }
     }
 }
