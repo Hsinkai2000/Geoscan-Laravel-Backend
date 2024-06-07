@@ -13,7 +13,7 @@ class NoiseMeterController extends Controller
         try {
             $noise_meter_params = $request->only((new NoiseMeter)->getFillable());
             if (strlen($noise_meter_params['serial_number']) !== 4) {
-                return render_unprocessable_entity('Noise meter serial number not 32 bits');
+                return render_unprocessable_entity('Noise meter serial number not 16 bits');
             }
             $noise_meter_id = NoiseMeter::insertGetId($noise_meter_params);
             $noise_meter = NoiseMeter::find($noise_meter_id);

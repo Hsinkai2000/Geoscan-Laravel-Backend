@@ -23,8 +23,8 @@ return new class extends Migration
             $table->dateTime('last_communication_packet_sent')->nullable();
             $table->string('last_assigned_ip_address', 255)->nullable();
             $table->string('remarks', 255)->nullable();
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
+            $table->dateTime('created_at')->default(now());
+            $table->dateTime('updated_at')->default(now());
         });
     }
 
