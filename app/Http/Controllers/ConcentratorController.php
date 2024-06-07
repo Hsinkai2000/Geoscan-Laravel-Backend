@@ -49,7 +49,23 @@ class ConcentratorController extends Controller
 
     public function update(Request $request)
     {
+        try {
+            $id = $request->route('id');
+            $concentrator_params = $request->only((new Concentrator)->getFillable());
+            $concentrator = Concentrator::find($id);
+            if (!$concentrator) {
+                return render_unprocessable_entity("Unable to find concentrator with id " . $id);
+            }
 
+            if (!$concentrator->update($concentrator_params)) {
+                throw new Exception("Unable to update concentrator");
+            }
+
+            return render_ok(["concentrator" => $concentrator]);
+
+        } catch (Exception $e) {
+            render_error($e->getMessage());
+        }
     }
 
     public function delete(Request $request)

@@ -22,5 +22,7 @@ Route::prefix('/api')->group(function () {
         Route::post("/", [ConcentratorController::class, 'create']);
         Route::get("/", [ConcentratorController::class, 'index']);
         Route::get("/{id}", [ConcentratorController::class, 'get']);
+        Route::patch("/{id}", [ConcentratorController::class, 'update']);
+
     });
 });
