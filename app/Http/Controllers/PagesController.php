@@ -44,10 +44,9 @@ class PagesController extends Controller
             $s_values = $geoscanLib->summary_values();
             $this->updateConcentrator($request, $s_values, $concentrator);
 
-            render_message("ok");
+            render_ok("ok");
         } catch (Exception $e) {
-            Log::error('Error in message0Callback', ['exception' => $e]);
-            render_error($e->getMessage());
+            render_unprocessable_entity($e->getMessage());
         }
     }
 
@@ -73,14 +72,13 @@ class PagesController extends Controller
                 $this->update_measurement_point($measurement_point, $ndevice_params);
                 $measurement_point->check_last_data_for_alert();
 
-                render_message("Record Successfully updated");
+                render_ok("Record Successfully updated");
             } catch (Exception $e) {
                 throw new Exception("Error processing noise data : " . $e->getMessage());
             }
 
         } catch (Exception $e) {
-            Log::error('Error in message1Callback', ['exception' => $e]);
-            render_error($e->getMessage());
+            render_unprocessable_entity($e->getMessage());
         }
     }
 
@@ -273,7 +271,7 @@ class PagesController extends Controller
     private function check_params_valid(GeoscanLib $geoscanLib)
     {
         if ($geoscanLib->params_not_valid()) {
-            render_error('Not enough parameters in the request');
+            render_unprocessable_entity('Not enough parameters in the request');
             return false;
         }
         return true;
@@ -282,7 +280,7 @@ class PagesController extends Controller
     private function check_crc32_valid(GeoscanLib $geoscanLib)
     {
         if (!$geoscanLib->crc32_valid()) {
-            render_error('CRC32 does not match');
+            render_unprocessable_entity('CRC32 does not match');
             return false;
         }
         return true;

@@ -1,19 +1,35 @@
 <?php
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 function debug_log($message, array $context = [])
 {
     Log::channel('debug')->debug($message, $context);
 }
 
-function render_message($message)
+function render_ok($message)
 {
     response()->json($message, Response::HTTP_OK)->send();
 }
-function render_error(string $error_message)
+
+function render_unprocessable_entity($message)
 {
-    response()->json(['error' => $error_message], Response::HTTP_UNPROCESSABLE_ENTITY)->send();
+    Log::error('Unprocessable Entity', ['exception' => $message]);
+    response()->json(["Unprocessable Entity" => $message],
+        Response::HTTP_UNPROCESSABLE_ENTITY)->send();
+}
+
+function render_error($message)
+{
+    Log::error('Error', ['exception' => $message]);
+    response()->json(["Internal Server Error" => $message], Response::HTTP_INTERNAL_SERVER_ERROR)->send();
+}
+
+function render_not_found($message)
+{
+    Log::error('Not found', ['exception' => $message]);
+    response()->json(["Not Found" => $message], Response::HTTP_NOT_FOUND)->send();
 }
 
 function linearise_leq($leq)

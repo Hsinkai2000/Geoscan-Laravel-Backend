@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::dropIfExists('noise_meters');
         Schema::create('noise_meters', function (Blueprint $table) {
             $table->id();
-            $table->string('serial_number', 255);
+            $table->string('serial_number', 32);
             $table->string('brand', 255);
             $table->date('last_calibration_date');
             $table->string('remarks', 255)->nullable();
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
+            $table->dateTime('created_at')->default(now());
+            $table->dateTime('updated_at')->default(now());
         });
     }
 
