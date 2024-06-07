@@ -23,7 +23,7 @@ function render_unprocessable_entity($message)
 function render_error($message)
 {
     Log::error('Error', ['exception' => $message]);
-    response()->json(["Internal Server Error" => $message], Response::HTTP_INTERNAL_SERVER_ERROR)->send();
+    response()->json(["Internal Server Error" => $message->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR)->send();
 }
 
 function render_not_found($message)
