@@ -12,36 +12,40 @@ class NoiseMeterController extends Controller
     {
         try {
             $noise_meter_params = $request->only((new NoiseMeter)->getFillable());
-            if (strlen($noise_meter_params['serial_number']) === 4) {
-                $noise_meter_id = NoiseMeter::insertGetId($noise_meter_params);
-                $noise_meter = NoiseMeter::find($noise_meter_id);
-                render_message(["noise_meter" => $noise_meter]);
-            } else {
-                throw new Exception('Noise Meter serial number have to be 32 bits');
+            if (strlen($noise_meter_params['serial_number']) !== 4) {
+                return render_unprocessable_entity('Noise meter serial number not 32 bits');
             }
+            $noise_meter_id = NoiseMeter::insertGetId($noise_meter_params);
+            $noise_meter = NoiseMeter::find($noise_meter_id);
+            return render_ok(["noise_meter" => $noise_meter]);
+
         } catch (Exception $e) {
-            render_error($e->getMessage());
+            return render_error($e->getMessage());
         }
     }
 
     public function index()
     {
         try {
-            render_message(["noise_meters" => NoiseMeter::all()]);
+            return render_ok(["noise_meters" => NoiseMeter::all()]);
         } catch (Exception $e) {
-            render_error($e->getMessage());
+            return render_error($e->getMessage());
         }
     }
 
-    // public function get(Request $request)
-    // {
-    //     try {
-
-    //     } catch (Exception $e) {
-    //         Log::error('Error in fetching Noise Meter', ['exception' => $e]);
-    //         render_error($e->getMessage());
-    //     }
-    // }
+    public function get(Request $request)
+    {
+        try {
+            $id = $request->route('id');
+            $noise_meter = NoiseMeter::find($id);
+            if (!$noise_meter) {
+                return render_unprocessable_entity("Unable to find noise meter with id " . $id);
+            }
+            return render_ok(["noise_meter" => $noise_meter]);
+        } catch (Exception $e) {
+            return render_error($e->getMessage());
+        }
+    }
 
     // public function update(Request $request)
     // {
@@ -49,18 +53,26 @@ class NoiseMeterController extends Controller
 
     //     } catch (Exception $e) {
     //         Log::error('Error in updating Noise Meter', ['exception' => $e]);
-    //         render_error($e->getMessage());
+    //         render_unprocessable_entity($e->getMessage());
     //     }
     // }
 
-    // public function delete(Request $request)
-    // {
-    //     try {
+    public function delete(Request $request)
+    {
+        try {
+            $id = $request->route('id');
+            $noise_meter = NoiseMeter::find($id);
+            if (!$noise_meter) {
+                return render_unprocessable_entity("Unable to find noise meter with id " . $id);
+            }
+            if (!$noise_meter->delete()) {
+                return render_error("Unable to delete noise meter");
+            }
+            return render_ok(["noise_meter" => $noise_meter]);
 
-    //     } catch (Exception $e) {
-    //         Log::error('Error in deleting Noise Meter', ['exception' => $e]);
-    //         render_error($e->getMessage());
-    //     }
-    // }
+        } catch (Exception $e) {
+            return render_error($e->getMessage());
+        }
+    }
 
 }

@@ -12,4 +12,5 @@ Route::prefix('/api')->group(function () {
     Route::post("/noisemeter/", [NoiseMeterController::class, 'create']);
     Route::get("/noisemeter/", [NoiseMeterController::class, 'index']);
     Route::get("/noisemeter/{id}", [NoiseMeterController::class, 'get']);
+    Route::delete("/noisemeter/{id}", [NoiseMeterController::class, 'delete']);
 });
