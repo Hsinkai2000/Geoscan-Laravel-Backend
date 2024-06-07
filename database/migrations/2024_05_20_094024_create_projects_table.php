@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('jobsite_location', 255);
             $table->string('BCA Reference Number', 255)->nullable();
             $table->string('status', 255)->nullable()->default('Draft');
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
+            $table->dateTime('created_at')->default(now());
+            $table->dateTime('updated_at')->default(now());
             $table->dateTime('completed_at')->nullable();
         });
     }
