@@ -26,7 +26,11 @@ class ConcentratorController extends Controller
 
     public function index()
     {
-
+        try {
+            return render_ok(["concentrators" => Concentrator::all()]);
+        } catch (Exception $e) {
+            return render_error($e->getMessage());
+        }
     }
 
     public function get(Request $request)
