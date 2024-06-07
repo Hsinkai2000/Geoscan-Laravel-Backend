@@ -21,5 +21,6 @@ Route::prefix('/api')->group(function () {
     Route::prefix('/concentrator')->group(function () {
         Route::post("/", [ConcentratorController::class, 'create']);
         Route::get("/", [ConcentratorController::class, 'index']);
+        Route::get("/{id}", [ConcentratorController::class, 'get']);
     });
 });

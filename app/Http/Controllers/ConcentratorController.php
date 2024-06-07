@@ -35,7 +35,16 @@ class ConcentratorController extends Controller
 
     public function get(Request $request)
     {
-
+        try {
+            $id = $request->route('id');
+            $concentrator = Concentrator::find($id);
+            if (!$concentrator) {
+                return render_unprocessable_entity("Unable to find concentrator with id " . $id);
+            }
+            return render_ok(["concentrator" => $concentrator]);
+        } catch (Exception $e) {
+            return render_error($e->getMessage());
+        }
     }
 
     public function update(Request $request)
