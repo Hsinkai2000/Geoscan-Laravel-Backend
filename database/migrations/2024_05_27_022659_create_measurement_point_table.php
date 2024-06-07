@@ -28,8 +28,8 @@ return new class extends Migration
             $table->dateTime('leq_12_hours_last_alert_at')->nullable();
             $table->dateTime('dose_70_last_alert_at')->nullable();
             $table->dateTime('dose_100_last_alert_at')->nullable();
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
+            $table->dateTime('created_at')->default(now());
+            $table->dateTime('updated_at')->default(now());
         });
     }
 
