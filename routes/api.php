@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ConcentratorController;
+use App\Http\Controllers\ContactsController;
+use App\Http\Controllers\MeasurementPointController;
+use App\Http\Controllers\NoiseDataController;
 use App\Http\Controllers\NoiseMeterController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProjectController;
@@ -34,6 +37,33 @@ Route::prefix('/api')->group(function () {
         Route::get("/{id}", [ProjectController::class, 'get']);
         Route::patch("/{id}", [ProjectController::class, 'update']);
         Route::delete("/{id}", [ProjectController::class, 'delete']);
+
+    });
+
+    Route::prefix('/measurement-point')->group(function () {
+        Route::post("/", [MeasurementPointController::class, 'create']);
+        Route::get("/", [MeasurementPointController::class, 'index']);
+        Route::get("/{id}", [MeasurementPointController::class, 'get']);
+        Route::patch("/{id}", [MeasurementPointController::class, 'update']);
+        Route::delete("/{id}", [MeasurementPointController::class, 'delete']);
+
+    });
+
+    Route::prefix('/contacts')->group(function () {
+        Route::post("/", [ContactsController::class, 'create']);
+        Route::get("/", [ContactsController::class, 'index']);
+        Route::get("/{id}", [ContactsController::class, 'get']);
+        Route::patch("/{id}", [ContactsController::class, 'update']);
+        Route::delete("/{id}", [ContactsController::class, 'delete']);
+
+    });
+
+    Route::prefix('/noise-data')->group(function () {
+        Route::post("/", [NoiseDataController::class, 'create']);
+        Route::get("/", [NoiseDataController::class, 'index']);
+        Route::get("/{id}", [NoiseDataController::class, 'get']);
+        Route::patch("/{id}", [NoiseDataController::class, 'update']);
+        Route::delete("/{id}", [NoiseDataController::class, 'delete']);
 
     });
 });
