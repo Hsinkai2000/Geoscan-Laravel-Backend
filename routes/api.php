@@ -9,6 +9,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SoundLimitController;
 use App\Http\Controllers\TwilioController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post("/input", [PagesController::class, 'input']);
@@ -75,5 +76,14 @@ Route::prefix('/api')->group(function () {
         Route::patch("/{id}", [SoundLimitController::class, 'update']);
         Route::delete("/{id}", [SoundLimitController::class, 'delete']);
 
+    });
+
+    Route::prefix('/user')->group(function () {
+        Route::post("/", [UserController::class, 'create']);
+        Route::get("/", [UserController::class, 'index']);
+        Route::get("/{id}", [UserController::class, 'get']);
+        Route::patch("/{id}", [UserController::class, 'update']);
+        Route::delete("/{id}", [UserController::class, 'delete']);
+        Route::post("/login", [UserController::class, 'login']);
     });
 });

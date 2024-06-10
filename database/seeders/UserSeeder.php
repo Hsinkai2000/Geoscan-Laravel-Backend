@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Faker\Guesser\Name;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Faker\Guesser\Name;
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
@@ -22,7 +21,7 @@ class UserSeeder extends Seeder
             'email' => $faker->email(),
             'encrypted_password' => bcrypt('abc123456'),
             'created_at' => $now,
-            'updated_at' => $now
+            'updated_at' => $now,
         ]);
     }
 }
