@@ -1,0 +1,99 @@
+// @import "~/tabulator-tables/dist/css/tabulator.min.css";
+
+body {
+    background-color: #f6f8f0;
+    color: #9f553a;
+    margin: 0;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.6rem;
+}
+
+p,
+input {
+    font-size: 1.3rem;
+}
+
+#geoscan_logo {
+    min-width: 100px;
+    width: 30vw;
+    height: auto;
+    margin-bottom: 40px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+
+    .login-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: baseline;
+        height: 30px;
+        padding-bottom: 20px;
+        margin-right: 20px;
+
+        p {
+            width: 100px; /* Adjust width as needed */
+            text-align: right;
+        }
+    }
+
+    .input {
+        margin-left: 20px;
+        width: 150px;
+        border: none;
+        border-bottom: 2px solid #9f553a;
+        background-color: #f6f8f0;
+    }
+
+    .btn-login {
+        font-size: 1rem;
+        border-radius: 10px;
+        margin-top: 50px;
+        width: 250px;
+        border: none;
+        padding: 10px;
+        background-color: #f5e99d;
+    }
+}
+
+.footer {
+    display: none;
+}
+
+@media only screen and (min-width: 768px) {
+    #geoscan_logo {
+        max-width: 200px;
+    }
+
+    .input {
+        width: 200px;
+    }
+
+    .footer {
+        background-color: #9f553a;
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .footer p {
+        color: #f5e99d;
+        font-size: 0.8rem;
+    }
+}
