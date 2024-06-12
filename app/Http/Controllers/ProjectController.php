@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
+
+    public function show()
+    {
+        return view('web.project');
+    }
+
     public function create(Request $request)
     {
         try {
@@ -21,13 +29,20 @@ class ProjectController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            return render_ok(["projects" => Project::all()]);
-        } catch (Exception $e) {
-            return render_error($e->getMessage());
-        }
+        debug_log("hihi");
+        $user = Auth::user();
+        if (Gate::authorize('view-project', $user)) {
+
+            try {
+                return response()->json(["projects" => Project::all()]);
+            } catch (Exception $e) {
+                debug_log('ss', [$e->getMessage()]);
+                return render_error($e->getMessage());
+            }
+        };
+        return render_error("Unauthorised");
     }
 
     public function get(Request $request)

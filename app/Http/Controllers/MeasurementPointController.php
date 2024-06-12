@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class MeasurementPointController extends Controller
 {
+
+    public function show()
+    {
+        return view('web.measurementPoint');
+    }
+
     public function create(Request $request)
     {
         try {
@@ -24,7 +30,7 @@ class MeasurementPointController extends Controller
     public function index()
     {
         try {
-            return render_ok(["measurement_points" => MeasurementPoint::all()]);
+            return view("measurement_points", ['measurement_point' => MeasurementPoint::all()]);
         } catch (Exception $e) {
             return render_error($e->getMessage());
         }

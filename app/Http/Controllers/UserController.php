@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -88,20 +87,4 @@ class UserController extends Controller
         }
     }
 
-    public function login(Request $request)
-    {
-        try {
-            $user_params = $request->only((new User)->getFillable());
-
-            if (Auth::attempt(['username' => $user_params['username'], 'password' => $user_params['password']])) {
-                $request->session()->regenerate();
-                return render_ok(["user" => Auth::user()]);
-            };
-
-            return render_unprocessable_entity("Invalid login details");
-
-        } catch (Exception $e) {
-            return render_error($e->getMessage());
-        }
-    }
 }
