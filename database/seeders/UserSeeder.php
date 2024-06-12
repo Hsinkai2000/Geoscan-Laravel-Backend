@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Faker\Guesser\Name;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -19,7 +20,7 @@ class UserSeeder extends Seeder
             'user_type' => 'admin',
             'username' => $faker->name(),
             'email' => $faker->email(),
-            'encrypted_password' => bcrypt('abc123456'),
+            'password' => Hash::make('abc123456'),
             'created_at' => $now,
             'updated_at' => $now,
         ]);

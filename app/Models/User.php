@@ -26,7 +26,7 @@ class User extends Authenticatable
         'user_type',
         'username',
         'email',
-        'encrypted_password',
+        'password',
         'reset_password_token',
         'reset_password_sent_at',
         'remember_created_at',

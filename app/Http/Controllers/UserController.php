@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -90,18 +91,13 @@ class UserController extends Controller
     {
         try {
             $user_params = $request->only((new User)->getFillable());
-            $user_password = $request->get('password');
-            $user = User::where('username', $user_params['username'])->get()->first();
-            debug_log('user', [$user_params, $user_password, $user, bcrypt($user_password)]);
 
-            if (!$user) {
-                return render_unprocessable_entity("No such user found, please contact geoscan to register.");
-            }
+            if (Auth::attempt(['username' => $user_params['username'], 'password' => $user_params['password']])) {
 
-            if (!password_verify($user_password, $user->encrypted_password)) {
-                return render_unprocessable_entity("Invalid login details, please try again.");
-            }
-            return render_ok(["user" => $user]);
+                return render_ok(["user" => Auth::user()]);
+            };
+
+            return render_unprocessable_entity("Invalid login details");
 
         } catch (Exception $e) {
             return render_error($e->getMessage());
