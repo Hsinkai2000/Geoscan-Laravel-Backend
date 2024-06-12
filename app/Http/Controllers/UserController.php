@@ -6,6 +6,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -13,7 +14,7 @@ class UserController extends Controller
     {
         try {
             $user_params = $request->only((new User)->getFillable());
-            $user_params['encrypted_password'] = password_hash($request->get('password'), PASSWORD_BCRYPT);
+            $user_params['password'] = Hash::make($user_params['password']);
 
             $user_id = User::insertGetId($user_params);
             $user = User::find($user_id);
