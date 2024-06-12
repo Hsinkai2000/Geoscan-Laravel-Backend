@@ -93,7 +93,7 @@ class UserController extends Controller
             $user_params = $request->only((new User)->getFillable());
 
             if (Auth::attempt(['username' => $user_params['username'], 'password' => $user_params['password']])) {
-
+                $request->session()->regenerate();
                 return render_ok(["user" => Auth::user()]);
             };
 
