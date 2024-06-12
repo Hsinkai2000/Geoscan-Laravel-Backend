@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -43,4 +44,14 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function project(): HasMany
+    {
+        return $this->hasMany(Project::class, 'user_id', 'id');
+    }
+
+    public function isAdmin()
+    {
+        return $this->user_type == 'admin' ? true : false;
+    }
 }

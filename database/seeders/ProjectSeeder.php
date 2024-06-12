@@ -15,6 +15,7 @@ class ProjectSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $now = date("Y-m-d H:i:s");
         Project::create([
+            'user_id' => 2,
             'job_number' => 'zzHsinKaiTest',
             'client_name' => 'zzHsinKai',
             'project_description' => $faker->text(),
