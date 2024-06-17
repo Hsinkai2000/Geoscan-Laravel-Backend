@@ -13,7 +13,7 @@ class Project extends Model
     use HasFactory;
     protected $table = 'projects';
 
-    protected $fillable = ['user_id', 'job_number', 'client_name', 'end_user_name', 'project_type', 'billing_address', 'project_description', 'jobsite_location', 'bca_reference_number', 'status', 'created_at', 'updated_at', 'completed_at'];
+    protected $fillable = ['user_id', 'job_number', 'client_name', 'end_user_name', 'sms_count', 'project_type', 'billing_address', 'project_description', 'jobsite_location', 'bca_reference_number', 'status', 'created_at', 'updated_at', 'completed_at'];
 
     //references dont want
 
@@ -43,5 +43,11 @@ class Project extends Model
     public function get_contact_details()
     {
         return [$this->contact->phone_number, $this->contact->email];
+    }
+
+    public function increment_sms_count()
+    {
+        $this->sms_count += 1;
+        $this->save();
     }
 }
