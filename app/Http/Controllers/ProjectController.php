@@ -28,20 +28,54 @@ class ProjectController extends Controller
             return render_error($e->getMessage());
         }
     }
+    private function format_projects($projects)
+    {
+        $grouped_data = [];
+        foreach ($projects as $project) {
+            $client_name = $project['client_name'];
+            if (!isset($grouped_data[$client_name])) {
+                $grouped_data[$client_name] = [
+                    'name' => $client_name,
+                    'jobsite_location' => '',
+                    'project_description' => '',
+                    'bca_reference_number' => '',
+                    'created_at' => '',
+                    '_children' => [],
+                ];
+            }
+
+            $end_user_info = [
+                'name' => $project['end_user_name'],
+                'jobsite_location' => $project['jobsite_location'],
+                'project_description' => $project['project_description'],
+                'bca_reference_number' => $project['bca_reference_number'],
+                'created_at' => $project['created_at'],
+            ];
+            $grouped_data[$client_name]['_children'][] = $end_user_info;
+        }
+
+        // Convert associative array to indexed array
+        return array_values($grouped_data);
+    }
 
     public function index(Request $request)
     {
-        debug_log("hihi");
         $user = Auth::user();
+        $project_type = $request->get('project_type');
         if (Gate::authorize('view-project', $user)) {
-
             try {
-                return response()->json(["projects" => Project::all()]);
+                $projects = Project::where([['user_id', $user->id], ['project_type', $project_type]])->get();
+                if ($project_type == 'sales') {
+                    $projects = $this->format_projects($projects);
+                }
+                debug_log('project', [$projects]);
+                return response()->json(["projects" => $projects]);
             } catch (Exception $e) {
                 debug_log('ss', [$e->getMessage()]);
                 return render_error($e->getMessage());
             }
         };
+        debug_log("unauthorised");
         return render_error("Unauthorised");
     }
 

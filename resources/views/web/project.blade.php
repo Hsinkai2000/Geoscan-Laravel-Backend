@@ -9,10 +9,8 @@
     <link href="https://unpkg.com/tabulator-tables@5.4.3/dist/css/tabulator.min.css" rel="stylesheet" />
     <!-- Include Tabulator JS from CDN -->
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.4.3/dist/js/tabulator.min.js"></script>
-    @vite(["resources/scss/home.scss","resources/js/home.js"])
+    @vite(["resources/scss/project.scss","resources/js/project.js","resources/scss/base.scss"])
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-
 </head>
 
 <body>
@@ -31,7 +29,23 @@
     </nav>
     <div class="container">
         <h1>Projects</h1>
+
+        <div class="project-types">
+            <h3>Rental Projects</h3>
+            <h3 class="selected">Sales Project</h3>
+        </div>
+
+        <div id="example-table"></div>
+
+        <div class="button-container">
+            <button id="deleteButton">Delete</button>
+            <div class="button-container-right">
+                <button id="editButton">Edit</button>
+                <button id="createButton">Create</button>
+            </div>
+        </div>
     </div>
+
 
     <div class="footer">
         <p>Tel: +65 6781 1919</p>

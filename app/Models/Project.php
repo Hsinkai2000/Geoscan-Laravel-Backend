@@ -13,7 +13,7 @@ class Project extends Model
     use HasFactory;
     protected $table = 'projects';
 
-    protected $fillable = ['user_id', 'job_number', 'client_name', 'billing_address', 'project_description', 'jobsite_location', 'BCA Reference Number', 'status', 'created_at', 'updated_at', 'completed_at'];
+    protected $fillable = ['user_id', 'job_number', 'client_name', 'end_user_name', 'project_type', 'billing_address', 'project_description', 'jobsite_location', 'bca_reference_number', 'status', 'created_at', 'updated_at', 'completed_at'];
 
     //references dont want
 

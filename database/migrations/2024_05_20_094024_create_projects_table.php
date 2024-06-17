@@ -17,9 +17,11 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('job_number', 255);
             $table->string('client_name', 255);
+            $table->string('end_user_name', 255)->nullable();
             $table->string('project_description', 255)->nullable();
+            $table->string('project_type', 255);
             $table->string('jobsite_location', 255);
-            $table->string('BCA Reference Number', 255)->nullable();
+            $table->string('bca_reference_number', 255)->nullable();
             $table->string('status', 255)->nullable()->default('Draft');
             $table->dateTime('created_at')->default(now());
             $table->dateTime('updated_at')->default(now());
