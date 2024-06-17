@@ -50,4 +50,9 @@ class Project extends Model
         $this->sms_count += 1;
         $this->save();
     }
+
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d');
+    }
 }
