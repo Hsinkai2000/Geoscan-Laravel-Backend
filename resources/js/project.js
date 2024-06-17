@@ -36,7 +36,7 @@ function settable(tabledata, project_type) {
                 },
                 {
                     title: "SMS Contacts (Number of alerts)",
-                    field: "",
+                    field: "sms_count",
                     headerSort: false,
                 },
                 {
