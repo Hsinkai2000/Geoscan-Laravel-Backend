@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MeasurementPoint;
+use App\Models\Project;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,14 @@ class MeasurementPointController extends Controller
 
     public function show()
     {
+        debug_log('in here', ['id']);
         return view('web.measurementPoint');
+    }
+
+    public function show_by_project($id)
+    {
+        $project = Project::find($id);
+        return view('web.measurementPoint', ['project' => $project, "measurement_point" => $project->measurement_point])->render();
     }
 
     public function create(Request $request)
@@ -40,11 +48,11 @@ class MeasurementPointController extends Controller
     {
         try {
             $id = $request->route('id');
-            $measurement_point = MeasurementPoint::find($id);
-            if (!$measurement_point) {
+            $measurementPoint = MeasurementPoint::where('project_id', $id);
+            if (!$measurementPoint) {
                 return render_unprocessable_entity("Unable to find Measurement point with id " . $id);
             }
-            return render_ok(["measurement_point" => $measurement_point]);
+            return render_ok(['measurement_point' => $measurementPoint]);
         } catch (Exception $e) {
             return render_error($e->getMessage());
         }

@@ -34,13 +34,15 @@ class ContactsController extends Controller
     {
         try {
             $id = $request->route('id');
-            $contact = Contact::find($id);
+            $contact = Contact::where('project_id', $id)->get();
             if (!$contact) {
                 return render_unprocessable_entity("Unable to find contact with id " . $id);
             }
+            debug_log('in here get', ["contact" => $contact]);
             return render_ok(["contact" => $contact]);
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            debug_log('in here get', [$e]);
+            return render_error($e);
         }
     }
 

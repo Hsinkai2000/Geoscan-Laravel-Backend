@@ -104,6 +104,9 @@ function settable(tabledata, project_type) {
             ],
         });
     }
+    table.on("rowClick", function (e, row) {
+        window.location.href = "/measurement_point/" + row.getIndex();
+    });
 }
 
 var tabledata = null;

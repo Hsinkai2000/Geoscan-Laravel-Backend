@@ -31,8 +31,6 @@
     </nav>
     <div class="container">
         <h1> Welcome, {{ Auth::user()->username }}</h1>
-        <!-- <button id="ajax-trigger">Load Data via AJAX</button>
-        <div id="example-table"></div> -->
         <div class="button-container">
             <a href="{{ route('project.show') }}" class="btn">Project</a>
             <a href="{{ route('measurement_point.show') }}" class="btn">Measurement Point</a>
@@ -48,54 +46,6 @@
             <p>Email: enquiry@geoscan.com.sg</p>
             <p>Web: geoscan.com.sg</p>
         </div>
-        <!--
-        <script>
-        // Example data
-
-        async function getData() {
-            console.log('btn pressed');
-            var tabledata = null;
-            try {
-
-                fetch("http://localhost:8000/project", {
-                    method: "get",
-                    headers: {
-                        "Content-type": "application/json; charset=UTF-8",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
-                    },
-                }).then((response) => {
-                    if (!response.ok) {
-                        throw new Error("User not Authorised");
-                    }
-                    return response.json();
-                }).then((json) => {
-                    console.log(json);
-                    tabledata = json.projects;
-                    table.setData(tabledata);
-                });
-            } catch (error) {
-                return error;
-            }
-        }
-
-
-        //Build Tabulator
-        var table = new Tabulator("#example-table", {
-            height: "311px",
-            layout: "fitColumns",
-            placeholder: "No Data Set",
-            autoColumns: true
-        });
-
-        //trigger AJAX load on "Load Data via AJAX" button click
-        document
-            .getElementById("ajax-trigger")
-            .addEventListener("click", function() {
-                tabledata = getData();
-            });
-        </script> -->
-
 
 </body>
 
