@@ -7,4 +7,4 @@ Route::post("/project", [ProjectController::class, 'create'])->name('project.cre
 Route::post("/projects", [ProjectController::class, 'index'])->name('project_all');
 Route::get("/projects/{id}", [ProjectController::class, 'get'])->name('project');
 Route::patch("/project/{id}", [ProjectController::class, 'update']);
-Route::delete("/project/{id}", [ProjectController::class, 'delete']);
+Route::delete("/project/{id}", [ProjectController::class, 'delete'])->name('project.delete');

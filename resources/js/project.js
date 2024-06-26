@@ -11,10 +11,19 @@ function settable(tabledata, project_type) {
             layout: "fitColumns",
             data: tabledata,
             placeholder: "Not authorised",
-            paginationSize: 10,
+            paginationSize: 20,
             paginationCounter: "rows",
             paginationElement: document.getElementById("table_pages"),
+            selectable: 1,
             columns: [
+                {
+                    formatter: "rowSelection",
+                    titleFormatter: "rowSelection",
+                    hozAlign: "center",
+                    headerSort: false,
+                    frozen: true,
+                    width: 30,
+                },
                 {
                     title: "PJO Number",
                     field: "job_number",
@@ -37,7 +46,7 @@ function settable(tabledata, project_type) {
                 {
                     title: "Project Description",
                     field: "project_description",
-                    minWidth: window.innerWidth * 0.3,
+                    minWidth: window.innerWidth * 0.25,
                     headerSort: false,
                 },
                 {
@@ -57,7 +66,6 @@ function settable(tabledata, project_type) {
                     field: "status",
                     editor: "list",
                     editorParams: {
-                        //Value Options (You should use ONE of these per editor)
                         values: ["", "Ongoing", "Completed"],
                         clearable: true,
                     },
@@ -86,11 +94,20 @@ function settable(tabledata, project_type) {
             layout: "fitColumns",
             placeholder: "Not authorised",
             paginationElement: document.getElementById("table_pages"),
-            paginationSize: 10,
+            paginationSize: 20,
             paginationCounter: "rows",
             dataTree: true,
             dataTreeStartExpanded: true,
+            selectable: 1,
             columns: [
+                {
+                    formatter: "rowSelection",
+                    titleFormatter: "rowSelection",
+                    hozAlign: "center",
+                    headerSort: false,
+                    frozen: true,
+                    width: 30,
+                },
                 {
                     title: "Name",
                     field: "name",
@@ -127,6 +144,12 @@ function settable(tabledata, project_type) {
     }
     table.on("rowClick", function (e, row) {
         window.location.href = "/measurement_point/" + row.getIndex();
+    });
+    table.on("rowSelectionChanged", function (data, rows) {
+        if (data && data.length > 0) {
+            var projectId = document.getElementById("inputprojectId");
+            projectId.value = data[0].id;
+        }
     });
     window.table = table;
 }
@@ -224,12 +247,10 @@ function create_project() {
                     document.getElementById("projectCreateModal");
                 let modal = bootstrap.Modal.getInstance(modalElement);
                 modal.hide();
-                // Refresh the page or part of the page
-                location.reload(); // This will reload the entire page
+                location.reload();
             } else {
-                // Handle validation errors
                 const errors = data.errors;
-                // Clear previous errors
+
                 document
                     .querySelectorAll(".text-danger")
                     .forEach((el) => el.remove());
@@ -259,6 +280,35 @@ function toggleEndUserName() {
     }
 }
 
+function handleDelete() {
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    var projectId = document.getElementById("inputprojectId").value;
+    fetch("http://localhost:8000/project/" + projectId, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                console.log("Error:", response);
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Success:", data);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
+window.handleDelete = handleDelete;
 window.changeTab = changeTab;
 window.fetch_data = fetch_data;
 window.fetch_users = fetch_users;

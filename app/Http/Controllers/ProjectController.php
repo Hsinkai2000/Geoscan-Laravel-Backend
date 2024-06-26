@@ -23,7 +23,7 @@ class ProjectController extends Controller
             debug_log('project params', [$project_params]);
             $project_id = Project::insertGetId($project_params);
             if (Project::find($project_id)) {
-                return view('project.show');
+                return redirect()->route('project.show');
             } else {
                 return back();
             }
@@ -50,6 +50,7 @@ class ProjectController extends Controller
             }
 
             $end_user_info = [
+                'id' => $project['id'],
                 'name' => $project['end_user_name'],
                 'jobsite_location' => $project['jobsite_location'],
                 'project_description' => $project['project_description'],
@@ -122,6 +123,7 @@ class ProjectController extends Controller
     public function delete(Request $request)
     {
         try {
+            debug_log('in delet');
             $id = $request->route('id');
             $project = Project::find($id);
             if (!$project) {
@@ -130,7 +132,7 @@ class ProjectController extends Controller
             if (!$project->delete()) {
                 throw new Exception("Unable to delete project");
             }
-            return render_ok(["project" => $project]);
+            return render_ok(["delete successful"]);
 
         } catch (Exception $e) {
             return render_error($e->getMessage());
