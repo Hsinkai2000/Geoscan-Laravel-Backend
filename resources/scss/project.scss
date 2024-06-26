@@ -1,108 +1,65 @@
-.project-types {
-    display: flex;
-    margin-top: -3vh;
-    .selected {
-        background-color: #f6f2cf;
-        border-radius: 10px;
-        text-decoration: underline;
-    }
+// Default variable overrides
 
-    h3 {
-        z-index: 1;
-        padding: 10px 20px 10px 20px;
-        margin-right: 3vw;
+@import "./base.scss";
+
+#deleteButton {
+    &:hover {
+        color: $white !important;
+        background-color: $danger;
     }
 }
 
 #example-table {
-    margin-bottom: 2vh;
-    height: 56vh;
-
-    background-color: #f6f8f0;
-    border: 1px solid #9f553a;
-    // border: none;
-    padding-bottom: 5px;
-
+    background-color: $light;
+    height: 55vh;
+    border-top: none;
+    border-color: $border-color;
+    padding: 10px;
+    border-radius: 0 10px 10px 10px;
     .tabulator-header {
-        background-color: #f6f8f0;
-        color: #9f553a;
-        border-bottom: 3px solid #5e2c1a;
+        background-color: $light;
+        color: $dark;
+        border-bottom: 3px solid $primary;
         margin-bottom: 5px;
         .tabulator-col,
         .tabulator-row-handle {
             white-space: normal;
+            background-color: $light;
+            .tabulator-col-content {
+                text-overflow: clip;
+            }
         }
     }
 
     .tabulator-tableholder {
         .tabulator-table {
             .tabulator-row {
-                color: #5e2c1a;
-                background-color: #e0e3d8;
+                color: $dark;
+                background-color: $light;
+                margin-bottom: 2px;
+                &:hover {
+                    background-color: $hover;
+                }
+
                 .tabulator-cell {
-                    &:first-child {
-                        border-left: 10px solid #5e2c1a;
-                    }
+                    white-space: normal;
                 }
 
                 &:nth-child(even) {
-                    background-color: #f6f8f0;
+                    background-color: $white;
+                    &:hover {
+                        background-color: $hover;
+                    }
                 }
             }
         }
     }
 }
 
-.button-container {
-    display: flex;
-
-    button {
-        border: none;
-        border-radius: 10px;
-        height: 35px;
-        width: 70px;
-        color: #f6f8f0;
-    }
-
-    #deleteButton {
-        background-color: #dd8a7e;
-    }
-
-    .button-container-right {
-        display: flex;
-        flex-grow: 1;
-        justify-content: end;
-
-        button {
-            margin-left: 10px;
-        }
-
-        #editButton {
-            background-color: #c5b17f;
-        }
-
-        #createButton {
-            background-color: #a9cb72;
-        }
-    }
-}
-
 @media only screen and (min-width: 768px) {
-    .project-types {
-        h3 {
-            padding: 15px 40px 15px 40px;
-        }
-    }
-
     #example-table {
-        margin-bottom: 2vh;
-        height: 53vh;
-    }
-
-    .button-container {
-        button {
-            height: 45px;
-            width: 100px;
-        }
+        height: 65vh;
     }
 }
+
+@import "../../node_modules/bootstrap/scss/bootstrap";

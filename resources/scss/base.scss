@@ -1,149 +1,32 @@
-body {
-    background-color: #f6f8f0;
-    color: #9f553a;
-    margin: 0;
-    padding-left: 5vw;
-    padding-right: 5vw;
-    padding-bottom: 5vh;
-}
+$black: #121111;
+$hover: #eae7d0;
+$white: #f1f2f9;
+$light: #f5f5f5;
+$dark: #7b422d;
+$primary: #bd6747;
+$secondary: #e1c409;
+$info: #ffc881;
+$success: #30c886;
+$warning: #fd6603;
+$danger: #cc2e0e;
+$border-color: #dee2e6;
 
-h1 {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
+$box-shadow: 0.15rem 0.25rem 0.25rem rgba($black, 0.1);
+$box-shadow-sm: 0.15rem 0.2rem 0.25rem rgba($black, 0.2);
 
-h2 {
-    font-size: 1.3rem;
-    font-weight: bold;
-}
+$color: $dark;
+$navbar-padding-x: 2.5rem;
+$navbar-dark-color: $white;
+$navbar-dark-active-color: $secondary;
 
-h3 {
-    font-size: 1.1rem;
-}
+$nav-tabs-link-active-color: $dark;
+$nav-tabs-link-active-bg: $light;
 
-p,
-input,
-a,
-button {
-    font-size: 1rem;
-}
+$modal-inner-padding: 2rem;
+$modal-header-border-color: $primary;
+$modal-content-color: $dark;
+$modal-content-bg: $white;
 
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-content: center;
-    margin: 0;
-    height: 15vh; // Adjust height as needed
-}
-
-.navbar-logo {
-    align-self: center;
-    img {
-        width: auto; // Adjust size as needed
-        height: 15vw; // Adjust size as needed
-    }
-}
-
-.button-form {
-    display: flex;
-    align-items: center;
-}
-
-.container {
-    margin-top: -2vh;
-}
-
-.logout-button {
-    background-color: #9f553a; // Adjust color as needed
-    color: #f6f8f0;
-    font-size: 0.8rem;
-    border: none;
-    padding: 1rem 2rem 1rem 2rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.1s;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
-    &:hover {
-        background-color: #8c4a32;
-    }
-}
-
-.footer {
-    display: none;
-}
-
-@media only screen and (min-width: 768px) {
-    h1 {
-        font-size: 1.7rem;
-        font-weight: bold;
-    }
-
-    h2 {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    h3 {
-        font-size: 1.3rem;
-    }
-
-    p,
-    input,
-    a,
-    button {
-        font-size: 1.2rem;
-    }
-
-    .navbar {
-        height: 15vh;
-    }
-
-    .navbar-logo {
-        img {
-            width: auto;
-            max-height: 100px;
-        }
-    }
-
-    .footer {
-        background-color: #9f553a;
-        display: flex;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        justify-content: space-around;
-    }
-
-    .footer p {
-        color: #f5e99d;
-        font-size: 0.8rem;
-    }
-}
-
-@media only screen and (min-width: 1200px) {
-    h1 {
-        font-size: 2rem;
-        font-weight: bold;
-    }
-
-    h2 {
-        font-size: 1.8rem;
-        font-weight: bold;
-    }
-
-    h3 {
-        font-size: 1.6rem;
-    }
-
-    p,
-    input,
-    a,
-    button {
-        font-size: 1.5rem;
-    }
-    .footer p {
-        color: #f5e99d;
-        font-size: 1rem;
-    }
-}
+$modal-scale-transform: scale(1.2);
+$input-color: $dark;
+$input-bg: $light;

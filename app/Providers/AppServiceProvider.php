@@ -22,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('view-project', function (User $user) {
-            debug_log('user in boot', [$user]);
             return $user->isAdmin();
         });
     }

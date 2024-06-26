@@ -31,7 +31,12 @@ class AuthController extends Controller
 
         if (Auth::attempt(['username' => $user_params['username'], 'password' => $user_params['password']])) {
             $request->session()->regenerate();
-            return redirect()->route('home')->with('success', 'Login success');
+            if (Auth::user()->user_type == 'admin') {
+                return redirect()->route('project.show')->with('success', 'Login success');
+            } else {
+                return redirect()->route('measurement_point.show')->with('success', 'Login success');
+            }
+
         };
 
         back()->with('error', 'username or Password invalid');

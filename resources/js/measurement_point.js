@@ -1,6 +1,6 @@
 function set_contact_table(contactData) {
     var table = new Tabulator("#contacts_table", {
-        layout: "fitDataFill",
+        layout: "fitColumns",
         data: contactData,
         placeholder: "Not authorised",
         columns: [

@@ -1,34 +1,49 @@
-#contacts_table {
-    margin-top: 1vh;
-    background-color: #f6f8f0;
-    border: 1px solid #9f553a;
+@import "./base.scss";
 
+#contacts_table {
+    background-color: $light;
+    border-top: none;
+    border-color: $border-color;
+    padding: 10px;
+    border-radius: 0 10px 10px 10px;
     .tabulator-header {
-        background-color: #f6f8f0;
-        color: #9f553a;
-        border-bottom: 3px solid #5e2c1a;
+        background-color: $light;
+        color: $dark;
+        border-bottom: 3px solid $primary;
         margin-bottom: 5px;
         .tabulator-col,
         .tabulator-row-handle {
             white-space: normal;
+            background-color: $light;
+            .tabulator-col-content {
+                text-overflow: clip;
+            }
         }
     }
 
     .tabulator-tableholder {
         .tabulator-table {
             .tabulator-row {
-                color: #5e2c1a;
-                background-color: #e0e3d8;
+                color: $dark;
+                background-color: $light;
                 .tabulator-cell {
                     &:first-child {
-                        border-left: 10px solid #5e2c1a;
+                        border-left: 10px solid $dark;
                     }
                 }
 
                 &:nth-child(even) {
-                    background-color: #f6f8f0;
+                    background-color: $white;
                 }
             }
         }
     }
 }
+
+@media only screen and (min-width: 768px) {
+    #example-table {
+        height: 65vh;
+    }
+}
+
+@import "../../node_modules/bootstrap/scss/bootstrap";

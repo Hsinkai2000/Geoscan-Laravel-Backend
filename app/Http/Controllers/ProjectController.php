@@ -20,14 +20,19 @@ class ProjectController extends Controller
     {
         try {
             $project_params = $request->only((new Project)->getFillable());
+            debug_log('project params', [$project_params]);
             $project_id = Project::insertGetId($project_params);
-            $project = Project::find($project_id);
-            return render_ok(["project" => $project]);
+            if (Project::find($project_id)) {
+                return view('project.show');
+            } else {
+                return back();
+            }
 
         } catch (Exception $e) {
             return render_error($e->getMessage());
         }
     }
+
     private function format_projects($projects)
     {
         $grouped_data = [];
@@ -49,7 +54,7 @@ class ProjectController extends Controller
                 'jobsite_location' => $project['jobsite_location'],
                 'project_description' => $project['project_description'],
                 'bca_reference_number' => $project['bca_reference_number'],
-                'created_at' => $project['created_at'],
+                'created_at' => $project['created_at']->format('Y-m-d'),
             ];
             $grouped_data[$client_name]['_children'][] = $end_user_info;
         }
@@ -68,7 +73,7 @@ class ProjectController extends Controller
                 if ($project_type == 'sales') {
                     $projects = $this->format_projects($projects);
                 }
-                debug_log('project', [$projects]);
+
                 return response()->json(["projects" => $projects]);
             } catch (Exception $e) {
                 debug_log('ss', [$e->getMessage()]);
