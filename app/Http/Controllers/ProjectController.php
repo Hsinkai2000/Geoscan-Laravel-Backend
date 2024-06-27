@@ -51,6 +51,10 @@ class ProjectController extends Controller
 
             $end_user_info = [
                 'id' => $project['id'],
+                'user_id' => $project['user_id'],
+                'job_number' => $project['job_number'],
+                'client_name' => $project['client_name'],
+                'end_user_name' => $project['end_user_name'],
                 'name' => $project['end_user_name'],
                 'jobsite_location' => $project['jobsite_location'],
                 'project_description' => $project['project_description'],
@@ -104,6 +108,7 @@ class ProjectController extends Controller
         try {
             $id = $request->route('id');
             $project_params = $request->only((new Project)->getFillable());
+            debug_log($project_params);
             $project = Project::find($id);
             if (!$project) {
                 return render_unprocessable_entity("Unable to find project with id " . $id);

@@ -8,9 +8,6 @@
 
             <div class="modal-body">
                 <form id="deleteForm">
-                    <!-- Hidden input field to store project ID -->
-                    <input name="id" id="inputprojectId">
-
                     <!-- Cancel button to dismiss the modal -->
                     <button type="button" class="btn btn-primary bg-white text-primary"
                         data-bs-dismiss="modal">Cancel</button>

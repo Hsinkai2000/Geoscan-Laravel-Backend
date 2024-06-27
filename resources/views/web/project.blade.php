@@ -57,7 +57,6 @@
             </ol>
         </nav>
 
-
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" onClick="changeTab(event,'rental')">Rental
@@ -70,7 +69,6 @@
 
         <div class="shadow" id="example-table"></div>
 
-
         <div class="d-flex flex-row mt-3 justify-content-between">
             <button class="btn btn-light text-danger border shadow-sm" id="deleteButton" data-bs-toggle="modal"
                 data-bs-target="#deleteModal">Delete</button>
@@ -80,14 +78,19 @@
             <div>
                 <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton" onclick=""
                     data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                <button class="btn btn-primary text-light  shadow-sm" id="createButton" onclick='fetch_users()'
-                    data-bs-toggle="modal" data-bs-target="#projectcreateModal">Create</button>
+                <button class="btn btn-primary text-light  shadow-sm" id="createButton"
+                    onclick='fetch_users("inputUserSelect")' data-bs-toggle="modal"
+                    data-bs-target="#projectcreateModal">Create</button>
             </div>
         </div>
     </div>
+
+    <input hidden name="id" id="inputprojectId">
+
     <x-project-modal />
-    <x-delete-modal :projectid=21 id='xdeleteModal' />
+    <x-delete-modal />
     <x-project-update-modal />
+
 </body>
 
 </html>

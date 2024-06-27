@@ -8,13 +8,11 @@ use Illuminate\View\Component;
 
 class deleteModal extends Component
 {
-    public $projectid;
     /**
      * Create a new component instance.
      */
     public function __construct(
-        $projectid, ) {
-        $this->projectid = $projectid;
+    ) {
     }
 
     /**

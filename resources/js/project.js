@@ -1,3 +1,4 @@
+var tabledata = null;
 function settable(tabledata, project_type) {
     document.getElementById("table_pages").innerHTML = "";
 
@@ -146,15 +147,23 @@ function settable(tabledata, project_type) {
         window.location.href = "/measurement_point/" + row.getIndex();
     });
     table.on("rowSelectionChanged", function (data, rows) {
-        if (data && data.length > 0) {
-            var projectId = document.getElementById("inputprojectId");
-            projectId.value = data[0].id;
-        }
+        table_row_changed(data);
     });
     window.table = table;
 }
 
-var tabledata = null;
+function table_row_changed(data) {
+    if (data && data.length > 0) {
+        document.getElementById("editButton").disabled = false;
+        document.getElementById("deleteButton").disabled = false;
+        var projectId = document.getElementById("inputprojectId");
+        projectId.value = data[0].id;
+        fetch_project_data(data[0]);
+    } else {
+        document.getElementById("editButton").disabled = true;
+        document.getElementById("deleteButton").disabled = true;
+    }
+}
 
 function changeTab(event, project_type) {
     document.querySelectorAll(".nav-link").forEach((tab) => {
@@ -193,7 +202,8 @@ function fetch_data(project_type) {
         });
 }
 
-function fetch_users() {
+function fetch_users(element, id = null) {
+    console.log("fetchuser " + id);
     fetch("http://localhost:8000/users", {
         method: "get",
         headers: {
@@ -209,17 +219,19 @@ function fetch_users() {
             return response.json();
         })
         .then((json) => {
-            var select = document.getElementById("inputUserSelect");
+            var select = document.getElementById(element);
             select.innerHTML = "";
-            select.innerHTML +=
-                '<option value="' + opt + '">' + "Select..." + "</option>";
+            select.innerHTML += "<option>Select...</option>";
             for (var i = 0; i < json.users.length; i++) {
                 var opt = json.users[i];
+                var selected = opt.id === id ? "selected" : ""; // Determine if this option should be selected
                 select.innerHTML +=
                     '<option value="' +
-                    opt["id"] +
-                    '">' +
-                    opt["username"] +
+                    opt.id +
+                    '" ' +
+                    selected +
+                    ">" +
+                    opt.username +
                     "</option>";
             }
         });
@@ -285,6 +297,7 @@ function handleDelete() {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
     var projectId = document.getElementById("inputprojectId").value;
+    console.log("asd" + projectId);
     fetch("http://localhost:8000/project/" + projectId, {
         method: "DELETE",
         headers: {
@@ -308,7 +321,83 @@ function handleDelete() {
         });
 }
 
+function fetch_project_data(data) {
+    var updatejobNumber = document.getElementById("inputupdatejobnumber");
+    var clientName = document.getElementById("inputUpdateClientName");
+    var projectDescription = document.getElementById(
+        "inputUpdateProjectDescription"
+    );
+    var jobsiteLocation = document.getElementById("inputUpdateJobsiteLocation");
+    var bcaReferenceNumber = document.getElementById(
+        "inputUpdateBcaReferenceNumber"
+    );
+    var projectTypeRental = document.getElementById("projectUpdateTypeRental");
+    var projectTypeSales = document.getElementById("projectUpdateTypeSales");
+    var endUserName = document.getElementById("inputUpdateEndUserName");
+    var endUserNameDiv = document.getElementById("endUserNameDiv");
+
+    if (data) {
+        updatejobNumber.value = data.job_number;
+        clientName.value = data.client_name;
+        projectDescription.value = data.project_description;
+        jobsiteLocation.value = data.jobsite_location;
+        bcaReferenceNumber.value = data.bca_reference_number;
+        endUserName.value = data.end_user_name;
+        if (data.end_user_name) {
+            projectTypeSales.checked = true;
+            endUserNameDiv.style.display = "block"; // Show the end user name field
+        } else {
+            projectTypeRental.checked = true;
+            endUserNameDiv.style.display = "none"; // Hide the end user name field
+        }
+        fetch_users("inputUpdateUserSelect", data.user_id);
+    }
+}
+
+function handleUpdate() {
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    var projectId = document.getElementById("inputprojectId");
+    projectId = projectId.value;
+    var form = document.getElementById("updateProjectForm");
+
+    var formData = new FormData(form);
+    console.log("formdata: " + formData);
+    var formDataJson = {};
+    formData.forEach((value, key) => {
+        formDataJson[key] = value;
+    });
+
+    fetch("http://localhost:8000/project/" + projectId, {
+        method: "PATCH",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify(formDataJson),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                console.log("Error:", response);
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Success:", data);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+
+    return false;
+}
+
 window.handleDelete = handleDelete;
+window.handleUpdate = handleUpdate;
 window.changeTab = changeTab;
 window.fetch_data = fetch_data;
 window.fetch_users = fetch_users;

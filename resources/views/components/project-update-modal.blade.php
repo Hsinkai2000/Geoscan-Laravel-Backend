@@ -7,14 +7,13 @@
             </div>
 
             <div class="modal-body">
-                <form action="{{ route('project.create') }}" method="POST">
-                    @csrf
+                <form method="PATCH" id='updateProjectForm'>
                     <div>
                         <div class="mb-3 row">
                             <label for="job_number" class="col-md-3 col-sm-12 text-align-center col-form-label">Job
                                 Number</label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputJobNumber" name="job_number">
+                                <input type="text" class="form-control" id="inputupdatejobnumber" name="job_number">
                             </div>
                         </div>
 
@@ -23,7 +22,7 @@
                                 name
                             </label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputClientName" name="client_name">
+                                <input type="text" class="form-control" id="inputUpdateClientName" name="client_name">
                             </div>
                         </div>
 
@@ -33,7 +32,7 @@
                                 Description</label>
                             <div class="col-sm-8 align-content-center">
                                 <textarea name='project_description' type="text" class="form-control"
-                                    id="inputProjectDescription"></textarea>
+                                    id="inputUpdateProjectDescription"></textarea>
                             </div>
                         </div>
 
@@ -43,7 +42,7 @@
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Jobsite
                                 Location</label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputJobsiteLocation"
+                                <input type="text" class="form-control" id="inputUpdateJobsiteLocation"
                                     name='jobsite_location'>
                             </div>
                         </div>
@@ -54,7 +53,7 @@
                                 Reference
                                 Number</label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputBcaReferenceNumber"
+                                <input type="text" class="form-control" id="inputUpdateBcaReferenceNumber"
                                     name='bca_reference_number'>
                             </div>
                         </div>
@@ -64,13 +63,13 @@
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Project
                                 Type</label>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="project_type" id="projectTypeRental"
-                                    value="rental" onchange="toggleEndUserName()" checked>
+                                <input class="form-check-input" type="radio" name="project_type"
+                                    id="projectUpdateTypeRental" value="rental" onchange="toggleEndUserName()" checked>
                                 <label class="form-check-label" for="project_type">Rental</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="project_type" id="projectTypeSales"
-                                    value="sales" onchange="toggleEndUserName()">
+                                <input class="form-check-input" type="radio" name="project_type"
+                                    id="projectUpdateTypeSales" value="sales" onchange="toggleEndUserName()">
                                 <label class="form-check-label" for="project_type">Sales</label>
                             </div>
                         </div>
@@ -78,7 +77,7 @@
                             <label for="end_user_name" class="col-md-3 col-sm-12 text-align-center col-form-label">End
                                 User Name</label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputEndUserName" name='end_user_name'
+                                <input type="text" class="form-control" id="inputUpdateEndUserName" name='end_user_name'
                                     value="">
                             </div>
                         </div>
@@ -87,8 +86,8 @@
                             <label for="user_id"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">User</label>
                             <div class="col-sm-8 align-content-center">
-                                <select id="inputUserSelect" class="form-select" name="user_id">
-                                    <option selected>Choose...</option>
+                                <select id="inputUpdateUserSelect" class="form-select" name="user_id">
+
                                 </select>
                             </div>
                         </div>
@@ -98,8 +97,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary bg-white text-primary"
                             data-bs-dismiss="modal">Discard</button>
-                        <button type="submit" onclick="create_project()"
-                            class="btn btn-primary text-white">Create</button>
+                        <button type="submit" onclick="handleUpdate()"
+                            class="btn btn-primary text-white">Update</button>
                     </div>
                 </form>
             </div>

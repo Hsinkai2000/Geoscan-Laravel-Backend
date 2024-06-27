@@ -6,5 +6,5 @@ Route::get("/project", [ProjectController::class, 'show'])->name('project.show')
 Route::post("/project", [ProjectController::class, 'create'])->name('project.create');
 Route::post("/projects", [ProjectController::class, 'index'])->name('project_all');
 Route::get("/projects/{id}", [ProjectController::class, 'get'])->name('project');
-Route::patch("/project/{id}", [ProjectController::class, 'update']);
+Route::patch("/project/{id}", [ProjectController::class, 'update'])->name('project.update');
 Route::delete("/project/{id}", [ProjectController::class, 'delete'])->name('project.delete');
