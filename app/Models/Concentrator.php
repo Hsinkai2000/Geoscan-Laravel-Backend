@@ -56,4 +56,9 @@ class Concentrator extends Model
         $project = $this->project;
         return $project !== null && $project->isRunning();
     }
+
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d');
+    }
 }

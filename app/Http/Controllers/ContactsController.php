@@ -38,10 +38,10 @@ class ContactsController extends Controller
             if (!$contact) {
                 return render_unprocessable_entity("Unable to find contact with id " . $id);
             }
-            debug_log('in here get', ["contact" => $contact]);
+
             return render_ok(["contact" => $contact]);
         } catch (Exception $e) {
-            debug_log('in here get', [$e]);
+
             return render_error($e);
         }
     }

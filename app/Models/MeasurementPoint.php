@@ -384,4 +384,8 @@ class MeasurementPoint extends Model
         return $this->noiseData()->latest()->first();
     }
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d');
+    }
 }

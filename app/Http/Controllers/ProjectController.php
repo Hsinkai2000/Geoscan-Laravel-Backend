@@ -105,10 +105,12 @@ class ProjectController extends Controller
 
     public function update(Request $request)
     {
+        debug_log('in update');
         try {
             $id = $request->route('id');
             $project_params = $request->only((new Project)->getFillable());
-            debug_log($project_params);
+
+            debug_log('inupdate', [$project_params]);
             $project = Project::find($id);
             if (!$project) {
                 return render_unprocessable_entity("Unable to find project with id " . $id);

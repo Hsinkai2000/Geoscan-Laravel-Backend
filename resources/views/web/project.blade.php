@@ -9,8 +9,7 @@
     <link href="https://unpkg.com/tabulator-tables@5.4.3/dist/css/tabulator.min.css" rel="stylesheet" />
     <!-- Include Tabulator JS from CDN -->
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.4.3/dist/js/tabulator.min.js"></script>
-    @vite(["resources/scss/project.scss",
-    "resources/js/app.js","resources/js/project.js"])
+    @vite(['resources/scss/project.scss', 'resources/js/app.js', 'resources/js/project.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 

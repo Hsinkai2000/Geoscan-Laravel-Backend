@@ -2,11 +2,13 @@
 
 namespace App\View\Components;
 
-use App\Models\Project;
+use Closure;
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class projectUpdateModal extends Component
+class testComponent extends Component
 {
+
     /**
      * Create a new component instance.
      *
@@ -14,16 +16,15 @@ class projectUpdateModal extends Component
      * @return void
      */
     public function __construct(
-        public Project $project, ) {
-    }
+        public string $type,
+        public string $message,
+    ) {}
 
     /**
      * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\Contracts\View\View|string
      */
-    public function render()
+    public function render(): View | Closure | string
     {
-        return view('components.project-update-modal');
+        return view('components.test-component');
     }
 }

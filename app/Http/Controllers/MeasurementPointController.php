@@ -12,14 +12,13 @@ class MeasurementPointController extends Controller
 
     public function show()
     {
-        debug_log('in here', ['id']);
         return view('web.measurementPoint');
     }
 
     public function show_by_project($id)
     {
         $project = Project::find($id);
-        return view('web.measurementPoint', ['project' => $project, "measurement_point" => $project->measurement_point])->render();
+        return view('web.measurementPoint', ['project' => $project])->render();
     }
 
     public function create(Request $request)
@@ -47,14 +46,41 @@ class MeasurementPointController extends Controller
     public function get(Request $request)
     {
         try {
+
             $id = $request->route('id');
-            $measurementPoint = MeasurementPoint::where('project_id', $id);
+            debug_log($id);
+            $measurementPoint = MeasurementPoint::where('project_id', $id)->get();
             if (!$measurementPoint) {
                 return render_unprocessable_entity("Unable to find Measurement point with id " . $id);
             }
-            return render_ok(['measurement_point' => $measurementPoint]);
+            $data = $measurementPoint->map(function ($measurementPoint) {
+                $concentrator = $measurementPoint->concentrator;
+                $noise_meter = $measurementPoint->noiseMeter;
+                $lastND = $measurementPoint->getLastLeqData();
+                return [
+                    'id' => $measurementPoint->id,
+                    'project_id' => $measurementPoint->project_id,
+                    'noise_meter_id' => $measurementPoint->noise_meter_id,
+                    'concentrator_id' => $measurementPoint->concentrator_id,
+                    'point_name' => $measurementPoint->point_name,
+                    'device_location' => $measurementPoint->device_location,
+                    // 'concentrator_label' => $concentrator->concentrator_label,
+                    'concentrator_label' => 'concentrator label 1',
+                    'device_id' => $concentrator->device_id,
+                    'battery_voltage' => $concentrator->battery_voltage,
+                    'concentrator_csq' => $concentrator->concentrator_csq,
+                    'last_communication_packet_sent' => $concentrator->last_communication_packet_sent->format('Y-m-d H:m:s'),
+                    // 'noise_label'=>$noiseMeter->noise_meter_label,
+                    'noise_label' => 'noise label 1',
+                    'serial_number' => $noise_meter->serial_number,
+                    'leq' => $lastND->leq,
+                    'received_at' => $lastND->received_at->format('Y-m-d H:m:s'),
+                ];
+            });
+
+            return render_ok(['measurement_point' => $data]);
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 
