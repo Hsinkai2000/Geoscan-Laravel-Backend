@@ -91,14 +91,36 @@
                 <th scope='row'>Status</th>
                 <td scope='row'>{{ $project['status'] }}</td>
             </tr>
-            <th>Contacts</th>
         </table>
-        <div id="contacts_table"></div>
+        <div class="bg-light p-2 mb-3 shadow rounded">
+            <h5>Contacts</h5>
+            <div class="shadow" id="contacts_table"></div>
+        </div>
+        <div class="rounded bg-light p-2 shadow ">
 
-        <h5>Measurement Points Information</h5>
-        <div id="measurement_point_table"></div>
+            <h5>Measurement Points Information</h5>
+
+            <div id="measurement_point_table"></div>
+
+
+            <div class="d-flex flex-row mt-3 justify-content-between">
+                <button class="btn btn-light text-danger border shadow-sm" id="deleteButton" data-bs-toggle="modal"
+                    data-bs-target="#deleteModal">Delete</button>
+
+                <div id="measurement_point_pages"></div>
+
+                <div>
+                    <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
+                        onclick="" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                    <button class="btn btn-primary text-light  shadow-sm" id="createButton"
+                        onclick='fetch_users("inputUserSelect")' data-bs-toggle="modal"
+                        data-bs-target="#projectcreateModal">Create</button>
+                </div>
+            </div>
+        </div>
 
         <x-project-update-modal :project="$project" />
+        <x-delete-modal type='measurement point' />
 
         <input hidden name="id" id="inputprojectId" value="{{ $project['id'] }}">
 

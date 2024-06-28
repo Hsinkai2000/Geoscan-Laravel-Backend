@@ -8,11 +8,13 @@ use Illuminate\View\Component;
 
 class deleteModal extends Component
 {
+    public string $type;
     /**
      * Create a new component instance.
      */
-    public function __construct(
+    public function __construct(string $type = ''
     ) {
+        $this->type = $type;
     }
 
     /**

@@ -87,7 +87,7 @@
     <input hidden name="id" id="inputprojectId">
 
     <x-project-modal />
-    <x-delete-modal />
+    <x-delete-modal type='project' />
     <x-project-update-modal />
 
 </body>
