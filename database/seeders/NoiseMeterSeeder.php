@@ -59,6 +59,13 @@ class NoiseMeterSeeder extends Seeder
                 'last_calibration_date' => $now,
                 'created_at' => $now,
                 'updated_at' => $now,
+            ], [
+                'serial_number' => '1397',
+                'brand' => 'Tango',
+                'last_calibration_date' => '2024-06-05',
+                'remarks' => 'On site hardware tester',
+                'created_at' => '2024-06-05 00:00:00',
+                'updated_at' => '2024-06-05 00:00:00',
             ],
         ]);
     }

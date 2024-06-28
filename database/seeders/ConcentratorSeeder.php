@@ -74,6 +74,17 @@ class ConcentratorSeeder extends Seeder
                 'last_communication_packet_sent' => $now,
                 'created_at' => $now,
                 'updated_at' => $now,
+            ], [
+                'project_id' => 1,
+                'device_id' => '27002131323631',
+                'concentrator_csq' => 91,
+                'concentrator_hp' => 120328131,
+                'battery_voltage' => 12.22,
+                'last_communication_packet_sent' => '2024-06-11 15:58:53',
+                'last_assigned_ip_address' => '111.65.46.70',
+                'remarks' => 'On site hardware tester',
+                'created_at' => '2024-06-05 08:11:48',
+                'updated_at' => '2024-06-11 07:58:53',
             ],
         ]);
     }

@@ -55,6 +55,23 @@ class MeasurementPointSeeder extends Seeder
                 'point_name' => 'Roof',
                 'remarks' => $faker->text(),
                 'device_location' => 'kaki bukit',
+            ], [
+                'project_id' => 1,
+                'noise_meter_id' => 2,
+                'concentrator_id' => 2,
+                'point_name' => 'Onsite testing',
+                'remarks' => 'testing',
+                'inst_leq' => 40.5,
+                'leq_temp' => 41,
+                'dose_flag' => 0,
+                'device_location' => null,
+                'leq_5_mins_last_alert_at' => null,
+                'leq_1_hour_last_alert_at' => null,
+                'leq_12_hours_last_alert_at' => null,
+                'dose_70_last_alert_at' => null,
+                'dose_100_last_alert_at' => null,
+                'created_at' => '2024-06-05 17:07:27',
+                'updated_at' => '2024-06-11 07:57:24',
             ],
         ]);
 
