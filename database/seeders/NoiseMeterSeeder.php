@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\NoiseMeter;
+use Illuminate\Support\Facades\DB;
 
 class NoiseMeterSeeder extends Seeder
 {
@@ -15,11 +14,52 @@ class NoiseMeterSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
         $now = date("Y-m-d");
-        NoiseMeter::create([
-            'serial_number' => 9900,
-            'brand' => 'SINUS TANGO',
-            'remarks' => $faker->text(),
-            'last_calibration_date' => $now
+        DB::table('noise_meters')->insert([
+            [
+                'serial_number' => 9900,
+                'brand' => 'SINUS TANGO',
+                'remarks' => $faker->text(),
+                'noise_meter_label' => 'meter 1',
+                'last_calibration_date' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'serial_number' => 9901,
+                'brand' => 'SINUS TANGO',
+                'remarks' => $faker->text(),
+                'noise_meter_label' => 'meter 2',
+                'last_calibration_date' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'serial_number' => 9902,
+                'brand' => 'SINUS TANGO',
+                'remarks' => $faker->text(),
+                'noise_meter_label' => 'meter 3',
+                'last_calibration_date' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'serial_number' => 9903,
+                'brand' => 'SINUS TANGO',
+                'remarks' => $faker->text(),
+                'noise_meter_label' => 'meter 4',
+                'last_calibration_date' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'serial_number' => 9904,
+                'brand' => 'SINUS TANGO',
+                'remarks' => $faker->text(),
+                'noise_meter_label' => 'meter 5',
+                'last_calibration_date' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ]);
     }
 }

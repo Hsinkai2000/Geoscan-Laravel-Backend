@@ -15,6 +15,7 @@ class Concentrator extends Model
     protected $fillable = [
         'project_id',
         'device_id',
+        'concentrator_label',
         'concentrator_csq',
         'concentrator_hp',
         'battery_voltage',
@@ -29,6 +30,7 @@ class Concentrator extends Model
         'id' => 'integer',
         'project_id' => 'integer',
         'device_id' => 'string',
+        'concentrator_label' => 'string',
         'concentrator_csq' => 'integer',
         'concentrator_hp' => 'string',
         'battery_voltage' => 'float',

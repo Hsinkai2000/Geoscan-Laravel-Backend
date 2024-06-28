@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Contact;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ContactSeeder extends Seeder
 {
@@ -14,14 +13,30 @@ class ContactSeeder extends Seeder
     public function run(): void
     {
         //\
-
         $faker = \Faker\Factory::create();
-        Contact::create([
-            'project_id' => 1,
-            'contact_person_name' => $faker->name,
-            'designation' => 'manager',
-            'phone_number' => 81889218,
-            'email' => 'hsinkai2000@gmail.com'
+        DB::table('contacts')->insert([
+            [
+                'project_id' => 1,
+                'contact_person_name' => $faker->name,
+                'designation' => 'manager',
+                'phone_number' => 81889218,
+                'email' => 'hsinkai2000@gmail.com',
+            ],
+            [
+                'project_id' => 6,
+                'contact_person_name' => $faker->name,
+                'designation' => 'manager',
+                'phone_number' => 89472222,
+                'email' => $faker->email,
+            ],
+            [
+                'project_id' => 6,
+                'contact_person_name' => $faker->name,
+                'designation' => 'manager',
+                'phone_number' => 98123673,
+                'email' => $faker->email,
+            ],
         ]);
+
     }
 }

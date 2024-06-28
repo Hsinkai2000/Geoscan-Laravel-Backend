@@ -69,7 +69,7 @@ function set_measurement_point_table(measurementPoint_data) {
             },
             {
                 title: "Noise Label",
-                field: "noise_label",
+                field: "noise_meter_label",
             },
             {
                 title: "Noise Serial",

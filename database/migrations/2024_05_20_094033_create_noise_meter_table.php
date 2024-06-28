@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('noise_meters', function (Blueprint $table) {
             $table->id();
             $table->string('serial_number', 32);
+            $table->string('noise_meter_label', 255)->nullable();
             $table->string('brand', 255);
             $table->date('last_calibration_date');
             $table->string('remarks', 255)->nullable();

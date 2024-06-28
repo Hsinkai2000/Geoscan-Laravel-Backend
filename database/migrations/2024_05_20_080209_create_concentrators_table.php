@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id()->primary();
             $table->integer('project_id')->nullable()->index();
             $table->string('device_id', 255);
+            $table->string('concentrator_label', 255)->nullable();
             $table->integer('concentrator_csq')->nullable();
             $table->string('concentrator_hp', 11)->nullable();
             $table->float('battery_voltage')->nullable();

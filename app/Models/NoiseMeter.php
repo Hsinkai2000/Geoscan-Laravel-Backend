@@ -14,6 +14,7 @@ class NoiseMeter extends Model
 
     protected $fillable = [
         'serial_number',
+        'noise_meter_label',
         'brand',
         'last_calibration_date',
         'remarks',

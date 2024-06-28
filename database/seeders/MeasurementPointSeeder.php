@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\MeasurementPoint;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MeasurementPointSeeder extends Seeder
 {
@@ -14,13 +14,49 @@ class MeasurementPointSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
         $now = date("Y-m-d H:i:s");
-        MeasurementPoint::create([
-            "project_id" => 1,
-            'noise_meter_id' => 1,
-            'concentrator_id' => 1,
-            'point_name' => 'zz81889218',
-            'remarks' => $faker->text(),
-            'device_location' => 'zzKakiBukit',
+
+        DB::table('measurement_points')->insert([
+            [
+                "project_id" => 1,
+                'noise_meter_id' => 1,
+                'concentrator_id' => 1,
+                'point_name' => 'zz81889218',
+                'remarks' => $faker->text(),
+                'device_location' => 'zzKakiBukit',
+            ],
+            [
+                "project_id" => 7,
+                'noise_meter_id' => 2,
+                'concentrator_id' => 2,
+                'point_name' => 'basement point',
+                'remarks' => $faker->text(),
+                'device_location' => 'kaki bukit',
+            ],
+            [
+                "project_id" => 6,
+                'noise_meter_id' => 3,
+                'concentrator_id' => 3,
+                'point_name' => 'l1 window',
+                'remarks' => $faker->text(),
+                'device_location' => 'kaki bukit',
+            ],
+            [
+                "project_id" => 6,
+                'noise_meter_id' => 4,
+                'concentrator_id' => 4,
+                'point_name' => 'zz12345678',
+                'remarks' => $faker->text(),
+                'device_location' => 'kaki bukit',
+            ],
+            [
+                "project_id" => 6,
+                'noise_meter_id' => 5,
+                'concentrator_id' => 5,
+                'point_name' => 'zz87654321',
+                'remarks' => $faker->text(),
+                'device_location' => 'kaki bukit',
+            ],
         ]);
+
     }
 }
