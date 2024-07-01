@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -386,5 +387,16 @@ class MeasurementPoint extends Model
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d');
+    }
+
+    public function check_data_status()
+    {
+        $receivedAtCarbon = Carbon::parse($this->getLastLeqData()->receivedAt);
+
+        // Get the current time
+        $currentTime = Carbon::now();
+        $diffInMinutes = $currentTime->diffInMinutes($receivedAtCarbon);
+
+        return $diffInMinutes <= 45 ? true : false;
     }
 }

@@ -56,7 +56,6 @@ class MeasurementPointController extends Controller
             $data = $measurementPoint->map(function ($measurementPoint) {
                 $concentrator = $measurementPoint->concentrator;
                 $noise_meter = $measurementPoint->noiseMeter;
-                $lastND = $measurementPoint->getLastLeqData();
                 return [
                     'id' => $measurementPoint->id,
                     'project_id' => $measurementPoint->project_id,
@@ -71,8 +70,7 @@ class MeasurementPointController extends Controller
                     'last_communication_packet_sent' => $concentrator->last_communication_packet_sent->format('Y-m-d H:m:s'),
                     'noise_meter_label' => $noise_meter->noise_meter_label,
                     'serial_number' => $noise_meter->serial_number,
-                    'leq' => $lastND->leq,
-                    'received_at' => $lastND->received_at->format('Y-m-d H:m:s'),
+                    'data_status' => $measurementPoint->check_data_status(),
                 ];
             });
 

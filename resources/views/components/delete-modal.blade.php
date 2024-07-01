@@ -9,12 +9,18 @@
 
             <div class="modal-body">
                 <form id="deleteForm">
+                    <label class="mb-4" for="deleteConfirmation">To Delete, Please enter "DELETE"</label>
+                    </br>
+                    <input class="mb-4" id="inputDeleteConfirmation" type="text">
+                    </br>
                     <!-- Cancel button to dismiss the modal -->
                     <button type="button" class="btn btn-primary bg-white text-primary"
                         data-bs-dismiss="modal">Cancel</button>
 
                     <!-- Submit button to delete the project -->
-                    <button onclick="handleDelete()" class="btn btn-primary text-white">Delete</button>
+                    <button onclick="handleDelete(event)" id="deleteButton" type="button"
+                        class="btn btn-primary text-white">Delete</button>
+                    <p id="deleteConfirmationError" class="text-danger" hidden>Delete Confirmation Failed!</p>
                 </form>
             </div>
         </div>

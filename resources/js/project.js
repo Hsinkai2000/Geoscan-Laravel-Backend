@@ -292,33 +292,42 @@ function toggleEndUserName() {
     }
 }
 
-function handleDelete() {
+function handleDelete(event) {
+    if (event) {
+        event.preventDefault();
+    }
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
     var projectId = document.getElementById("inputprojectId").value;
+    var confirmation = document.getElementById("inputDeleteConfirmation").value;
     console.log("asd" + projectId);
-    fetch("http://localhost:8000/project/" + projectId, {
-        method: "DELETE",
-        headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                console.log("Error:", response);
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
+    if (confirmation == "DELETE") {
+        fetch("http://localhost:8000/project/" + projectId, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
         })
-        .then((data) => {
-            console.log("Success:", data);
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    console.log("Error:", response);
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Success:", data);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    } else {
+        var error = document.getElementById("deleteConfirmationError");
+        error.hidden = false;
+    }
 }
 
 function fetch_project_data(data) {
@@ -353,7 +362,8 @@ function fetch_project_data(data) {
             projectTypeRental.checked = true;
             endUserNameDiv.style.display = "none"; // Hide the end user name field
         }
-        fetch_users("inputUpdateUserSelect", data.user_id);
+
+        fetch_users("#inputUpdateContact", data.user_id);
     }
 }
 
@@ -405,6 +415,7 @@ window.changeTab = changeTab;
 window.fetch_data = fetch_data;
 window.fetch_users = fetch_users;
 window.toggleEndUserName = toggleEndUserName;
+window.create_project = create_project;
 
 fetch_data("rental");
 toggleEndUserName();

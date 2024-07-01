@@ -28,12 +28,6 @@ function set_contact_table(contactData) {
                 headerSort: false,
                 minWidth: 100,
             },
-            {
-                title: "FAX",
-                field: "fax_number",
-                headerSort: false,
-                minWidth: 100,
-            },
         ],
     });
 }
@@ -72,13 +66,6 @@ function set_measurement_point_table(measurementPoint_data) {
                 minWidth: 100,
             },
             {
-                title: "Concentrator Label",
-                field: "concentrator_label",
-                headerSort: false,
-                headerFilter: "input",
-                minWidth: 100,
-            },
-            {
                 title: "Concentrator Serial",
                 field: "device_id",
                 headerFilter: "input",
@@ -106,12 +93,6 @@ function set_measurement_point_table(measurementPoint_data) {
                 minWidth: 100,
             },
             {
-                title: "Noise Label",
-                field: "noise_meter_label",
-                minWidth: 100,
-                headerFilter: "input",
-            },
-            {
                 title: "Noise Serial",
                 field: "serial_number",
                 minWidth: 100,
@@ -119,16 +100,11 @@ function set_measurement_point_table(measurementPoint_data) {
             },
             {
                 title: "Data Status",
-                field: "leq",
+                field: "data_status",
                 headerSort: false,
                 headerFilter: "input",
                 minWidth: 100,
-            },
-            {
-                title: "Last Data Sent",
-                field: "received_at",
-                headerSort: false,
-                minWidth: 100,
+                formatter: "tickCross",
             },
         ],
     });
