@@ -19,7 +19,6 @@ class UserSeeder extends Seeder
         User::create([
             'user_type' => 'admin',
             'username' => $faker->name(),
-            'email' => $faker->email(),
             'password' => Hash::make('abc123456'),
             'created_at' => $now,
             'updated_at' => $now,
@@ -28,7 +27,6 @@ class UserSeeder extends Seeder
         User::create([
             'user_type' => 'admin',
             'username' => 'kai',
-            'email' => 'kai123@gmail.com',
             'password' => Hash::make('kai123!'),
             'created_at' => $now,
             'updated_at' => $now,

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->string('user_type', 255)->default('normal');
             $table->string('username', 255);
-            $table->string('email', 255);
             $table->string('password', 255);
             $table->string('reset_password_token', 255)->nullable();
             $table->dateTime('reset_password_sent_at')->nullable();
