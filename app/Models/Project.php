@@ -45,12 +45,6 @@ class Project extends Model
         return [$this->contact->phone_number, $this->contact->email];
     }
 
-    public function increment_sms_count()
-    {
-        $this->sms_count += 1;
-        $this->save();
-    }
-
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d');

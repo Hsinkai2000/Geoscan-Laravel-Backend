@@ -255,7 +255,6 @@ class MeasurementPoint extends Model
                     $sms_messageid = $sms_response->sid;
                     $sms_status = "SMS sending";
                 }
-                $this->project->increment_sms_count();
             } catch (Exception $e) {
                 debug_log("Message not sent", [$e->getMessage()]);
             }
