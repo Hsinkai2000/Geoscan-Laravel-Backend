@@ -32,8 +32,7 @@
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Project
                                 Description</label>
                             <div class="col-sm-8 align-content-center">
-                                <textarea name='project_description' type="text" class="form-control"
-                                    id="inputProjectDescription"></textarea>
+                                <textarea name='project_description' type="text" class="form-control" id="inputProjectDescription"></textarea>
                             </div>
                         </div>
 
@@ -59,13 +58,21 @@
                             </div>
                         </div>
 
+                        <div class="mb-3 row">
+                            <label for="sms_count" class="col-md-3 col-sm-12 text-align-center col-form-label">BCA
+                                SMS Contacts</label>
+                            <div class="col-sm-8 align-content-center">
+                                <input type="number" class="form-control" id="inputSmsCount" name='sms_count' value=1>
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="project_type"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Project
                                 Type</label>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="project_type" id="projectTypeRental"
-                                    value="rental" onchange="toggleEndUserName()" checked>
+                                <input class="form-check-input" type="radio" name="project_type"
+                                    id="projectTypeRental" value="rental" onchange="toggleEndUserName()" checked>
                                 <label class="form-check-label" for="project_type">Rental</label>
                             </div>
                             <div class="form-check form-check-inline">

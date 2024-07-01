@@ -54,6 +54,15 @@
                             </div>
                         </div>
 
+                        <div class="mb-3 row">
+                            <label for="sms_count" class="col-md-3 col-sm-12 text-align-center col-form-label">BCA
+                                SMS Contacts</label>
+                            <div class="col-sm-8 align-content-center">
+                                <input type="number" class="form-control" id="inputUpdateSmsCount" name='sms_count'
+                                    value="{{ $project['sms_count'] ?? '' }}">
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="project_type"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Project Type</label>

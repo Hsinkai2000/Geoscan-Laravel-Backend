@@ -59,6 +59,7 @@ class ProjectController extends Controller
                 'jobsite_location' => $project['jobsite_location'],
                 'project_description' => $project['project_description'],
                 'bca_reference_number' => $project['bca_reference_number'],
+                'sms_count' => $project['sms_count'],
                 'created_at' => $project['created_at']->format('Y-m-d'),
             ];
             $grouped_data[$client_name]['_children'][] = $end_user_info;

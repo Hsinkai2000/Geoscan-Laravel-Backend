@@ -331,6 +331,7 @@ function fetch_project_data(data) {
     var bcaReferenceNumber = document.getElementById(
         "inputUpdateBcaReferenceNumber"
     );
+    var sms_count = document.getElementById("inputUpdateSmsCount");
     var projectTypeRental = document.getElementById("projectUpdateTypeRental");
     var projectTypeSales = document.getElementById("projectUpdateTypeSales");
     var endUserName = document.getElementById("inputUpdateEndUserName");
@@ -338,14 +339,16 @@ function fetch_project_data(data) {
 
     if (data) {
         updatejobNumber.value = data.job_number;
+        console.log(data.sms_count);
         clientName.value = data.client_name;
         projectDescription.value = data.project_description;
         jobsiteLocation.value = data.jobsite_location;
         bcaReferenceNumber.value = data.bca_reference_number;
-        endUserName.value = data.end_user_name;
+        sms_count.value = data.sms_count;
         if (data.end_user_name) {
             projectTypeSales.checked = true;
             endUserNameDiv.style.display = "block"; // Show the end user name field
+            endUserName.value = data.end_user_name;
         } else {
             projectTypeRental.checked = true;
             endUserNameDiv.style.display = "none"; // Hide the end user name field
