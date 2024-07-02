@@ -56,6 +56,33 @@
     }
 }
 
+.list-item {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+}
+
+.list-item:hover {
+    background-color: #f0f0f0;
+}
+
+.list-item.selected {
+    background-color: #d0d0d0;
+    border-color: #999;
+}
+
+#user-box {
+    width: 500px;
+}
+
+.modal:nth-of-type(even) {
+    z-index: 1052 !important;
+}
+.modal-backdrop.show:nth-of-type(even) {
+    z-index: 1051 !important;
+}
+
 @media only screen and (min-width: 768px) {
     #example-table {
         height: 65vh;

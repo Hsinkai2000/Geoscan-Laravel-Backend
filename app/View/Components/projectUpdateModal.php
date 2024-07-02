@@ -24,6 +24,6 @@ class projectUpdateModal extends Component
      */
     public function render()
     {
-        return view('components.project-update-modal');
+        return view('components.project.project-update-modal');
     }
 }

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::dropIfExists('projects');
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
             $table->string('job_number', 255);
             $table->string('client_name', 255);
             $table->string('end_user_name', 255)->nullable();

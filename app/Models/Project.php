@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -13,15 +12,15 @@ class Project extends Model
     use HasFactory;
     protected $table = 'projects';
 
-    protected $fillable = ['user_id', 'job_number', 'client_name', 'end_user_name', 'sms_count', 'project_type', 'billing_address', 'project_description', 'jobsite_location', 'bca_reference_number', 'status', 'created_at', 'updated_at', 'completed_at'];
+    protected $fillable = ['job_number', 'client_name', 'end_user_name', 'sms_count', 'project_type', 'billing_address', 'project_description', 'jobsite_location', 'bca_reference_number', 'status', 'created_at', 'updated_at', 'completed_at'];
 
     //references dont want
 
     // Define relationships
 
-    public function user(): BelongsTo
+    public function user(): HasMany
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->hasMany(User::class, 'project_id', 'id');
     }
 
     public function measurement_point(): HasMany

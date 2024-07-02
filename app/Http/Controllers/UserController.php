@@ -18,9 +18,23 @@ class UserController extends Controller
             $user_id = User::insertGetId($user_params);
             $user = User::find($user_id);
             return render_ok(["user" => $user]);
-
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
+        }
+    }
+
+    public function get_by_project(Request $request)
+    {
+        try {
+            $project_id = $request->route('project_id');
+            $user = User::where('project_id', $project_id)->get();
+            if (!$user) {
+
+                return render_unprocessable_entity("Unable to find user with id " . $project_id);
+            }
+            return render_ok(["users" => $user]);
+        } catch (Exception $e) {
+            return render_error($e);
         }
     }
 
@@ -29,7 +43,7 @@ class UserController extends Controller
         try {
             return render_ok(["users" => User::all()]);
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 
@@ -45,7 +59,7 @@ class UserController extends Controller
             }
             return render_ok(["user" => $user]);
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 
@@ -83,7 +97,7 @@ class UserController extends Controller
             return render_ok(["user" => $user]);
 
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 

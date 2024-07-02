@@ -215,6 +215,7 @@ function fetch_users(element, id = null) {
     })
         .then((response) => {
             if (!response.ok) {
+                console.log("reponse not ok");
             }
             return response.json();
         })
@@ -292,6 +293,38 @@ function toggleEndUserName() {
     }
 }
 
+function handle_user_delete(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    var projectId = document.getElementById("inputprojectId").value;
+
+    fetch("http://localhost:8000/project/" + projectId, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                console.log("Error:", response);
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Success:", data);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
 function handleDelete(event) {
     if (event) {
         event.preventDefault();
@@ -362,8 +395,7 @@ function fetch_project_data(data) {
             projectTypeRental.checked = true;
             endUserNameDiv.style.display = "none"; // Hide the end user name field
         }
-
-        fetch_users("#inputUpdateContact", data.user_id);
+        fetch_users("inputUpdateUserSelect", data.user_id);
     }
 }
 
@@ -409,8 +441,90 @@ function handleUpdate() {
     return false;
 }
 
+function handle_create_user() {
+    const form = document.getElementById("createUserForm");
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: form.method,
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                // Close the modal
+                let modalElement =
+                    document.getElementById("projectCreateModal");
+                let modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide();
+                location.reload();
+            } else {
+                const errors = data.errors;
+
+                document
+                    .querySelectorAll(".text-danger")
+                    .forEach((el) => el.remove());
+                for (const key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+                        const inputElement = form.querySelector(
+                            `[name="${key}"]`
+                        );
+                        const errorElement = document.createElement("span");
+                        errorElement.classList.add("text-danger");
+                        errorElement.textContent = errors[key][0];
+                        inputElement.after(errorElement);
+                    }
+                }
+            }
+        })
+        .catch((error) => console.error("Error:", error));
+    return false;
+}
+
+function populateUser() {
+    var projectId = document.getElementById("inputprojectId");
+    projectId = projectId.value;
+    window.userselectList = document.getElementById("userselectList");
+    fetch("http://localhost:8000/users/" + projectId)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            populateList(data);
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+}
+
+function populateList(data) {
+    // Clear the current list
+    window.userselectList.innerHTML = "";
+
+    // Iterate over the fetched data and create list items
+    data.forEach((item) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = item.name; // Adjust property based on your data structure
+        listItem.className = "list-item"; // Add a class for styling if needed
+        listItem.addEventListener("click", function () {
+            handleSelection(item);
+        });
+        window.userselectList.appendChild(listItem);
+    });
+}
+
 window.handleDelete = handleDelete;
 window.handleUpdate = handleUpdate;
+window.handle_create_user = handle_create_user;
 window.changeTab = changeTab;
 window.fetch_data = fetch_data;
 window.fetch_users = fetch_users;

@@ -17,7 +17,6 @@ class ProjectSeeder extends Seeder
     {
         DB::table('projects')->insert([
             [
-                'user_id' => 1,
                 'job_number' => 'zzHsinKt',
                 'client_name' => 'zzHsKai',
                 'end_user_name' => 'Orin Cassin',
@@ -32,7 +31,6 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 1,
                 'job_number' => 'zzHsiTest',
                 'client_name' => 'zKai',
                 'end_user_name' => 'Dr. Sarina Bergstrom V',
@@ -47,7 +45,6 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 1,
                 'job_number' => 'zzHest',
                 'client_name' => 'zzHsKai',
                 'end_user_name' => 'Prof. Angel Wiegand IV',
@@ -62,7 +59,6 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 1,
                 'job_number' => 'znKaiTest',
                 'client_name' => 'zzHsai',
                 'end_user_name' => null,
@@ -77,7 +73,6 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
                 'job_number' => 'zV-RTVMRENTAL',
                 'client_name' => 'GEOSCAN PTE LTD',
                 'end_user_name' => null,
@@ -92,7 +87,6 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
                 'job_number' => 'Yuan Zhen 01 (SN2331)',
                 'client_name' => 'Yuan Zhen Construction Pte Ltd',
                 'end_user_name' => null,
@@ -107,7 +101,6 @@ class ProjectSeeder extends Seeder
                 'completed_at' => Carbon::parse('2024-06-28 02:53:30'),
             ],
             [
-                'user_id' => 2,
                 'job_number' => 'Wee-Built 04 (SN2336)',
                 'client_name' => 'Wee-Built Pte Ltd',
                 'end_user_name' => null,
@@ -122,7 +115,6 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
                 'job_number' => 'PJ/5459/06/24 (SN-1663 )',
                 'client_name' => 'Antbuildz Pte Ltd',
                 'end_user_name' => null,
@@ -137,7 +129,7 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
+
                 'job_number' => 'PJ/5455/06/24 (SN-1868)',
                 'client_name' => 'SATO KOGYO (S) PTE LTD',
                 'end_user_name' => null,
@@ -152,7 +144,7 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
+
                 'job_number' => 'acstech12 (SN1485)',
                 'client_name' => 'ACS Tech',
                 'end_user_name' => 'ACS Tech 12',
@@ -167,7 +159,7 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
+
                 'job_number' => 'acstech10 (SN1558)',
                 'client_name' => 'ACS Tech',
                 'end_user_name' => 'ACS Tech 10',
@@ -182,7 +174,7 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
+
                 'job_number' => 'acstech11(SN1484)',
                 'client_name' => 'ACS Tech',
                 'end_user_name' => 'ACS Tech 11',
@@ -197,7 +189,7 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
+
                 'job_number' => 'acstech09 (SN1481)',
                 'client_name' => 'ACS Tech',
                 'end_user_name' => 'ACS Tech 9',
@@ -212,7 +204,7 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
+
                 'job_number' => 'EKHL PTE LTD 03',
                 'client_name' => 'EKHL PTE LTD',
                 'end_user_name' => 'EKHL PTE LTD 3',
@@ -227,7 +219,7 @@ class ProjectSeeder extends Seeder
                 'completed_at' => null,
             ],
             [
-                'user_id' => 2,
+
                 'job_number' => 'EKHL PTE LTD 02 (SN1474)',
                 'client_name' => 'EKHL PTE LTD',
                 'end_user_name' => 'EKHL PTE LTD 2',

@@ -1,4 +1,5 @@
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModal"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,13 +10,18 @@
 
             <div class="modal-body">
                 <form id="deleteForm">
+                    <label class="mb-4" for="deleteConfirmation">To Delete, Please enter "DELETE"</label>
+                    </br>
+                    <input class="mb-4" id="inputDeleteConfirmation" type="text">
+                    </br>
                     <!-- Cancel button to dismiss the modal -->
-                    <button class="btn btn-primary bg-white text-primary" type="button"
-                        data-bs-target="#projectcreateModal" data-bs-toggle="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary bg-white text-primary"
+                        data-bs-dismiss="modal">Cancel</button>
 
                     <!-- Submit button to delete the project -->
                     <button onclick="handleDelete(event)" id="deleteButton" type="button"
                         class="btn btn-primary text-white">Delete</button>
+                    <p id="deleteConfirmationError" class="text-danger" hidden>Delete Confirmation Failed!</p>
                 </form>
             </div>
         </div>

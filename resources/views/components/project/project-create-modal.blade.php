@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="projectcreateLabel">Create Project</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
             <div class="modal-body">
                 <form action="{{ route('project.create') }}" method="POST">
                     @csrf
@@ -94,14 +93,21 @@
                             <label for="user_id"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">User</label>
                             <div class="col-sm-8 align-content-center">
-                                <select id="inputUserSelect" class="form-select" name="user_id">
-                                    <option selected>Choose...</option>
-                                </select>
+                                <ul id="selectList"></ul>
+
+                                <button class="btn btn-primary" type="button" data-bs-target="#userCreateModal"
+                                    data-bs-toggle="modal">Add User</button>
+                                <button class="btn btn-primary" type="button"
+                                    onclick="btnRemoveUserClicked()"data-bs-target="#deleteModal"
+                                    data-bs-toggle="modal">Remove User</button>
                             </div>
                         </div>
 
 
+
                     </div>
+
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary bg-white text-primary"
                             data-bs-dismiss="modal">Discard</button>
@@ -110,7 +116,8 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
+
+<x-user.user-create-modal />

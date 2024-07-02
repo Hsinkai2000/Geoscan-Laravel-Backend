@@ -70,7 +70,7 @@
 
         <div class="d-flex flex-row mt-3 justify-content-between">
             <button class="btn btn-light text-danger border shadow-sm" id="deleteButton" data-bs-toggle="modal"
-                data-bs-target="#deleteModal">Delete</button>
+                data-bs-target="#deleteConfirmationModal">Delete</button>
 
             <div id="table_pages"></div>
 
@@ -86,10 +86,10 @@
 
     <input hidden name="id" id="inputprojectId">
 
-    <x-project-modal />
-    <x-delete-modal type='project' />
-    <x-project-update-modal />
-
+    <x-project.project-create-modal />
+    <x-delete-confirmation-modal type='project' />
+    <x-delete-modal type='user' />
+    <x-project.project-update-modal />
 </body>
 
 </html>

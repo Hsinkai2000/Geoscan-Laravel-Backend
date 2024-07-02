@@ -6,14 +6,15 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class projectModal extends Component
+class deleteConfirmationModal extends Component
 {
+    public string $type;
     /**
      * Create a new component instance.
      */
-    public function __construct()
-    {
-        //
+    public function __construct(string $type = ''
+    ) {
+        $this->type = $type;
     }
 
     /**
@@ -21,6 +22,6 @@ class projectModal extends Component
      */
     public function render(): View | Closure | string
     {
-        return view('components.project-modal');
+        return view('components.delete-confirmation-modal');
     }
 }

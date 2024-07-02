@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
         $now = date("Y-m-d H:i:s");
         User::create([
             'user_type' => 'admin',
+            'project_id' => 1,
             'username' => $faker->name(),
             'password' => Hash::make('abc123456'),
             'created_at' => $now,
@@ -26,6 +27,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'user_type' => 'admin',
+            'project_id' => 6,
             'username' => 'kai',
             'password' => Hash::make('kai123!'),
             'created_at' => $now,

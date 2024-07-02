@@ -4,7 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -14,6 +14,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'id' => 'integer',
+        'project_id' => 'integer',
         'sign_in_count' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -25,6 +26,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'user_type',
+        'project_id',
         'username',
         'password',
         'reset_password_token',
@@ -44,9 +46,9 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function project(): HasMany
+    public function project(): BelongsTo
     {
-        return $this->hasMany(Project::class, 'user_id', 'id');
+        return $this->belongsTo(Project::class, 'project_id', 'id');
     }
 
     public function isAdmin()

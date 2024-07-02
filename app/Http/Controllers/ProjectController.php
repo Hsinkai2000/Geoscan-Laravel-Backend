@@ -29,7 +29,7 @@ class ProjectController extends Controller
             }
 
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 
@@ -75,7 +75,7 @@ class ProjectController extends Controller
         $project_type = $request->get('project_type');
         if (Gate::authorize('view-project', $user)) {
             try {
-                $projects = Project::where([['user_id', $user->id], ['project_type', $project_type]])->get();
+                $projects = Project::where([['project_type', $project_type]])->get();
                 if ($project_type == 'sales') {
                     $projects = $this->format_projects($projects);
                 }
