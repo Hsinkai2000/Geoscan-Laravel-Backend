@@ -11,10 +11,10 @@
                 <form id="deleteForm">
                     <!-- Cancel button to dismiss the modal -->
                     <button class="btn btn-primary bg-white text-primary" type="button"
-                        data-bs-target="#projectcreateModal" data-bs-toggle="modal">Cancel</button>
+                        data-bs-dismiss="modal">Cancel</button>
 
                     <!-- Submit button to delete the project -->
-                    <button onclick="handleDelete(event)" id="deleteButton" type="button"
+                    <button onclick="deleteUser(event)" id="deleteButton" type="button"
                         class="btn btn-primary text-white">Delete</button>
                 </form>
             </div>

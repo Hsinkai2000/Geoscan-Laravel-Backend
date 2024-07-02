@@ -13,6 +13,7 @@ class UserController extends Controller
     {
         try {
             $user_params = $request->only((new User)->getFillable());
+            debug_log($user_params);
             $user_params['password'] = Hash::make($user_params['password']);
 
             $user_id = User::insertGetId($user_params);

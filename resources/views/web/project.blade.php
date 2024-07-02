@@ -69,22 +69,23 @@
         <div class="shadow" id="example-table"></div>
 
         <div class="d-flex flex-row mt-3 justify-content-between">
-            <button class="btn btn-light text-danger border shadow-sm" id="deleteButton" data-bs-toggle="modal"
-                data-bs-target="#deleteConfirmationModal">Delete</button>
+            <button class="btn btn-light text-danger border shadow-sm" id="deleteButton"
+                onclick="openModal('deleteConfirmationModal')">Delete</button>
 
             <div id="table_pages"></div>
 
             <div>
-                <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton" onclick=""
-                    data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
+                    onclick="openModal('updateModal','update')">Edit</button>
                 <button class="btn btn-primary text-light  shadow-sm" id="createButton"
-                    onclick='fetch_users("inputUserSelect")' data-bs-toggle="modal"
-                    data-bs-target="#projectcreateModal">Create</button>
+                    onclick="openModal('projectcreateModal')">Create</button>
             </div>
         </div>
     </div>
 
-    <input hidden name="id" id="inputprojectId">
+    <input hidden id="inputprojectId">
+    <input hidden id="modalType">
+    <input hidden id="inputUserId">
 
     <x-project.project-create-modal />
     <x-delete-confirmation-modal type='project' />

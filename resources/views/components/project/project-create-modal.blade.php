@@ -1,4 +1,5 @@
-<div class="modal fade" id="projectcreateModal" tabindex="-1" aria-labelledby="projectcreateLabel" aria-hidden="true">
+<div class="modal fade shadow" id="projectcreateModal" tabindex="-1" aria-labelledby="projectcreateLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -93,13 +94,15 @@
                             <label for="user_id"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">User</label>
                             <div class="col-sm-8 align-content-center">
-                                <ul id="selectList"></ul>
 
-                                <button class="btn btn-primary" type="button" data-bs-target="#userCreateModal"
-                                    data-bs-toggle="modal">Add User</button>
-                                <button class="btn btn-primary" type="button"
-                                    onclick="btnRemoveUserClicked()"data-bs-target="#deleteModal"
-                                    data-bs-toggle="modal">Remove User</button>
+                                <button class="btn btn-primary text-white" type="button"
+                                    onclick="openSecondModal('projectcreateModal','userCreateModal','create')">Add
+                                    User</button>
+                                <button class="btn btn-primary bg-white text-primary" type="button"
+                                    onclick="openSecondModal('projectcreateModal','deleteModal')">Remove User</button>
+
+                                <ul id="userselectList">
+                                </ul>
                             </div>
                         </div>
 

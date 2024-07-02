@@ -8,12 +8,16 @@ use Illuminate\View\Component;
 
 class UserCreateModal extends Component
 {
+    public string $prevModal;
     /**
      * Create a new component instance.
+     *
+     * @param  string  $job_number
+     * @return void
      */
-    public function __construct()
+    public function __construct(string $prevModal)
     {
-        //
+        $this->prevModal = $prevModal;
     }
 
     /**

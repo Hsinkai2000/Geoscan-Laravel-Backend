@@ -1,4 +1,4 @@
-<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModal" aria-hidden="true">
+<div class="modal fade shadow" id="updateModal" tabindex="-1" aria-labelledby="updateModal" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -94,11 +94,19 @@
                             <label for="user_id"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">User</label>
                             <div class="col-sm-8 align-content-center">
-                                <select id="inputUpdateUserSelect" class="form-select" name="user_id">
-                                    <!-- Options will be populated by fetch_users -->
-                                </select>
+
+                                <button class="btn btn-primary text-white" type="button"
+                                    onclick="openSecondModal('updateModal','userCreateModal','create')">Add
+                                    User</button>
+                                <button class="btn btn-primary bg-white text-primary" type="button"
+                                    onclick="openSecondModal('updateModal','deleteModal')">Remove User</button>
+
+                                <ul id="userUpdateSelectList"></ul>
+
                             </div>
                         </div>
+
+
                     </div>
 
                     <div class="modal-footer">

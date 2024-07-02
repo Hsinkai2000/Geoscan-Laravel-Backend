@@ -1,4 +1,4 @@
-<div class="modal fade" id="userCreateModal" tabindex="-1" aria-labelledby="userCreateModalLabel" aria-hidden="true">
+<div class="modal fade shadow" id="userCreateModal" tabindex="-1" aria-labelledby="userCreateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -27,11 +27,11 @@
                         </div>
                     </div>
 
+
                     <div class="modal-footer">
-                        <button class="btn btn-primary bg-white text-primary" data-bs-target="#projectcreateModal"
-                            data-bs-toggle="modal">Discard</button>
-                        <button class="btn btn-primary text-white" data-bs-target="#projectcreateModal" type="button"
-                            onclick="handle_create_user()" data-bs-toggle="modal">Create User</button>
+                        <button class="btn btn-primary bg-white text-primary" data-bs-dismiss="modal">Discard</button>
+                        <button class="btn btn-primary text-white" type="button" onclick="handle_create_user()">Create
+                            User</button>
                     </div>
                 </form>
             </div>

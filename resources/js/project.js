@@ -202,42 +202,6 @@ function fetch_data(project_type) {
         });
 }
 
-function fetch_users(element, id = null) {
-    console.log("fetchuser " + id);
-    fetch("http://localhost:8000/users", {
-        method: "get",
-        headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            "X-CSRF-TOKEN": document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute("content"),
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                console.log("reponse not ok");
-            }
-            return response.json();
-        })
-        .then((json) => {
-            var select = document.getElementById(element);
-            select.innerHTML = "";
-            select.innerHTML += "<option>Select...</option>";
-            for (var i = 0; i < json.users.length; i++) {
-                var opt = json.users[i];
-                var selected = opt.id === id ? "selected" : ""; // Determine if this option should be selected
-                select.innerHTML +=
-                    '<option value="' +
-                    opt.id +
-                    '" ' +
-                    selected +
-                    ">" +
-                    opt.username +
-                    "</option>";
-            }
-        });
-}
-
 function create_project() {
     const form = document.getElementById("projectCreateForm");
     const csrfToken = document.querySelector('input[name="_token"]').value;
@@ -293,16 +257,18 @@ function toggleEndUserName() {
     }
 }
 
-function handle_user_delete(event) {
+function deleteUser(event) {
     if (event) {
         event.preventDefault();
     }
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var projectId = document.getElementById("inputprojectId").value;
+    var userId = document.getElementById("inputUserId").value;
+    var modalType = document.getElementById("modalType").value;
+    var inputprojectId = document.getElementById("inputprojectId").value;
 
-    fetch("http://localhost:8000/project/" + projectId, {
+    fetch("http://localhost:8000/users/" + userId, {
         method: "DELETE",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -318,7 +284,16 @@ function handle_user_delete(event) {
             return response.json();
         })
         .then((data) => {
-            console.log("Success:", data);
+            if (modalType == "update") {
+                populateUser("userUpdateSelectList", inputprojectId);
+            } else {
+                populateUser("userselectList", inputprojectId);
+            }
+
+            // Close the modal
+            const modalElement = document.getElementById("deleteModal");
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance.hide();
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -351,9 +326,7 @@ function handleDelete(event) {
                 }
                 return response.json();
             })
-            .then((data) => {
-                console.log("Success:", data);
-            })
+            .then((data) => {})
             .catch((error) => {
                 console.error("Error:", error);
             });
@@ -395,7 +368,9 @@ function fetch_project_data(data) {
             projectTypeRental.checked = true;
             endUserNameDiv.style.display = "none"; // Hide the end user name field
         }
-        fetch_users("inputUpdateUserSelect", data.user_id);
+        // fetch_users("inputUpdateUserSelect", data.user_id);
+
+        populateUser("userUpdateSelectList", data.id);
     }
 }
 
@@ -445,6 +420,12 @@ function handle_create_user() {
     const form = document.getElementById("createUserForm");
     const csrfToken = document.querySelector('input[name="_token"]').value;
     const formData = new FormData(form);
+    const inputprojectId = document.getElementById("inputprojectId").value;
+    const modalType = document.getElementById("modalType").value;
+
+    if (modalType == "update") {
+        formData.append("project_id", inputprojectId);
+    }
 
     fetch(form.action, {
         method: form.method,
@@ -455,43 +436,32 @@ function handle_create_user() {
         },
         body: formData,
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                // Close the modal
-                let modalElement =
-                    document.getElementById("projectCreateModal");
-                let modal = bootstrap.Modal.getInstance(modalElement);
-                modal.hide();
-                location.reload();
-            } else {
-                const errors = data.errors;
-
-                document
-                    .querySelectorAll(".text-danger")
-                    .forEach((el) => el.remove());
-                for (const key in errors) {
-                    if (errors.hasOwnProperty(key)) {
-                        const inputElement = form.querySelector(
-                            `[name="${key}"]`
-                        );
-                        const errorElement = document.createElement("span");
-                        errorElement.classList.add("text-danger");
-                        errorElement.textContent = errors[key][0];
-                        inputElement.after(errorElement);
-                    }
-                }
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
             }
+            return response.json(); // Parse the JSON response
         })
-        .catch((error) => console.error("Error:", error));
-    return false;
+        .then((data) => {
+            if (modalType == "update") {
+                populateUser("userUpdateSelectList", inputprojectId);
+            } else {
+                populateUser("userselectList", inputprojectId);
+            }
+
+            // Close the modal
+            const modalElement = document.getElementById("userCreateModal");
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance.hide();
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
 }
 
-function populateUser() {
-    var projectId = document.getElementById("inputprojectId");
-    projectId = projectId.value;
-    window.userselectList = document.getElementById("userselectList");
-    fetch("http://localhost:8000/users/" + projectId)
+function populateUser(element, project_id = null) {
+    window.userselectList = document.getElementById(element);
+    fetch("http://localhost:8000/users/" + project_id)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");
@@ -499,7 +469,7 @@ function populateUser() {
             return response.json();
         })
         .then((data) => {
-            populateList(data);
+            populateList(data.users);
         })
         .catch((error) => {
             console.error("Error fetching data:", error);
@@ -507,27 +477,84 @@ function populateUser() {
 }
 
 function populateList(data) {
-    // Clear the current list
     window.userselectList.innerHTML = "";
 
-    // Iterate over the fetched data and create list items
+    let selectedListItem = null;
+
     data.forEach((item) => {
-        const listItem = document.createElement("li");
-        listItem.textContent = item.name; // Adjust property based on your data structure
-        listItem.className = "list-item"; // Add a class for styling if needed
+        const listItem = document.createElement("div");
+        listItem.textContent = item.username;
+        listItem.className = "list-item";
+
         listItem.addEventListener("click", function () {
             handleSelection(item);
+
+            if (selectedListItem) {
+                selectedListItem.classList.remove("selected");
+            }
+
+            listItem.classList.add("selected");
+
+            selectedListItem = listItem;
         });
+
         window.userselectList.appendChild(listItem);
     });
 }
 
+function handleSelection(item) {
+    document.getElementById("inputUserId").value = item.id;
+}
+
+function openModal(modalName, type = null) {
+    var modal = new bootstrap.Modal(document.getElementById(modalName));
+    modal.toggle();
+
+    var modalType = document.getElementById("modalType");
+    var inputprojectId = document.getElementById("inputprojectId");
+    if (modalName == "updateModal") {
+        modalType.value = "update";
+    } else if (modalName == "projectcreateModal") {
+        inputprojectId.value = "";
+        modalType.value = "create";
+    }
+}
+
+function openSecondModal(initialModal, newModal, type = null) {
+    var firstModalEl = document.getElementById(initialModal);
+    var firstModal = bootstrap.Modal.getInstance(firstModalEl);
+
+    firstModal.hide();
+
+    firstModalEl.addEventListener(
+        "hidden.bs.modal",
+        function () {
+            var secondModal = new bootstrap.Modal(
+                document.getElementById(newModal)
+            );
+            secondModal.show();
+
+            document.getElementById(newModal).addEventListener(
+                "hidden.bs.modal",
+                function () {
+                    firstModal.show();
+                },
+                { once: true }
+            );
+        },
+        { once: true }
+    );
+}
+
+window.deleteUser = deleteUser;
+window.openModal = openModal;
+window.openSecondModal = openSecondModal;
+window.populateUser = populateUser;
 window.handleDelete = handleDelete;
 window.handleUpdate = handleUpdate;
 window.handle_create_user = handle_create_user;
 window.changeTab = changeTab;
 window.fetch_data = fetch_data;
-window.fetch_users = fetch_users;
 window.toggleEndUserName = toggleEndUserName;
 window.create_project = create_project;
 

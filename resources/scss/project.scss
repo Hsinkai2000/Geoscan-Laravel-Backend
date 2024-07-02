@@ -55,25 +55,25 @@
         }
     }
 }
+/* Basic styling for the list container */
+#userUpdateSelectList {
+    max-height: 300px;
+    padding: 0;
+    list-style: none; /* Ensure no default list styling */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
 
+/* Basic styling for each list item */
 .list-item {
-    cursor: pointer;
     padding: 10px;
+    margin: 10px;
     border: 1px solid #ddd;
-    margin: 5px 0;
+    cursor: pointer;
 }
 
-.list-item:hover {
-    background-color: #f0f0f0;
-}
-
+/* Styling for the selected item */
 .list-item.selected {
-    background-color: #d0d0d0;
-    border-color: #999;
-}
-
-#user-box {
-    width: 500px;
+    background-color: $hover;
 }
 
 .modal:nth-of-type(even) {
