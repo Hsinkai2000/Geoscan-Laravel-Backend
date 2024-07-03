@@ -200,7 +200,6 @@ function fetch_data(project_type) {
             return response.json();
         })
         .then((json) => {
-            console.log(json.projects);
             tabledata = json.projects;
             settable(tabledata, project_type);
         });
@@ -208,7 +207,6 @@ function fetch_data(project_type) {
 
 function create_users(projectId, csrfToken) {
     userList.forEach((user) => {
-        console.log(user);
         user.project_id = projectId;
         fetch("http://localhost:8000/user/", {
             method: "POST",
@@ -248,7 +246,6 @@ function create_project() {
             return response.json();
         })
         .then((json) => {
-            console.log(json);
             create_users(json.project_id, csrfToken);
             closeModal("projectcreateModal");
             // location.reload() should only be called after successful operations
@@ -318,7 +315,7 @@ function handleDelete(event) {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
     var confirmation = document.getElementById("inputDeleteConfirmation").value;
-    console.log("asd" + inputprojectId);
+
     if (confirmation == "DELETE") {
         fetch("http://localhost:8000/project/" + inputprojectId, {
             method: "DELETE",
@@ -390,7 +387,7 @@ function handleUpdate() {
     var form = document.getElementById("updateProjectForm");
 
     var formData = new FormData(form);
-    console.log("formdata: " + formData);
+
     var formDataJson = {};
     formData.forEach((value, key) => {
         formDataJson[key] = value;
@@ -415,7 +412,6 @@ function handleUpdate() {
             return response.json();
         })
         .then((json) => {
-            console.log("alskdjalskdjajslkd");
             create_users(inputprojectId, csrfToken);
             closeModal("updateModal");
             // location.reload() should only be called after successful operations
@@ -456,8 +452,6 @@ function populateUser(element, project_id = null) {
                 return response.json();
             })
             .then((data) => {
-                console.log(data);
-                console.log("data split");
                 populateList(data.users);
             })
             .catch((error) => {
@@ -477,7 +471,7 @@ function populateList(data) {
             data.push(user);
         });
     }
-    console.log(data);
+
     data.forEach((item) => {
         const listItem = document.createElement("div");
         listItem.textContent = item.username;

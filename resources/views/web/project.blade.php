@@ -87,6 +87,8 @@
     <x-delete-confirmation-modal type='project' />
     <x-delete-modal type='user' />
     <x-project.project-update-modal />
+    <x-user.user-create-modal />
+
 </body>
 
 </html>
