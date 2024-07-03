@@ -23,7 +23,8 @@ class ProjectController extends Controller
             debug_log('project params', [$project_params]);
             $project_id = Project::insertGetId($project_params);
             if (Project::find($project_id)) {
-                return redirect()->route('project.show');
+                // return redirect()->route('project.show')->with(['project_id' => $project_id]);
+                return render_ok(['project_id' => $project_id]);
             } else {
                 return back();
             }

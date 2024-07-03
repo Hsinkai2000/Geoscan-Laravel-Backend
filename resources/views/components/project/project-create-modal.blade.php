@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('project.create') }}" method="POST">
+                <form id='projectCreateForm' action="{{ route('project.create') }}" method="POST">
                     @csrf
                     <div>
                         <div class="mb-3 row">
@@ -114,7 +114,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary bg-white text-primary"
                             data-bs-dismiss="modal">Discard</button>
-                        <button type="submit" onclick="create_project()"
+                        <button type='button' onclick="create_project()"
                             class="btn btn-primary text-white">Create</button>
                     </div>
                 </form>

@@ -57,6 +57,8 @@
         </nav>
         <div class="mb-3">
             <h5 class="d-inline me-4">Project Information</h5>
+            <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
+                onclick="openModal('updateModal','update')">Edit</button>
             <button class="d-inline btn btn-primary bg-light text-primary shadow-sm"
                 onclick="fetch_users('inputUpdateUserSelect', {{ $project['user_id'] }})" data-bs-toggle="modal"
                 data-bs-target="#updateModal">Edit Project</button>

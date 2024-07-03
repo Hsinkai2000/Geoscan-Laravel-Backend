@@ -30,7 +30,8 @@
 
                     <div class="modal-footer">
                         <button class="btn btn-primary bg-white text-primary" data-bs-dismiss="modal">Discard</button>
-                        <button class="btn btn-primary text-white" type="button" onclick="handle_create_user()">Create
+                        <button class="btn btn-primary text-white" type="button"
+                            onclick="handle_create_dummy_user()">Create
                             User</button>
                     </div>
                 </form>

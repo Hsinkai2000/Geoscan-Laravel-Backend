@@ -1,4 +1,9 @@
 var tabledata = null;
+var userList = [];
+var inputprojectId = null;
+var modalType = "";
+var inputUserId = null;
+
 function settable(tabledata, project_type) {
     document.getElementById("table_pages").innerHTML = "";
 
@@ -156,8 +161,7 @@ function table_row_changed(data) {
     if (data && data.length > 0) {
         document.getElementById("editButton").disabled = false;
         document.getElementById("deleteButton").disabled = false;
-        var projectId = document.getElementById("inputprojectId");
-        projectId.value = data[0].id;
+        inputprojectId = data[0].id;
         fetch_project_data(data[0]);
     } else {
         document.getElementById("editButton").disabled = true;
@@ -202,6 +206,25 @@ function fetch_data(project_type) {
         });
 }
 
+function create_users(projectId, csrfToken) {
+    userList.forEach((user) => {
+        console.log(user);
+        user.project_id = projectId;
+        fetch("http://localhost:8000/user/", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify(user),
+        }).then((response) => {
+            if (response.ok) {
+                console.log(user.username + "added");
+            }
+        });
+    });
+}
 function create_project() {
     const form = document.getElementById("projectCreateForm");
     const csrfToken = document.querySelector('input[name="_token"]').value;
@@ -216,35 +239,25 @@ function create_project() {
         },
         body: formData,
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                // Close the modal
-                let modalElement =
-                    document.getElementById("projectCreateModal");
-                let modal = bootstrap.Modal.getInstance(modalElement);
-                modal.hide();
-                location.reload();
-            } else {
-                const errors = data.errors;
-
-                document
-                    .querySelectorAll(".text-danger")
-                    .forEach((el) => el.remove());
-                for (const key in errors) {
-                    if (errors.hasOwnProperty(key)) {
-                        const inputElement = form.querySelector(
-                            `[name="${key}"]`
-                        );
-                        const errorElement = document.createElement("span");
-                        errorElement.classList.add("text-danger");
-                        errorElement.textContent = errors[key][0];
-                        inputElement.after(errorElement);
-                    }
-                }
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
             }
+            return response.json();
         })
-        .catch((error) => console.error("Error:", error));
+        .then((json) => {
+            console.log(json);
+            create_users(json.project_id, csrfToken);
+            closeModal("projectcreateModal");
+            // location.reload() should only be called after successful operations
+            location.reload();
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("There was an error: " + error.message);
+        });
 }
 
 function toggleEndUserName() {
@@ -264,11 +277,8 @@ function deleteUser(event) {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var userId = document.getElementById("inputUserId").value;
-    var modalType = document.getElementById("modalType").value;
-    var inputprojectId = document.getElementById("inputprojectId").value;
 
-    fetch("http://localhost:8000/users/" + userId, {
+    fetch("http://localhost:8000/users/" + inputUserId, {
         method: "DELETE",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -307,11 +317,10 @@ function handleDelete(event) {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var projectId = document.getElementById("inputprojectId").value;
     var confirmation = document.getElementById("inputDeleteConfirmation").value;
-    console.log("asd" + projectId);
+    console.log("asd" + inputprojectId);
     if (confirmation == "DELETE") {
-        fetch("http://localhost:8000/project/" + projectId, {
+        fetch("http://localhost:8000/project/" + inputprojectId, {
             method: "DELETE",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
@@ -378,8 +387,6 @@ function handleUpdate() {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var projectId = document.getElementById("inputprojectId");
-    projectId = projectId.value;
     var form = document.getElementById("updateProjectForm");
 
     var formData = new FormData(form);
@@ -389,7 +396,7 @@ function handleUpdate() {
         formDataJson[key] = value;
     });
 
-    fetch("http://localhost:8000/project/" + projectId, {
+    fetch("http://localhost:8000/project/" + inputprojectId, {
         method: "PATCH",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -401,86 +408,76 @@ function handleUpdate() {
     })
         .then((response) => {
             if (!response.ok) {
-                console.log("Error:", response);
-                throw new Error("Network response was not ok");
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
             }
             return response.json();
         })
-        .then((data) => {
-            console.log("Success:", data);
+        .then((json) => {
+            console.log("alskdjalskdjajslkd");
+            create_users(inputprojectId, csrfToken);
+            closeModal("updateModal");
+            // location.reload() should only be called after successful operations
+            location.reload();
         })
         .catch((error) => {
             console.error("Error:", error);
+            alert("There was an error: " + error.message);
         });
 
     return false;
 }
 
-function handle_create_user() {
-    const form = document.getElementById("createUserForm");
-    const csrfToken = document.querySelector('input[name="_token"]').value;
-    const formData = new FormData(form);
-    const inputprojectId = document.getElementById("inputprojectId").value;
-    const modalType = document.getElementById("modalType").value;
-
+function handle_create_dummy_user() {
+    var inputUsername = document.getElementById("inputUsername").value;
+    var inputPassword = document.getElementById("inputPassword").value;
+    userList.push({
+        username: inputUsername,
+        password: inputPassword,
+    });
     if (modalType == "update") {
-        formData.append("project_id", inputprojectId);
+        populateUser("userUpdateSelectList", inputprojectId);
+    } else {
+        populateUser("userselectList");
     }
 
-    fetch(form.action, {
-        method: form.method,
-        headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-        },
-        body: formData,
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json(); // Parse the JSON response
-        })
-        .then((data) => {
-            if (modalType == "update") {
-                populateUser("userUpdateSelectList", inputprojectId);
-            } else {
-                populateUser("userselectList", inputprojectId);
-            }
-
-            // Close the modal
-            const modalElement = document.getElementById("userCreateModal");
-            const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            modalInstance.hide();
-        })
-        .catch((error) => {
-            console.error("Error fetching data:", error);
-        });
+    closeModal("userCreateModal");
 }
 
 function populateUser(element, project_id = null) {
     window.userselectList = document.getElementById(element);
-    fetch("http://localhost:8000/users/" + project_id)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then((data) => {
-            populateList(data.users);
-        })
-        .catch((error) => {
-            console.error("Error fetching data:", error);
-        });
+    if (project_id) {
+        fetch("http://localhost:8000/users/" + project_id)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                console.log("data split");
+                populateList(data.users);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+    } else {
+        populateList([]);
+    }
 }
 
 function populateList(data) {
     window.userselectList.innerHTML = "";
 
     let selectedListItem = null;
-
+    if (userList != []) {
+        userList.forEach((user) => {
+            data.push(user);
+        });
+    }
+    console.log(data);
     data.forEach((item) => {
         const listItem = document.createElement("div");
         listItem.textContent = item.username;
@@ -503,24 +500,24 @@ function populateList(data) {
 }
 
 function handleSelection(item) {
-    document.getElementById("inputUserId").value = item.id;
+    inputUserId = item.id;
 }
 
-function openModal(modalName, type = null) {
+function openModal(modalName) {
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
 
-    var modalType = document.getElementById("modalType");
-    var inputprojectId = document.getElementById("inputprojectId");
     if (modalName == "updateModal") {
-        modalType.value = "update";
+        userList = [];
+        modalType = "update";
     } else if (modalName == "projectcreateModal") {
-        inputprojectId.value = "";
-        modalType.value = "create";
+        userList = [];
+        inputprojectId = "";
+        modalType = "create";
     }
 }
 
-function openSecondModal(initialModal, newModal, type = null) {
+function openSecondModal(initialModal, newModal) {
     var firstModalEl = document.getElementById(initialModal);
     var firstModal = bootstrap.Modal.getInstance(firstModalEl);
 
@@ -532,6 +529,11 @@ function openSecondModal(initialModal, newModal, type = null) {
             var secondModal = new bootstrap.Modal(
                 document.getElementById(newModal)
             );
+
+            if (newModal == "userCreateModal") {
+                document.getElementById("inputUsername").value = "";
+                document.getElementById("inputPassword").value = "";
+            }
             secondModal.show();
 
             document.getElementById(newModal).addEventListener(
@@ -546,13 +548,20 @@ function openSecondModal(initialModal, newModal, type = null) {
     );
 }
 
+function closeModal(modal) {
+    // Close the modal
+    const modalElement = document.getElementById(modal);
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance.hide();
+}
+
 window.deleteUser = deleteUser;
 window.openModal = openModal;
 window.openSecondModal = openSecondModal;
 window.populateUser = populateUser;
 window.handleDelete = handleDelete;
 window.handleUpdate = handleUpdate;
-window.handle_create_user = handle_create_user;
+window.handle_create_dummy_user = handle_create_dummy_user;
 window.changeTab = changeTab;
 window.fetch_data = fetch_data;
 window.toggleEndUserName = toggleEndUserName;

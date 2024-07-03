@@ -83,10 +83,6 @@
         </div>
     </div>
 
-    <input hidden id="inputprojectId">
-    <input hidden id="modalType">
-    <input hidden id="inputUserId">
-
     <x-project.project-create-modal />
     <x-delete-confirmation-modal type='project' />
     <x-delete-modal type='user' />
