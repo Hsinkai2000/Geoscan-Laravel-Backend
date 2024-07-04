@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::dropIfExists('concentrators');
         Schema::create('concentrators', function (Blueprint $table) {
             $table->id()->primary();
-            $table->integer('project_id')->nullable()->index();
+            $table->boolean('use_flag')->default(false);
             $table->string('device_id', 255);
             $table->string('concentrator_label', 255)->nullable();
             $table->integer('concentrator_csq')->nullable();

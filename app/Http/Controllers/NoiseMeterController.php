@@ -24,6 +24,16 @@ class NoiseMeterController extends Controller
         }
     }
 
+    public function get_available_noise_meters()
+    {
+        try {
+            $noise_meter = NoiseMeter::where('use_flag', 0)->get();
+            return render_ok(['noise_meter' => $noise_meter]);
+        } catch (Exception $e) {
+            return render_error($e);
+        }
+    }
+
     public function index()
     {
         try {

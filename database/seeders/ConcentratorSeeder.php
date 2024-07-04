@@ -16,7 +16,7 @@ class ConcentratorSeeder extends Seeder
         $now = date("Y-m-d H:i:s");
         DB::table('concentrators')->insert([
             [
-                "project_id" => 1,
+                'use_flag' => true,
                 'device_id' => 'AA818892181234',
                 'remarks' => $faker->text(20),
                 'concentrator_csq' => 20,
@@ -28,7 +28,7 @@ class ConcentratorSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                "project_id" => 7,
+                'use_flag' => true,
                 'device_id' => 'BB894722221234',
                 'remarks' => $faker->text(20),
                 'concentrator_csq' => 25,
@@ -40,7 +40,7 @@ class ConcentratorSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                "project_id" => 6,
+                'use_flag' => true,
                 'device_id' => 'CC981236731234',
                 'remarks' => $faker->text(20),
                 'concentrator_csq' => 30,
@@ -52,7 +52,7 @@ class ConcentratorSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                "project_id" => 6,
+                'use_flag' => true,
                 'device_id' => 'DD123456781234',
                 'remarks' => $faker->text(20),
                 'concentrator_csq' => 35,
@@ -64,7 +64,7 @@ class ConcentratorSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                "project_id" => 6,
+                'use_flag' => false,
                 'device_id' => 'EE876543211234',
                 'remarks' => $faker->text(20),
                 'concentrator_csq' => 40,
@@ -75,7 +75,7 @@ class ConcentratorSeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'project_id' => 1,
+                'use_flag' => false,
                 'device_id' => '27002131323631',
                 'remarks' => 'On site hardware tester',
                 'concentrator_csq' => 91,

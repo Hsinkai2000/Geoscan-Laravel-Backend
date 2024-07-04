@@ -248,8 +248,6 @@ function create_project() {
         .then((json) => {
             create_users(json.project_id, csrfToken);
             closeModal("projectcreateModal");
-            // location.reload() should only be called after successful operations
-            location.reload();
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -298,9 +296,7 @@ function deleteUser(event) {
             }
 
             // Close the modal
-            const modalElement = document.getElementById("deleteModal");
-            const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            modalInstance.hide();
+            closeModal("deleteModal");
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -332,7 +328,9 @@ function handleDelete(event) {
                 }
                 return response.json();
             })
-            .then((data) => {})
+            .then((data) => {
+                closeModal("deleteConfirmationModal");
+            })
             .catch((error) => {
                 console.error("Error:", error);
             });
@@ -414,8 +412,6 @@ function handleUpdate() {
         .then((json) => {
             create_users(inputprojectId, csrfToken);
             closeModal("updateModal");
-            // location.reload() should only be called after successful operations
-            location.reload();
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -547,6 +543,7 @@ function closeModal(modal) {
     const modalElement = document.getElementById(modal);
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
     modalInstance.hide();
+    location.reload();
 }
 
 window.deleteUser = deleteUser;

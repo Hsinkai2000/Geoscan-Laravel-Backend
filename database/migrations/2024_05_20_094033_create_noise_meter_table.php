@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::dropIfExists('noise_meters');
         Schema::create('noise_meters', function (Blueprint $table) {
             $table->id();
+            $table->boolean('use_flag')->default(false);
             $table->string('serial_number', 32);
             $table->string('noise_meter_label', 255)->nullable();
             $table->string('brand', 255);

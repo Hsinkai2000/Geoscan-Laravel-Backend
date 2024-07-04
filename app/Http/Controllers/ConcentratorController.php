@@ -20,7 +20,17 @@ class ConcentratorController extends Controller
             return render_ok(["concentrator" => $concentrator]);
 
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
+        }
+    }
+
+    public function get_available_concentrators()
+    {
+        try {
+            $concentrator = Concentrator::where('use_flag', 0)->get();
+            return render_ok(['concentrators' => $concentrator]);
+        } catch (Exception $e) {
+            return render_error($e);
         }
     }
 
@@ -29,7 +39,7 @@ class ConcentratorController extends Controller
         try {
             return render_ok(["concentrators" => Concentrator::all()]);
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 
@@ -45,7 +55,7 @@ class ConcentratorController extends Controller
             }
             return render_ok(["concentrator" => $concentrator]);
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 
@@ -83,7 +93,7 @@ class ConcentratorController extends Controller
             return render_ok(["concentrator" => $concentrator]);
 
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 }

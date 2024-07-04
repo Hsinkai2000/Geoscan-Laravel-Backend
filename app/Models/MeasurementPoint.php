@@ -391,12 +391,18 @@ class MeasurementPoint extends Model
 
     public function check_data_status()
     {
-        $receivedAtCarbon = Carbon::parse($this->getLastLeqData()->receivedAt);
 
-        // Get the current time
-        $currentTime = Carbon::now();
-        $diffInMinutes = $currentTime->diffInMinutes($receivedAtCarbon);
+        if ($this->getLastLeqData()) {
 
-        return $diffInMinutes <= 45 ? true : false;
+            $receivedAtCarbon = Carbon::parse($this->getLastLeqData()->received_at);
+
+            // Get the current time
+            $currentTime = Carbon::now();
+            $diffInMinutes = $currentTime->diffInMinutes($receivedAtCarbon);
+
+            return $diffInMinutes <= 45 ? true : false;
+        }
+        return true;
+
     }
 }
