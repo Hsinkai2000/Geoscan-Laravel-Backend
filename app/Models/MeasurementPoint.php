@@ -124,15 +124,20 @@ class MeasurementPoint extends Model
         return false;
     }
 
-    public function check_last_data_for_alert()
+    public function check_last_data_for_alert($last_noise_data = null)
     {
+        $sendAlert = false;
         $num_blanks = 0;
         $leq_12_should_alert = false;
         $leq_1_should_alert = false;
         $dose_100_should_alert = false;
         $dose_70_should_alert = false;
         $calculated_dose_percentage = null;
-        $last_noise_data = $this->getLastLeqData();
+        if ($last_noise_data == null) {
+            $sendAlert = true;
+            $last_noise_data = $this->getLastLeqData();
+        }
+
         $soundLimit = $this->soundLimit;
 
         [$leq_5mins_should_alert, $leq5limit] = $this->leq_5_mins_exceed_and_alert($last_noise_data);
@@ -140,67 +145,72 @@ class MeasurementPoint extends Model
         [$decision, $last_data_datetime] = $soundLimit->check_12_1_hour_limit_type($last_noise_data->received_at);
 
         if ($decision == '12h') {
+
             [$leq_12_should_alert, $leq12hlimit, $calculated12hLeq, $num_blanks] = $this->leq_12_hours_exceed_and_alert($last_noise_data, $last_data_datetime);
             $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated12hLeq, $leq12hlimit, $num_blanks, 144);
-            debug_log('dose 12h limit', [$leq12hlimit]);
+
         } else {
             [$leq_1_should_alert, $leq1hlimit, $calculated1hLeq, $num_blanks] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
+            debug_log('times', [$last_noise_data, $last_data_datetime]);
             $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated1hLeq, $leq1hlimit, $num_blanks, 12);
-            debug_log('dose 1h limit', [$leq1hlimit]);
-        }
-        $data = [
-            "client_name" => $this->project->contact->contact_person_name,
-            "jobsite_location" => $this->project->jobsite_location,
-            "serial_number" => $this->noiseMeter->serial_number,
-            "leq_value" => null,
-            "exceeded_limit" => null,
-            "leq_type" => null,
-            "exceeded_time" => $last_noise_data->received_at,
-            "type" => 'dose',
-            "dose_limit" => null,
-            "calculated_dose" => $calculated_dose_percentage,
-            "measurement_point_name" => $this->point_name,
-        ];
-
-        $dose_70_should_alert = $this->last_alert_allowed($this->dose_70_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 70 && $calculated_dose_percentage < 100;
-        $dose_100_should_alert = $this->last_alert_allowed($this->dose_100_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 100;
-        debug_log('dose_val : dose 70 should alert : dose 100 should alert', [$calculated_dose_percentage, $dose_70_should_alert, $dose_100_should_alert]);
-
-        if ($dose_100_should_alert) {
-            $data["dose_limit"] = '100';
-            $this->dose_100_last_alert_at = $last_noise_data->received_at;
-            $this->send_alert($data);
-
-        } else if ($dose_70_should_alert) {
-            $data["dose_limit"] = '70';
-            $this->dose_70_last_alert_at = $last_noise_data->received_at;
-            $this->send_alert($data);
 
         }
 
-        $data["type"] = 'leq';
-        if ($leq_5mins_should_alert) {
-            $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
-            $data["leq_type"] = "5min";
-            $data["exceeded_limit"] = $leq5limit;
-            $data["leq_value"] = $last_noise_data->leq;
-            $this->send_alert($data);
-        }
-        if ($leq_12_should_alert) {
-            $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
-            $data["leq_type"] = "12hours";
-            $data["exceeded_limit"] = $leq12hlimit;
-            $data["leq_value"] = round($calculated12hLeq, 1);
-            $this->send_alert($data);
-        } else if ($leq_1_should_alert) {
-            $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
-            $data["leq_type"] = "1hour";
-            $data["exceeded_limit"] = $leq1hlimit;
-            $data["leq_value"] = round($calculated1hLeq, 1);
-            $this->send_alert($data);
-        }
+        if (!$sendAlert) {
+            return $calculated_dose_percentage;
+        } else {
+            $data = [
+                "client_name" => $this->project->contact->contact_person_name,
+                "jobsite_location" => $this->project->jobsite_location,
+                "serial_number" => $this->noiseMeter->serial_number,
+                "leq_value" => null,
+                "exceeded_limit" => null,
+                "leq_type" => null,
+                "exceeded_time" => $last_noise_data->received_at,
+                "type" => 'dose',
+                "dose_limit" => null,
+                "calculated_dose" => $calculated_dose_percentage,
+                "measurement_point_name" => $this->point_name,
+            ];
 
-        $this->save();
+            $dose_70_should_alert = $this->last_alert_allowed($this->dose_70_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 70 && $calculated_dose_percentage < 100;
+            $dose_100_should_alert = $this->last_alert_allowed($this->dose_100_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 100;
+
+            if ($dose_100_should_alert) {
+                $data["dose_limit"] = '100';
+                $this->dose_100_last_alert_at = $last_noise_data->received_at;
+                $this->send_alert($data);
+
+            } else if ($dose_70_should_alert) {
+                $data["dose_limit"] = '70';
+                $this->dose_70_last_alert_at = $last_noise_data->received_at;
+                $this->send_alert($data);
+            }
+
+            $data["type"] = 'leq';
+            if ($leq_5mins_should_alert) {
+                $this->leq_5_mins_last_alert_at = $last_noise_data->received_at;
+                $data["leq_type"] = "5min";
+                $data["exceeded_limit"] = $leq5limit;
+                $data["leq_value"] = $last_noise_data->leq;
+                $this->send_alert($data);
+            }
+            if ($leq_12_should_alert) {
+                $this->leq_12_hours_last_alert_at = $last_noise_data->received_at;
+                $data["leq_type"] = "12hours";
+                $data["exceeded_limit"] = $leq12hlimit;
+                $data["leq_value"] = round($calculated12hLeq, 1);
+                $this->send_alert($data);
+            } else if ($leq_1_should_alert) {
+                $this->leq_1_hour_last_alert_at = $last_noise_data->received_at;
+                $data["leq_type"] = "1hour";
+                $data["exceeded_limit"] = $leq1hlimit;
+                $data["leq_value"] = round($calculated1hLeq, 1);
+                $this->send_alert($data);
+            }
+
+            $this->save();
+        }
     }
 
     private function send_alert($data)
@@ -265,11 +275,10 @@ class MeasurementPoint extends Model
         return [$sms_messageid, $sms_status];
     }
 
-    private function leq_5_mins_exceed_and_alert($last_noise_data = null)
+    public function leq_5_mins_exceed_and_alert($last_noise_data = null)
     {
         $limit = $this->soundLimit->leq5_limit($last_noise_data->received_at);
         $should_alert = $last_noise_data->leq >= $limit && $this->last_alert_allowed($this->leq_5_mins_last_alert_at, $last_noise_data->received_at);
-        debug_log("leq5 : leq5 should alert : leq5 limit", [$last_noise_data->leq, $should_alert, $limit]);
         return [$should_alert, $limit];
     }
 
@@ -278,16 +287,15 @@ class MeasurementPoint extends Model
         [$twelve_hr_leq, $num_blanks] = $this->calc_12_hour_leq();
         $limit = $this->soundLimit->leq12h_limit($last_data_datetime);
         $should_alert = round($twelve_hr_leq, 1) >= $limit && $this->last_alert_allowed($this->leq_12_hours_last_alert_at, $last_noise_data->received_at);
-        debug_log("12hrleq : leq12hr should alert:leq12hr limit ", [round($twelve_hr_leq, 1), $should_alert, $limit]);
         return [$should_alert, $limit, $twelve_hr_leq, $num_blanks];
     }
 
     private function leq_1_hour_exceed_and_alert($last_noise_data = null, $last_data_datetime)
     {
-        [$one_hr_leq, $num_blanks] = $this->calc_1_hour_leq();
+        [$one_hr_leq, $num_blanks] = $this->calc_1_hour_leq($last_noise_data->received_at);
+        debug_log('1hr leqs', [$one_hr_leq, $num_blanks]);
         $limit = $this->soundLimit->leq1h_limit($last_data_datetime);
         $should_alert = round($one_hr_leq, 1) >= $limit && $this->last_alert_allowed($this->leq_1_hour_last_alert_at, $last_noise_data->received_at);
-        debug_log("one_hr_leq : leq1hr should alert:leq1hr limit ", [round($one_hr_leq, 1), $should_alert, $limit]);
         return [$should_alert, $limit, $one_hr_leq, $num_blanks];
     }
 
@@ -314,9 +322,11 @@ class MeasurementPoint extends Model
         return [$start_time, $end_time];
     }
 
-    private function get_hour_to_now_leq()
+    private function get_hour_to_now_leq($last_noise_data_base_hour)
     {
-        $last_noise_data_base_hour = $this->getLastLeqData()->received_at;
+        if ($last_noise_data_base_hour == null) {
+            $last_noise_data_base_hour = $this->getLastLeqData()->received_at;
+        }
 
         $last_noise_data_base_hour->setTime($last_noise_data_base_hour->format("H"), 0, 0);
 
@@ -327,45 +337,68 @@ class MeasurementPoint extends Model
         return $hour_to_now_leqs;
     }
 
-    private function get_timesslot_start_end_datetime()
+    private function get_timesslot_start_end_datetime($time)
     {
-        [$day, $time_range] = $this->soundLimit->getTimeRange($this->getLastLeqData()->received_at);
-        $last_noise_data_date = $this->get_current_date();
+        if ($time == null) {
+            [$day, $time_range] = $this->soundLimit->getTimeRange($this->getLastLeqData()->received_at);
+            $last_noise_data_date = $this->get_current_date();
+        } else {
+            [$day, $time_range] = $this->soundLimit->getTimeRange($time);
+            $last_noise_data_date = $time->format('Y-m-d');
+        }
         [$start_datetime, $end_datetime] = $this->get_final_time_start_stop($last_noise_data_date, $time_range);
+
+        debug_log('asdasdasdasda', [$start_datetime, $end_datetime]);
         return [$start_datetime, $end_datetime];
     }
 
-    private function get_timeslot_to_now_leq()
+    private function get_timeslot_to_now_leq($time)
     {
-        [$start_datetime, $end_datetime] = $this->get_timesslot_start_end_datetime();
+        [$start_datetime, $end_datetime] = $this->get_timesslot_start_end_datetime($time);
         $timeslot_to_now_leqs = $this->noiseData()->whereBetween('received_at', [$start_datetime, $end_datetime])->get()->reverse();
         return $timeslot_to_now_leqs;
     }
 
     private function calc_leq($data)
     {
-        $sum = 0.0;
-        foreach ($data as $leqData) {
-            $currentLeq = $leqData->leq;
-            $sum += round(linearise_leq($currentLeq), 1);
+        if ($data->isNotEmpty()) {
+
+            $sum = 0.0;
+            foreach ($data as $leqData) {
+                $currentLeq = $leqData->leq;
+                $sum += round(linearise_leq($currentLeq), 1);
+            }
+
+            $avgLeq = $sum / count($data);
+            $calculatedLeq = convert_to_db($avgLeq);
+
+            return $calculatedLeq;
         }
 
-        $avgLeq = $sum / count($data);
-        $calculatedLeq = convert_to_db($avgLeq);
-
-        return $calculatedLeq;
+        return 0;
     }
 
-    private function calc_12_hour_leq()
+    public function calc_laeq5_max(DateTime $time = null, string $type)
     {
-        $timeslot_to_now_leqs = $this->get_timeslot_to_now_leq();
+        if ($type == 1) {
+            $leqs = $this->get_timeslot_to_now_leq($time);
+        } else if ($type == 2) {
+
+            $leqs = $this->get_hour_to_now_leq($time);
+        }
+        return max($leqs);
+    }
+
+    public function calc_12_hour_leq(DateTime $time = null)
+    {
+        $timeslot_to_now_leqs = $this->get_timeslot_to_now_leq($time);
         $num_blanks = 144 - count($timeslot_to_now_leqs);
         return [$this->calc_leq($timeslot_to_now_leqs), $num_blanks];
     }
 
-    private function calc_1_hour_leq()
+    public function calc_1_hour_leq(DateTime $time = null)
     {
-        $hour_to_now_leqs = $this->get_hour_to_now_leq();
+        $hour_to_now_leqs = $this->get_hour_to_now_leq($time);
         $num_blanks = 12 - count($hour_to_now_leqs);
         return [$this->calc_leq($hour_to_now_leqs), $num_blanks];
     }

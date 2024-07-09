@@ -1,0 +1,38 @@
+@import "./base.scss";
+
+$font-size-base: 1rem * 0.6;
+
+body {
+    background-color: white !important;
+}
+
+h6 {
+    padding-top: -10px;
+}
+
+.table {
+    td,
+    th {
+        padding: 3px !important;
+        background-color: white !important;
+    }
+    margin-bottom: 0.5rem !important;
+}
+h6 {
+    margin-bottom: 0.2rem !important;
+}
+
+footer {
+    color: $white;
+    font-size: 0.8rem;
+    padding: 7px;
+    background-color: $primary;
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    justify-content: space-around;
+}
+
+@import "../../node_modules/bootstrap/scss/bootstrap";

@@ -164,7 +164,8 @@ class SoundLimit extends Model
         [$day, $time_range] = $this->time_to_keys($last_data_datetime);
         $time_map = self::$time_mapper[$time_range];
 
-        if ($day_of_week != null && $time_map == 3) { #morning on sun and mon: take prev night limit
+        if ($day_of_week != null && $time_map == 3) {
+            #morning on sun and mon: take prev night limit
             $last_data_datetime = $this->set_to_previous_night_1159pm($last_data_datetime);
             [$day, $time_range] = $this->time_to_keys($last_data_datetime);
             $time_map = self::$time_mapper[$time_range];
@@ -195,6 +196,7 @@ class SoundLimit extends Model
     {
         $dose_calculation_part1 = pow(10, $calculatedLeq / 10);
         $dose_calculation_part2 = ($base - $num_blanks) / ((pow(10, $limit / 10)) * $base);
+        debug_log('dose calc', [round(min(100, 100 * $dose_calculation_part1 * $dose_calculation_part2), 2)]);
         return round(min(100, 100 * $dose_calculation_part1 * $dose_calculation_part2), 2);
     }
 

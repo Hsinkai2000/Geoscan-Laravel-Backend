@@ -115,7 +115,10 @@
                         onclick='openModal("measurementPointCreateModal")'>Create</button>
                 </div>
             </div>
+
+            <button class="btn btn-primary text-light  shadow-sm" onclick='openPdf()'>pdf</button>
         </div>
+
 
         <x-project-update-modal :project="$project" />
         <x-delete-confirmation-modal type='Measurement Point' />

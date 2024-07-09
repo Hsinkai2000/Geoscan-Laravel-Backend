@@ -35,8 +35,4 @@ class NoiseData extends Model
         return $this->belongsTo(MeasurementPoint::class, 'id', 'measurement_point_id');
     }
 
-    protected function serializeDate(\DateTimeInterface $date)
-    {
-        return $date->format('Y-m-d');
-    }
 }

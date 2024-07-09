@@ -3,14 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\Concentrator;
+use App\Models\Contact;
 use App\Models\MeasurementPoint;
 use App\Models\NoiseMeter;
 use App\Models\Project;
+use Carbon\Carbon;
 use Exception;
+use function Spatie\LaravelPdf\Support\pdf;
 use Illuminate\Http\Request;
 
 class MeasurementPointController extends Controller
 {
+
+    public function generatePdf(Request $request)
+    {
+        $measurmentPointId = $request->route('id');
+        $measurementPoint = MeasurementPoint::find($measurmentPointId);
+        $contacts = Contact::where('project_id', $measurementPoint->project->id)->get();
+        $start_date = Carbon::now()->subDay()->format('d-m-Y');
+        $end_date = Carbon::now()->format('d-m-Y');
+        $date = Carbon::now()->format('d-m-Y');
+        $data = [
+            'measurementPoint' => $measurementPoint,
+            'contacts' => $contacts,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            // 'date' => $date,
+        ];
+        // return view('pdfs.noise-data-report', $data);
+        return pdf()
+            ->view('pdfs.noise-data-report', $data)
+            ->name('invoice-2023-04-10.pdf');
+    }
 
     public function show()
     {

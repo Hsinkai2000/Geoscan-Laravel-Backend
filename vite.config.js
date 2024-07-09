@@ -18,6 +18,8 @@ export default defineConfig({
                 "resources/js/project.js",
                 "resources/scss/measurement_point.scss",
                 "resources/js/measurement_point.js",
+                "resources/scss/pdf.scss",
+                "resources/js/pdf.js",
             ],
             refresh: true,
         }),

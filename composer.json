@@ -9,9 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^2.2",
         "laravel/framework": "^11.8",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "spatie/laravel-pdf": "^1.5",
         "symfony/http-client": "^7.0",
         "symfony/mailgun-mailer": "^7.0",
         "twbs/bootstrap": "5.0.2",
