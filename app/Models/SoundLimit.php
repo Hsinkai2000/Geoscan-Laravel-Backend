@@ -196,7 +196,7 @@ class SoundLimit extends Model
     {
         $dose_calculation_part1 = pow(10, $calculatedLeq / 10);
         $dose_calculation_part2 = ($base - $num_blanks) / ((pow(10, $limit / 10)) * $base);
-        debug_log('dose calc', [round(min(100, 100 * $dose_calculation_part1 * $dose_calculation_part2), 2)]);
+
         return round(min(100, 100 * $dose_calculation_part1 * $dose_calculation_part2), 2);
     }
 

@@ -13,33 +13,39 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-@for ($date = \Carbon\Carbon::parse($start_date); $date->lte(\Carbon\Carbon::parse($end_date)); $date->addDay())
+<body>
+    <div class="container d-flex flex-column justify-content-center vh-100 text-center">
+        <div>
+            <h1>Noise Data</h1>
+            <h2>Noise Device ID: {{ $measurementPoint->noiseMeter->serial_number }}</h2>
+            <h2>Date: {{ \Carbon\Carbon::parse($start_date)->format('d-m-Y') }} -
+                {{ \Carbon\Carbon::parse($end_date)->format('d-m-Y') }}</h2>
+        </div>
+        <br />
+        @include('pdfs.partials-report-details', [
+            'measurementPoint' => $measurementPoint,
+            'contacts' => $contacts,
+        ])
+    </div>
 
-    <body>
+
+    @pageBreak
+    @for ($date = \Carbon\Carbon::parse($start_date); $date->lte(\Carbon\Carbon::parse($end_date)); $date->addDay())
         <div class="container mt-3">
             <div class="text-center">
                 <h1>Noise Data</h1>
                 <h3>Noise Device ID: {{ $measurementPoint->noiseMeter->serial_number }}</h3>
-                <h3>Date: date</h3>
+                <h3>Date: {{ $date->format('d-m-Y') }}</h3>
             </div>
-            <div class="p-2 rounded border">
+            <div>
+
                 <br />
-                @include('pdfs.partials-report-details', [
-                    'measurementPoint' => $measurementPoint,
-                    'contacts' => $contacts,
-                ])
-                <br />
-                @include('pdfs.partials-report-data', [
-                    'measurementPoint' => $measurementPoint,
-                    'contacts' => $contacts,
-                ])
+                <x-pdfs.partials-report-data :measurementPoint="$measurementPoint" :date="$date" />
             </div>
         </div>
-    </body>
-    <footer>
-        Geoscan Data Tracking System
-    </footer>
-    @pageBreak
-@endfor
+
+        @pageBreak
+    @endfor
+</body>
 
 </html>

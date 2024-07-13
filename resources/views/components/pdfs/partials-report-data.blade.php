@@ -1,9 +1,8 @@
 @php
     $date = $date->format('d-m-Y');
 @endphp
-
 <div>
-    <table class="table-bordered" style="height: 40vh">
+    <table class="table-bordered" style="height: 80vh">
         <thead>
             <tr>
                 <td rowspan="2" class="w-10">Day</td>
@@ -55,7 +54,7 @@
                 <td rowspan="12">
                     <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' />
                 </td>
-                <td rowspan="12">Fin
+                <td rowspan="12"><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' />
                 </td>
             </tr>
             <tr>
@@ -208,7 +207,7 @@
                     <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='12hLeq' />
                 </td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>8pm</th>
@@ -222,7 +221,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>9pm</th>
@@ -236,7 +235,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>10pm</th>
@@ -250,7 +249,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>11pm</th>
@@ -264,11 +263,14 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
+            @php
+                $date = \Carbon\Carbon::parse($date)->addDay()->format('d-m-Y');
+            @endphp
             <tr>
                 <td rowspan="7">
-                    {{ \Carbon\Carbon::parse($date)->addDay()->format('D d M Y') }}</td>
+                    {{ \Carbon\Carbon::parse($date)->format('D d M Y') }}</td>
                 <th>12am</th>
                 @for ($index = 0; $index < 12; $index++)
                     <td>
@@ -280,7 +282,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>1am</th>
@@ -294,7 +296,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>2am</th>
@@ -308,7 +310,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>3am</th>
@@ -322,7 +324,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>4am</th>
@@ -336,7 +338,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>5am</th>
@@ -350,7 +352,7 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>6am</th>
@@ -364,8 +366,9 @@
                 @endfor
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
                 <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td>Fin</td>
+                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
         </tbody>
     </table>
 </div>
+<footer></footer>

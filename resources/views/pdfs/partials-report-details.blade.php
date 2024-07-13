@@ -1,5 +1,5 @@
 <div>
-    <table class="table">
+    <table class="table-bordered">
         <tr>
             <th scope='row'>PJO Number</th>
             <td scope='row'>{{ $measurementPoint->project->job_number }}</td>

@@ -9,8 +9,9 @@ use App\Models\NoiseMeter;
 use App\Models\Project;
 use Carbon\Carbon;
 use Exception;
-use function Spatie\LaravelPdf\Support\pdf;
 use Illuminate\Http\Request;
+use Spatie\LaravelPdf\Enums\Format;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class MeasurementPointController extends Controller
 {
@@ -20,19 +21,22 @@ class MeasurementPointController extends Controller
         $measurmentPointId = $request->route('id');
         $measurementPoint = MeasurementPoint::find($measurmentPointId);
         $contacts = Contact::where('project_id', $measurementPoint->project->id)->get();
-        $start_date = Carbon::now()->subDay()->format('d-m-Y');
-        $end_date = Carbon::now()->format('d-m-Y');
-        $date = Carbon::now()->format('d-m-Y');
+        // $start_date = Carbon::now()->subDay()->format('d-m-Y');
+        // $end_date = Carbon::now()->addDay()->format('d-m-Y');
+        $start_date = Carbon::createFromFormat('d-m-Y', '08-07-2024');
+        $end_date = Carbon::createFromFormat('d-m-Y', '09-07-2024');
+
         $data = [
             'measurementPoint' => $measurementPoint,
             'contacts' => $contacts,
             'start_date' => $start_date,
             'end_date' => $end_date,
-            // 'date' => $date,
+
         ];
-        // return view('pdfs.noise-data-report', $data);
-        return pdf()
-            ->view('pdfs.noise-data-report', $data)
+
+        return Pdf::view('pdfs.noise-data-report', $data)
+            ->footerView('pdfs.footer')
+            ->format(Format::A4)
             ->name('invoice-2023-04-10.pdf');
     }
 
