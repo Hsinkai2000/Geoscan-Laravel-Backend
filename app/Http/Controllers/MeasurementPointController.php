@@ -24,7 +24,7 @@ class MeasurementPointController extends Controller
         // $start_date = Carbon::now()->subDay()->format('d-m-Y');
         // $end_date = Carbon::now()->addDay()->format('d-m-Y');
         $start_date = Carbon::createFromFormat('d-m-Y', '08-07-2024');
-        $end_date = Carbon::createFromFormat('d-m-Y', '09-07-2024');
+        $end_date = Carbon::createFromFormat('d-m-Y', '12-07-2024');
 
         $data = [
             'measurementPoint' => $measurementPoint,
@@ -37,7 +37,7 @@ class MeasurementPointController extends Controller
         return Pdf::view('pdfs.noise-data-report', $data)
             ->footerView('pdfs.footer')
             ->format(Format::A4)
-            ->name('invoice-2023-04-10.pdf');
+            ->name('report_' . $measurementPoint->noiseMeter->serial_number . '_' . $start_date->format('dmY') . '-' . $end_date->format('dmY'));
     }
 
     public function show()

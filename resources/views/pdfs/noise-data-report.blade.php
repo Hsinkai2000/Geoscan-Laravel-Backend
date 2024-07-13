@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Geoscan | Main</title>
+    <title>Report | {{ $measurementPoint->noiseMeter->serial_number }} |
+        {{ $start_date->format('dmY') }}-{{ $end_date->format('dmY') }}</title>
     <!-- Include Tabulator CSS from CDN -->
     <link href="https://unpkg.com/tabulator-tables@5.4.3/dist/css/tabulator.min.css" rel="stylesheet" />
     <!-- Include Tabulator JS from CDN -->
