@@ -37,6 +37,7 @@ class NoiseMeterController extends Controller
     public function index()
     {
         try {
+
             return render_ok(["noise_meters" => NoiseMeter::all()]);
         } catch (Exception $e) {
             return render_error($e->getMessage());

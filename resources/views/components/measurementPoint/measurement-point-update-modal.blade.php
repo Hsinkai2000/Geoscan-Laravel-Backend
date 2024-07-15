@@ -36,23 +36,64 @@
                             </div>
                         </div>
 
+                        </br>
+                        <hr>
+                        </br>
+                        <h4>Link Devices</h4>
                         <div class="mb-3 row">
-                            <label for="user_id"
-                                class="col-md-3 col-sm-12 text-align-center col-form-label">Concentrator</label>
-                            <div class="col-sm-8 align-content-center">
-                                <select id="selectUpdateConcentrator" name='concentrator_id'>
-                                </select>
+                            <div class="col-6">
+                                <div class="col">
+                                    Concentrator
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="col">
+                                    Noise Meter
+                                </div>
                             </div>
                         </div>
 
-                        <div class="mb-3 row">
-                            <label for="user_id" class="col-md-3 col-sm-12 text-align-center col-form-label">Noise
-                                Meter</label>
-                            <div class="col-sm-8 align-content-center">
-                                <select id="selectUpdateNoiseMeter" name='noise_meter_id'>
-                                </select>
+                        <div class="mb-3 row" id="existing_devices">
+                            <div class="col-6">
+                                <div class="col">
+                                    Existing Device Id:
+                                </div>
+                                <div class="col">
+                                    <span id="existing_update_device_id"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="col">
+                                    Existing Noise Meter
+                                </div>
+                                <div class="col">
+                                    <span id="existing_update_serial"></span>
+                                </div>
                             </div>
                         </div>
+
+
+                        <div class="mb-3 row">
+                            <div class="col-6">
+                                <div class="col">
+                                    New Device Id:
+                                </div>
+                                <div class="col">
+                                    <select id="selectUpdateConcentrator" name="concentrator_id">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="col">
+                                    New Noise Meter
+                                </div>
+                                <div class="col">
+                                    <select id="selectUpdateNoiseMeter" name="noise_meter_id">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <input hidden name='project_id' value="{{ $project['id'] }}" />
                     </div>

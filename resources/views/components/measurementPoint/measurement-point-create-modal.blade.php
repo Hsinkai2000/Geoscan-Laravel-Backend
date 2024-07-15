@@ -11,6 +11,7 @@
                     method="POST">
                     @csrf
                     <div>
+                        <h4>Edit Measurement Point</h4>
                         <div class="mb-3 row">
                             <label for="point_name"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Measurement Point
@@ -36,33 +37,61 @@
                                     name="device_location">
                             </div>
                         </div>
-
-
+                        </br>
+                        <hr>
+                        </br>
+                        <h4>Link Devices</h4>
                         <div class="mb-3 row">
-                            <label for="job_number"
-                                class="col-md-3 col-sm-12 text-align-center col-form-label">Measurement Point
-                                Name</label>
-                            <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputJobNumber" name="job_number">
+                            <div class="col-6">
+                                <div class="col">
+                                    Concentrator
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="col">
+                                    Noise Meter
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row" id="existing_devices" hidden>
+                            <div class="col-6">
+                                <div class="col">
+                                    Existing Device Id:
+                                </div>
+                                <div class="col">
+                                    <span id="existing_device_id"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="col">
+                                    Existing Noise Meter
+                                </div>
+                                <div class="col">
+                                    <span id="existing_serial"></span>
+                                </div>
                             </div>
                         </div>
 
 
                         <div class="mb-3 row">
-                            <label for="user_id"
-                                class="col-md-3 col-sm-12 text-align-center col-form-label">Concentrator</label>
-                            <div class="col-sm-8 align-content-center">
-                                <select id="selectConcentrator" name="concentrator_id">
-                                </select>
+                            <div class="col-6">
+                                <div class="col">
+                                    New Device Id:
+                                </div>
+                                <div class="col">
+                                    <select id="selectConcentrator" name="concentrator_id">
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="mb-3 row">
-                            <label for="user_id" class="col-md-3 col-sm-12 text-align-center col-form-label">Noise
-                                Meter</label>
-                            <div class="col-sm-8 align-content-center">
-                                <select id="selectNoiseMeter" name="noise_meter_id">
-                                </select>
+                            <div class="col-6">
+                                <div class="col">
+                                    New Noise Meter
+                                </div>
+                                <div class="col">
+                                    <select id="selectNoiseMeter" name="noise_meter_id">
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -74,7 +103,7 @@
                         <button type="button" class="btn btn-primary bg-white text-primary"
                             data-bs-dismiss="modal">Discard</button>
                         <button type='button' onclick="handle_create_measurement_point()"
-                            class="btn btn-primary text-white">Create</button>
+                            class="btn btn-primary text-white">Submit</button>
                     </div>
                 </form>
             </div>

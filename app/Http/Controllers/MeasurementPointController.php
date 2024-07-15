@@ -56,10 +56,9 @@ class MeasurementPointController extends Controller
         try {
             $measurement_point_params = $request->only((new MeasurementPoint)->getFillable());
 
+            $this->update_device_usage($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
             $measurement_point_id = MeasurementPoint::insertGetId($measurement_point_params);
             $measurement_point = MeasurementPoint::find($measurement_point_id);
-
-            $this->toggle_use_flags($measurement_point->concentrator_id, $measurement_point->noise_meter_id);
             return render_ok(["measurement_point" => $measurement_point]);
 
         } catch (Exception $e) {
@@ -89,7 +88,7 @@ class MeasurementPointController extends Controller
             $data = $measurementPoint->map(function ($measurementPoint) {
                 $concentrator = $measurementPoint->concentrator;
                 $noise_meter = $measurementPoint->noiseMeter;
-                return [
+                $data = [
                     'id' => $measurementPoint->id,
                     'project_id' => $measurementPoint->project_id,
                     'noise_meter_id' => $measurementPoint->noise_meter_id,
@@ -97,15 +96,23 @@ class MeasurementPointController extends Controller
                     'point_name' => $measurementPoint->point_name,
                     'device_location' => $measurementPoint->device_location,
                     'remarks' => $measurementPoint->remarks,
-                    'concentrator_label' => $concentrator->concentrator_label,
-                    'device_id' => $concentrator->device_id,
-                    'battery_voltage' => $concentrator->battery_voltage,
-                    'concentrator_csq' => $concentrator->concentrator_csq,
-                    'last_communication_packet_sent' => $concentrator->last_communication_packet_sent->format('Y-m-d H:m:s'),
-                    'noise_meter_label' => $noise_meter->noise_meter_label,
-                    'serial_number' => $noise_meter->serial_number,
                     'data_status' => $measurementPoint->check_data_status(),
                 ];
+
+                if ($concentrator) {
+                    $data['concentrator_label'] = $concentrator->concentrator_label;
+                    $data['device_id'] = $concentrator->device_id;
+                    $data['battery_voltage'] = $concentrator->battery_voltage;
+                    $data['concentrator_csq'] = $concentrator->concentrator_csq;
+                    $data['last_communication_packet_sent'] = $concentrator->last_communication_packet_sent->format('Y-m-d H:m:s');
+                }
+
+                if ($noise_meter) {
+                    $data['noise_meter_label'] = $noise_meter->noise_meter_label;
+                    $data['serial_number'] = $noise_meter->serial_number;
+                }
+
+                return $data;
             });
 
             return render_ok(['measurement_point' => $data]);
@@ -119,18 +126,17 @@ class MeasurementPointController extends Controller
         try {
             $id = $request->route('id');
             $measurement_point_params = $request->only((new MeasurementPoint)->getFillable());
+
+            $this->update_device_usage($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
+
             $measurement_point = MeasurementPoint::find($id);
             if (!$measurement_point) {
                 return render_unprocessable_entity("Unable to find Measurement point with id " . $id);
             }
 
-            $this->toggle_use_flags($measurement_point->concentrator_id, $measurement_point->noise_meter_id);
-
             if (!$measurement_point->update($measurement_point_params)) {
                 throw new Exception("Unable to update Measurement point");
             }
-
-            $this->toggle_use_flags($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
 
             return render_ok(["measurement_point" => $measurement_point]);
 
@@ -147,7 +153,6 @@ class MeasurementPointController extends Controller
             if (!$measurement_point) {
                 return render_unprocessable_entity("Unable to find Measurement point with id " . $id);
             }
-            $this->toggle_use_flags($measurement_point->concentrator_id, $measurement_point->noise_meter_id);
             if (!$measurement_point->delete()) {
                 throw new Exception("Unable to delete Measurement point");
             }
@@ -158,13 +163,23 @@ class MeasurementPointController extends Controller
         }
     }
 
-    private function toggle_use_flags($concentrator_id, $noise_meter_id)
+    private function update_device_usage($concentrator_id, $noise_meter_id)
     {
 
-        $concentrator = Concentrator::find($concentrator_id);
-        $concentrator->toggle_use_flag();
+        $concentrator = MeasurementPoint::where('concentrator_id', $concentrator_id)->get();
 
-        $noise_meter = NoiseMeter::find($noise_meter_id);
-        $noise_meter->toggle_use_flag();
+        if ($concentrator->isNotEmpty()) {
+            $concentrator[0]->concentrator_id = null;
+            $concentrator[0]->save();
+        }
+        $noise_meter = MeasurementPoint::where('noise_meter_id', $noise_meter_id)->get();
+
+        if ($noise_meter->isNotEmpty()) {
+
+            $noise_meter[0]->noise_meter_id = null;
+
+            $noise_meter[0]->save();
+        }
     }
+
 }

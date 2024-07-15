@@ -16,6 +16,9 @@ function populateConcentrator() {
         );
         selectConcentrator.innerHTML = "";
         const defaultConcentrator = concentrator_data[0];
+        document.getElementById(
+            "existing_update_device_id"
+        ).textContent = `${defaultConcentrator.device_id} | ${defaultConcentrator.concentrator_label}`;
         defaultOption.value = defaultConcentrator.noise_meter_id;
         defaultOption.textContent = `${defaultConcentrator.device_id} | ${defaultConcentrator.concentrator_label}`;
     } else {
@@ -28,7 +31,7 @@ function populateConcentrator() {
     defaultOption.selected = true;
     selectConcentrator.appendChild(defaultOption);
 
-    const url = "http://localhost:8000/concentrators/available";
+    const url = "http://localhost:8000/concentrators/";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -59,28 +62,28 @@ function populateConcentrator() {
 }
 
 function populateNoiseMeter() {
-    const defaultOption = document.createElement("option");
-
+    var defaultNoiseMeter;
     if (modalType == "update") {
         var selectNoiseMeter = document.getElementById(
             "selectUpdateNoiseMeter"
         );
         selectNoiseMeter.innerHTML = "";
-        const defaultNoiseMeter = noise_meter_data[0];
-
-        defaultOption.value = defaultNoiseMeter.concentrator_id;
-        defaultOption.textContent = `${defaultNoiseMeter.serial_number} | ${defaultNoiseMeter.noise_meter_label}`;
+        defaultNoiseMeter = noise_meter_data[0];
+        document.getElementById(
+            "existing_update_serial"
+        ).textContent = `${defaultNoiseMeter.serial_number} | ${defaultNoiseMeter.noise_meter_label}`;
     } else {
         var selectNoiseMeter = document.getElementById("selectNoiseMeter");
         selectNoiseMeter.innerHTML = "";
+        const defaultOption = document.createElement("option");
         defaultOption.disabled = true;
         defaultOption.value = "";
         defaultOption.textContent = "Select Noise Meter...";
+        defaultOption.selected = true;
+        selectNoiseMeter.appendChild(defaultOption);
     }
-    defaultOption.selected = true;
-    selectNoiseMeter.appendChild(defaultOption);
 
-    const url = "http://localhost:8000/noise_meters/available";
+    const url = "http://localhost:8000/noise_meters";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -91,7 +94,7 @@ function populateNoiseMeter() {
             return response.json();
         })
         .then((data) => {
-            data = data.noise_meter;
+            data = data.noise_meters;
 
             data.forEach((noise_meter) => {
                 console.log("noise_meter");
@@ -102,6 +105,14 @@ function populateNoiseMeter() {
                     noise_meter.serial_number +
                     " | " +
                     noise_meter.noise_meter_label;
+                console.log(defaultNoiseMeter);
+                if (
+                    defaultNoiseMeter &&
+                    defaultNoiseMeter.noise_meter_id == noise_meter.id
+                ) {
+                    console.log("in if");
+                    option.selected = true;
+                }
                 selectNoiseMeter.appendChild(option);
             });
         })

@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('measurement_points', function (Blueprint $table) {
             $table->id();
             $table->integer('project_id')->index();
-            $table->integer('noise_meter_id')->index();
-            $table->integer('concentrator_id')->index();
+            $table->integer('noise_meter_id')->index()->nullable();
+            $table->integer('concentrator_id')->index()->nullable();
             $table->string('point_name', 255);
             $table->string('remarks', 255)->nullable();
             $table->float('inst_leq')->nullable()->default(0);
