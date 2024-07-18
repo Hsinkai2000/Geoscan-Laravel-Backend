@@ -15,6 +15,9 @@
 </head>
 
 <style>
+    body{
+        font-size: 14px;
+    }
     .bottom-bar {
         position: absolute;
         bottom: 0;
