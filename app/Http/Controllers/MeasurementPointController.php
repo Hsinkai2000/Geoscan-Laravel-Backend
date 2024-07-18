@@ -7,11 +7,10 @@ use App\Models\Contact;
 use App\Models\MeasurementPoint;
 use App\Models\NoiseMeter;
 use App\Models\Project;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
-use Spatie\LaravelPdf\Enums\Format;
-use Spatie\LaravelPdf\Facades\Pdf;
 
 class MeasurementPointController extends Controller
 {
@@ -33,11 +32,16 @@ class MeasurementPointController extends Controller
             'end_date' => $end_date,
 
         ];
+        $footerHtml = view('pdfs.footer');
+        $pdf = PDF::loadView('pdfs.noise-data-report', $data)->setPaper('a4');
+        $pdf->setoptions([
+            'margin-bottom' => 8,
+            'footer-spacing' => 0,
+            'encoding' => 'UTF-8',
+            'footer-html' => $footerHtml,
+            'enable-javascript' => true]);
+        return $pdf->inline();
 
-        return Pdf::view('pdfs.noise-data-report', $data)
-            ->footerView('pdfs.footer')
-            ->format(Format::A4)
-            ->name('report_' . $measurementPoint->noiseMeter->serial_number . '_' . $start_date->format('dmY') . '-' . $end_date->format('dmY'));
     }
 
     public function show()

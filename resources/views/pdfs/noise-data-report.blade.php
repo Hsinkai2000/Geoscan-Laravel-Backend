@@ -4,18 +4,49 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Report | {{ $measurementPoint->noiseMeter->serial_number }} |
-        {{ $start_date->format('dmY') }}-{{ $end_date->format('dmY') }}</title>
-    <!-- Include Tabulator CSS from CDN -->
-    <link href="https://unpkg.com/tabulator-tables@5.4.3/dist/css/tabulator.min.css" rel="stylesheet" />
-    <!-- Include Tabulator JS from CDN -->
-    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.4.3/dist/js/tabulator.min.js"></script>
+    <title>
+        Report_{{ $measurementPoint->noiseMeter->serial_number }}_{{ $start_date->format('dmY') }}-{{ $end_date->format('dmY') }}
+    </title>
+
     @vite(['resources/scss/pdf.scss', 'resources/js/pdf.js', 'resources/js/app.js'])
+
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
+<style>
+    .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: red;
+        height: 30px
+    }
+
+    table .w-5 {
+        width: 5%;
+    }
+
+    table .w-10 {
+        width: 10%;
+    }
+
+    table .w-45 {
+        width: 45%;
+    }
+
+    table td,
+    th {
+        padding: 10px;
+    }
+
+    .text-danger {
+        color: red;
+    }
+</style>
+
 <body>
-    <div class="container d-flex flex-column justify-content-center vh-100 text-center">
+    <div class="container d-flex flex-column justify-content-center text-center pt-5">
         <div>
             <h1>Noise Data</h1>
             <h2>Noise Device ID: {{ $measurementPoint->noiseMeter->serial_number }}</h2>
@@ -30,8 +61,9 @@
     </div>
 
 
-    @pageBreak
+
     @for ($date = \Carbon\Carbon::parse($start_date); $date->lte(\Carbon\Carbon::parse($end_date)); $date->addDay())
+        @pageBreak
         <div class="container mt-3">
             <div class="text-center">
                 <h1>Noise Data</h1>
@@ -44,8 +76,6 @@
                 <x-pdfs.partials-report-data :measurementPoint="$measurementPoint" :date="$date" />
             </div>
         </div>
-
-        @pageBreak
     @endfor
 </body>
 

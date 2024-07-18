@@ -1,4 +1,6 @@
 <div>
+    <br />
+    <br />
     <table class="table-bordered">
         <tr>
             <th scope='row'>PJO Number</th>
@@ -30,7 +32,9 @@
             <td scope='row'>{{ $measurementPoint->project->status }}</td>
         </tr>
     </table>
-    <h6>Contacts:</h6>
+    <hr>
+    <br />
+    <h3>Contacts:</h3>
     <table class="table-bordered w-100">
         <tr>
             <th>Name</th>
@@ -49,8 +53,9 @@
         @endforeach
 
     </table>
+    <hr>
     <br />
-    <h6>Measurement Point Details:</h6>
+    <h3>Measurement Point Details:</h3>
     <table class="table-bordered">
         <tr>
             <th>Device ID</th>
