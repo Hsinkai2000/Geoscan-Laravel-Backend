@@ -120,7 +120,7 @@
         </div>
 
 
-        <x-project-update-modal :project="$project" />
+        <x-project.project-update-modal :project="$project" />
         <x-delete-confirmation-modal type='Measurement Point' />
         <x-delete-modal type='user' />
         <x-user.user-create-modal />

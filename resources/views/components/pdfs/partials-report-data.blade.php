@@ -42,19 +42,19 @@
                         @php
                             $slotDate = new DateTime($date . ' 07:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
                 <td>
-                    <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' />
+                    <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' />
                 </td>
                 <td rowspan="12">
-                    <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='12hLeq' />
+                    <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='12hLeq' />
                 </td>
                 <td rowspan="12">
-                    <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' />
+                    <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' />
                 </td>
-                <td rowspan="12"><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' />
+                <td rowspan="12"><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' />
                 </td>
             </tr>
             <tr>
@@ -64,10 +64,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 08:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>9am</th>
@@ -76,10 +76,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 09:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>10am</th>
@@ -88,10 +88,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 10:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>11am</th>
@@ -100,10 +100,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 11:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>12pm</th>
@@ -112,10 +112,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 12:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>1pm</th>
@@ -124,10 +124,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 13:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>2pm</th>
@@ -136,10 +136,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 14:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>3pm</th>
@@ -148,10 +148,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 15:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>4pm</th>
@@ -160,10 +160,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 16:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>5pm</th>
@@ -172,10 +172,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 17:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>6pm</th>
@@ -184,10 +184,10 @@
                         @php
                             $slotDate = new DateTime($date . ' 18:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
             </tr>
             <tr>
                 <th>7pm</th>
@@ -196,18 +196,18 @@
                         @php
                             $slotDate = new DateTime($date . ' 19:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
                 <td>
-                    <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' />
+                    <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' />
                 </td>
 
                 <td rowspan="12">
-                    <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='12hLeq' />
+                    <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='12hLeq' />
                 </td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>8pm</th>
@@ -216,12 +216,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 20:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>9pm</th>
@@ -230,12 +230,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 21:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>10pm</th>
@@ -244,12 +244,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 22:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>11pm</th>
@@ -258,12 +258,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 23:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             @php
                 $date = \Carbon\Carbon::parse($date)->addDay()->format('d-m-Y');
@@ -277,12 +277,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 00:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>1am</th>
@@ -291,12 +291,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 01:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>2am</th>
@@ -305,12 +305,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 02:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>3am</th>
@@ -319,12 +319,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 03:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>4am</th>
@@ -333,12 +333,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 04:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>5am</th>
@@ -347,12 +347,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 05:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
             <tr>
                 <th>6am</th>
@@ -361,12 +361,12 @@
                         @php
                             $slotDate = new DateTime($date . ' 06:' . $index * 5 . ':00');
                         @endphp
-                        <x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
+                        <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" />
                     </td>
                 @endfor
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
-                <td><x-report-indi-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='1hLeq' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' /></td>
+                <td><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' /></td>
             </tr>
         </tbody>
     </table>
