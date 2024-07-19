@@ -79,7 +79,7 @@
                                     New Device Id:
                                 </div>
                                 <div class="col">
-                                    <select id="selectUpdateConcentrator" name="concentrator_id">
+                                    <select id="selectUpdateConcentrator" name="concentrator_id" style="width: 80%">
                                     </select>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@
                                     New Noise Meter
                                 </div>
                                 <div class="col">
-                                    <select id="selectUpdateNoiseMeter" name="noise_meter_id">
+                                    <select id="selectUpdateNoiseMeter" name="noise_meter_id" style="width: 80%">
                                     </select>
                                 </div>
                             </div>

@@ -80,7 +80,7 @@
                                     New Device Id:
                                 </div>
                                 <div class="col">
-                                    <select id="selectConcentrator" name="concentrator_id">
+                                    <select id="selectConcentrator" name="concentrator_id" style="width: 80%">
                                     </select>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@
                                     New Noise Meter
                                 </div>
                                 <div class="col">
-                                    <select id="selectNoiseMeter" name="noise_meter_id">
+                                    <select id="selectNoiseMeter" name="noise_meter_id" style="width: 80%">
                                     </select>
                                 </div>
                             </div>
@@ -103,7 +103,7 @@
                         <button type="button" class="btn btn-primary bg-white text-primary"
                             data-bs-dismiss="modal">Discard</button>
                         <button type='button' onclick="handle_create_measurement_point()"
-                            class="btn btn-primary text-white">Submit</button>
+                            class="btn btn-primary text-white">Create</button>
                     </div>
                 </form>
             </div>

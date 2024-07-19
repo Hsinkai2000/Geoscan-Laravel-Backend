@@ -16,11 +16,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     require __DIR__ . '/internal/project.php';
     require __DIR__ . '/internal/soundlimit.php';
-    require __DIR__ . '/internal/user.php';require __DIR__ . '/internal/noise_data.php';
+    require __DIR__ . '/internal/user.php';
+    require __DIR__ . '/internal/noise_data.php';
     require __DIR__ . '/internal/contact.php';
     require __DIR__ . '/internal/measurement_point.php';
     require __DIR__ . '/internal/contact.php';
     require __DIR__ . '/internal/concentrator.php';
     require __DIR__ . '/internal/noise_meter.php';
-
+    require __DIR__ . '/internal/pdf.php';
 });

@@ -2,7 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build"
   },
   "devDependencies": {
@@ -12,6 +12,7 @@
     "vite": "^5.0"
   },
   "dependencies": {
+    "air-datepicker": "^3.5.3",
     "bootstrap": "^5.3.3",
     "jquery": "^3.7.1",
     "puppeteer": "^22.13.0"
