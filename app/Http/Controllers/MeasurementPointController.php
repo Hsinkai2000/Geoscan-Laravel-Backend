@@ -23,6 +23,13 @@ class MeasurementPointController extends Controller
         return view('web.measurementPoint', ['project' => $project])->render();
     }
 
+    public function show_indiv_point($id)
+    {
+        debug_log('here');
+        $measurement_point = MeasurementPoint::find($id);
+        return view('web.indiv-measurementPoint', ['measurementPoint' => $measurement_point])->render();
+    }
+
     public function create(Request $request)
     {
         try {

@@ -248,7 +248,7 @@ function set_measurement_point_table(measurementPoint_data) {
         ],
     });
     measurementPointTable.on("rowClick", function (e, row) {
-        // window.location.href = "/measurement_point/" + row.getIndex();
+        window.location.href = "/measurement_point/indiv/" + row.getIndex();
         console.log("point clicked");
     });
     measurementPointTable.on("rowSelectionChanged", function (data, rows) {
