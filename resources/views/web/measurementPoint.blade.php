@@ -122,7 +122,6 @@
                         onclick='openModal("measurementPointCreateModal")'>Create</button>
                 </div>
             </div>
-            <button class="btn btn-primary text-light shadow-sm" onclick='openPdf()'>PDF</button>
         </div>
 
         <x-project.project-update-modal :project="$project" />
@@ -152,7 +151,13 @@
     });
     $('#selectUpdateNoiseMeter').select2({
         dropdownParent: $('#measurementPointUpdateModal'),
+    });
 
+    document.addEventListener('DOMContentLoaded', function() {
+        window.project = @json($project);
+
+        window.contacts = @json($project->contact);
+        window.set_contact_table()
     });
 </script>
 

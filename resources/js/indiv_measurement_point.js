@@ -93,28 +93,28 @@ function set_tables(data) {
         ],
     });
 }
+function create_empty_option(select, text) {
+    var defaultOption = document.createElement("option");
+    defaultOption.textContent = text;
+    defaultOption.selected = true;
+    defaultOption.disabled = true;
+    select.appendChild(defaultOption);
+}
 
 function populateConcentrator() {
-    var selectConcentrator = null;
-    const defaultOption = document.createElement("option");
+    var selectConcentrator;
+    var defaultConcentrator;
 
     selectConcentrator = document.getElementById("selectUpdateConcentrator");
     selectConcentrator.innerHTML = "";
-    const defaultConcentrator = window.measurementPointData.concentrator;
+    defaultConcentrator = window.measurementPointData.concentrator;
     document.getElementById("existing_update_device_id").textContent =
-        defaultConcentrator != null
+        defaultConcentrator
             ? `${defaultConcentrator.device_id} | ${defaultConcentrator.concentrator_label}`
             : "None Linked";
-    defaultOption.value =
-        defaultConcentrator != null ? defaultConcentrator.id : null;
-    defaultOption.textContent =
-        defaultConcentrator != null
-            ? `${defaultConcentrator.device_id} | ${defaultConcentrator.concentrator_label}`
-            : "Select Concentrator...";
-    defaultOption.disabled = defaultConcentrator != null ? false : true;
-
-    defaultOption.selected = true;
-    selectConcentrator.appendChild(defaultOption);
+    if (!defaultConcentrator) {
+        create_empty_option(selectConcentrator, "Choose Concentrator...");
+    }
 
     const url = "http://localhost:8000/concentrators/";
     fetch(url)
@@ -127,7 +127,6 @@ function populateConcentrator() {
             return response.json();
         })
         .then((data) => {
-            console.log(data);
             data = data.concentrators;
 
             // Create options from fetched data
@@ -138,6 +137,15 @@ function populateConcentrator() {
                     concentrator.device_id +
                     " | " +
                     concentrator.concentrator_label;
+
+                if (
+                    defaultConcentrator &&
+                    concentrator.id == defaultConcentrator.id
+                ) {
+                    console.log(concentrator.id);
+                    console.log(defaultConcentrator.id);
+                    option.selected = true;
+                }
                 selectConcentrator.appendChild(option);
             });
         })
@@ -147,24 +155,19 @@ function populateConcentrator() {
 }
 
 function populateNoiseMeter() {
-    var defaultNoiseMeter = null;
-    const defaultOption = document.createElement("option");
-    var selectNoiseMeter = document.getElementById("selectUpdateNoiseMeter");
+    var selectNoiseMeter;
+    var defaultNoiseMeter;
+
+    selectNoiseMeter = document.getElementById("selectUpdateNoiseMeter");
     selectNoiseMeter.innerHTML = "";
     defaultNoiseMeter = window.measurementPointData.noise_meter;
     document.getElementById("existing_update_serial").textContent =
-        defaultNoiseMeter != null
+        defaultNoiseMeter
             ? `${defaultNoiseMeter.serial_number} | ${defaultNoiseMeter.noise_meter_label}`
             : "None linked";
-    defaultOption.value =
-        defaultNoiseMeter != null ? defaultNoiseMeter.id : null;
-    defaultOption.textContent =
-        defaultNoiseMeter != null
-            ? `${defaultNoiseMeter.serial_number} | ${defaultNoiseMeter.noise_meter_label}`
-            : "Select Noise Meter...";
-    defaultOption.disabled = defaultNoiseMeter != null ? false : true;
-    defaultOption.selected = true;
-    selectNoiseMeter.appendChild(defaultOption);
+    if (!defaultNoiseMeter) {
+        create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
+    }
 
     const url = "http://localhost:8000/noise_meters";
     fetch(url)
@@ -180,22 +183,19 @@ function populateNoiseMeter() {
             data = data.noise_meters;
 
             data.forEach((noise_meter) => {
-                console.log("noise_meter");
-                console.log(noise_meter);
                 const option = document.createElement("option");
                 option.value = noise_meter.id;
                 option.textContent =
                     noise_meter.serial_number +
                     " | " +
                     noise_meter.noise_meter_label;
-                console.log(defaultNoiseMeter);
                 if (
                     defaultNoiseMeter &&
-                    defaultNoiseMeter.noise_meter_id == noise_meter.id
+                    noise_meter.id == defaultNoiseMeter.id
                 ) {
-                    console.log("in if");
                     option.selected = true;
                 }
+
                 selectNoiseMeter.appendChild(option);
             });
         })
