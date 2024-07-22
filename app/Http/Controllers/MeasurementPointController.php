@@ -105,6 +105,14 @@ class MeasurementPointController extends Controller
         try {
             $id = $request->route('id');
             $measurement_point_params = $request->only((new MeasurementPoint)->getFillable());
+            debug_log($measurement_point_params);
+
+            if (!isset($measurement_point_params['concentrator_id'])) {
+                $measurement_point_params['concentrator_id'] = null;
+            }
+            if (!isset($measurement_point_params['noise_meter_id'])) {
+                $measurement_point_params['noise_meter_id'] = null;
+            }
 
             $this->update_device_usage($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
 

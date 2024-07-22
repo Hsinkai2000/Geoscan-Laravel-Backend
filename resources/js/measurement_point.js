@@ -1,6 +1,3 @@
-import AirDatepicker from "air-datepicker";
-import "air-datepicker/air-datepicker.css";
-
 var inputprojectId = null;
 var userList = [];
 var modalType = "";
@@ -706,30 +703,7 @@ function closeModal(modal) {
     modalInstance.hide();
     location.reload();
 }
-function openPdf() {
-    fetch("http://localhost:8000/pdf/" + inputMeasurementPointId, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/pdf",
-            "X-Requested-With": "XMLHttpRequest",
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.blob();
-        })
-        .then((blob) => {
-            const url = window.URL.createObjectURL(blob);
-            const newTab = window.open(url, "_blank");
-            newTab.focus();
-        })
-        .catch((error) => console.error("Error:", error));
-}
 
-window.openPdf = openPdf;
 window.handle_measurement_point_update = handle_measurement_point_update;
 window.handle_create_measurement_point = handle_create_measurement_point;
 window.handleDelete = handleDelete;

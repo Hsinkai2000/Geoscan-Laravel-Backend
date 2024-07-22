@@ -21,7 +21,7 @@
         integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    @vite(['resources/scss/indiv_measurement_point.scss', 'resources/js/app.js', 'resources/js/indiv.measurement_point.js'])
+    @vite(['resources/scss/indiv_measurement_point.scss', 'resources/js/app.js', 'resources/js/indiv_measurement_point.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
@@ -75,7 +75,7 @@
         <div class="mb-3">
             <h5 class="d-inline me-4">Measurement Point Information</h5>
             <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editProjectButton"
-                onclick="openModal('updateModal')">Edit Measurement Point</button>
+                onclick="openModal('measurementPointUpdateModal')">Edit Measurement Point</button>
         </div>
         <table class="table">
             <tr>
@@ -96,27 +96,26 @@
             </tr>
         </table>
 
-        <div class='devices_table'>
+        <h6>Noise Meter</h6>
+        <div id='noise_meter_table'>
         </div>
 
-        <x-delete-confirmation-modal type='Measurement Point' />
-        <x-delete-modal type='user' />
-        <x-user.user-create-modal />
-
+        <h6>Concentrator</h6>
+        <div id='concentrator_table'>
+        </div>
+        <br />
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm"
+                onclick="openModal('viewPdfModal')">View Report</button>
+        </div>
     </div>
+
+    <x-measurementPoint.measurement-point-update-modal :project="$measurementPoint->project" />
+    <x-pdfs.view-pdf-component />
+
 </body>
 
 <script>
-    $('#selectConcentrator').select2({
-        dropdownParent: $('#measurementPointCreateModal'),
-        placeholder: 'Select Concentrator...'
-    });
-
-    $('#selectNoiseMeter').select2({
-        dropdownParent: $('#measurementPointCreateModal'),
-        placeholder: 'Select Noise Meter...'
-    });
-
     $('#selectUpdateConcentrator').select2({
         dropdownParent: $('#measurementPointUpdateModal'),
 
@@ -124,6 +123,14 @@
     $('#selectUpdateNoiseMeter').select2({
         dropdownParent: $('#measurementPointUpdateModal'),
 
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        window.measurementPointData = @json($measurementPoint);
+
+        window.measurementPointData.noise_meter = @json($measurementPoint->noiseMeter);
+        window.measurementPointData.concentrator = @json($measurementPoint->concentrator);
+        set_tables(window.measurementPointData);
     });
 </script>
 
