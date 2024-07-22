@@ -25,6 +25,11 @@
         background-color: red;
         height: 30px
     }
+    
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
 
     table .w-5 {
         width: 5%;
