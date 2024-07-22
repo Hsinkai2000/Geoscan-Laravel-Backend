@@ -324,7 +324,7 @@ function initDatePicker() {
     document.getElementById("end_date").value = null;
     dpMin = new AirDatepicker("#start_date", {
         autoClose: true,
-        dateFormat: "dd-M-yyyy",
+        dateFormat: "dd-MM-yyyy",
         container: "#viewPdfModal",
         onSelect({ date }) {
             dpMax.update({
@@ -336,7 +336,7 @@ function initDatePicker() {
 
     dpMax = new AirDatepicker("#end_date", {
         autoClose: true,
-        dateFormat: "dd-M-yyyy",
+        dateFormat: "dd-MM-yyyy",
         container: "#viewPdfModal",
         onSelect({ date }) {
             dpMin.update({
