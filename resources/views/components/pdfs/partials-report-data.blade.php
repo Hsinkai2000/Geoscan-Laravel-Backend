@@ -54,7 +54,8 @@
                 <td rowspan="12">
                     <x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='dose' />
                 </td>
-                <td rowspan="12"><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate" type='max' />
+                <td rowspan="12"><x-report-individual-data-component :measurementPoint="$measurementPoint" :slotDate="$slotDate"
+                        type='max' />
                 </td>
             </tr>
             <tr>

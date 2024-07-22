@@ -7,6 +7,7 @@ use App\Models\NoiseData;
 use Closure;
 use DateTime;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Carbon;
 use Illuminate\View\Component;
 
 class ReportIndividualDataComponent extends Component
@@ -65,21 +66,26 @@ class ReportIndividualDataComponent extends Component
             }
 
         } else if ($this->type == 'max') {
+            $datenow = Carbon::now();
             if (!empty($noiseData)) {
                 $noiseData = new NoiseData(['received_at' => $this->slotDate]);
             } else {
                 $noiseData = $noiseData[0];
             }
             [$calculated_dose_percentage, $num_blanks, $limit, $decision] = $this->measurementPoint->check_last_data_for_alert($noiseData);
-            if ($num_blanks == 0) {
+            if ($datenow > $this->slotDate) {
                 $leq_data['leq_data'] = 'FIN';
-            } else if ($num_blanks == 12 || $num_blanks == 144 || $limit == 140) {
-                $leq_data['leq_data'] = 'NA';
             } else {
-                if ($decision == '12h') {
-                    $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($this->slotDate, 1);
+                if ($num_blanks == 0) {
+                    $leq_data['leq_data'] = 'FIN';
+                } else if ($num_blanks == 12 || $num_blanks == 144 || $limit == 140) {
+                    $leq_data['leq_data'] = 'NA';
                 } else {
-                    $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($this->slotDate, 2);
+                    if ($decision == '12h') {
+                        $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($this->slotDate, 1);
+                    } else {
+                        $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($this->slotDate, 2);
+                    }
                 }
             }
         } else {
@@ -91,6 +97,6 @@ class ReportIndividualDataComponent extends Component
             }
         }
 
-        return view('components.report-indi-data-component', $leq_data);
+        return view('components.report-individual-data-component', $leq_data);
     }
 }
