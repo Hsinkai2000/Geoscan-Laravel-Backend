@@ -11,9 +11,16 @@ use Illuminate\Support\Facades\Gate;
 class ProjectController extends Controller
 {
 
-    public function show()
+    public function show_admin()
     {
-        return view('web.project');
+        return view('web.projects-admin');
+    }
+
+    public function show_project($id)
+    {
+        debug_log($id);
+        $project = Project::find($id);
+        return view('web.project', ['project' => $project])->render();
     }
 
     public function create(Request $request)

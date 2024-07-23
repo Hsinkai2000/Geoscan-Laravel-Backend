@@ -1,207 +1,325 @@
-var tabledata = null;
-var userList = [];
 var inputprojectId = null;
+var userList = [];
 var modalType = "";
 var inputUserId = null;
+var inputMeasurementPointId = null;
+var noise_meter_data = [];
+var concentrator_data = [];
 
-function settable(tabledata, project_type) {
-    document.getElementById("table_pages").innerHTML = "";
+function create_empty_option(select, text) {
+    var defaultOption = document.createElement("option");
+    defaultOption.textContent = text;
+    defaultOption.selected = true;
+    defaultOption.disabled = true;
+    select.appendChild(defaultOption);
+}
 
-    // If a table already exists, destroy it
-    if (window.table) {
-        window.table.destroy();
-    }
-    if (project_type == "rental") {
-        var table = new Tabulator("#example-table", {
-            pagination: "local",
-            layout: "fitColumns",
-            data: tabledata,
-            placeholder: "Not authorised",
-            paginationSize: 20,
-            paginationCounter: "rows",
-            paginationElement: document.getElementById("table_pages"),
-            selectable: 1,
-            columns: [
-                {
-                    formatter: "rowSelection",
-                    titleFormatter: "rowSelection",
-                    hozAlign: "center",
-                    headerSort: false,
-                    frozen: true,
-                    width: 30,
-                },
-                {
-                    title: "PJO Number",
-                    field: "job_number",
-                    headerFilter: "input",
-                    minWidth: 100,
-                    frozen: true,
-                },
-                {
-                    title: "Client Name",
-                    field: "client_name",
-                    minWidth: 100,
-                    headerFilter: "input",
-                },
-                {
-                    title: "Jobsite Location",
-                    field: "jobsite_location",
-                    minWidth: 100,
-                    headerFilter: "input",
-                },
-                {
-                    title: "Project Description",
-                    field: "project_description",
-                    minWidth: window.innerWidth * 0.25,
-                    headerSort: false,
-                },
-                {
-                    title: "BCA Reference Number",
-                    field: "bca_reference_number",
-                    minWidth: 100,
-                    headerSort: false,
-                },
-                {
-                    title: "SMS Contacts (Number of alerts)",
-                    field: "sms_count",
-                    minWidth: 100,
-                    headerSort: false,
-                },
-                {
-                    title: "Status (Ongoing/Completed)",
-                    field: "status",
-                    editor: "list",
-                    editorParams: {
-                        values: ["", "Ongoing", "Completed"],
-                        clearable: true,
-                    },
-                    minWidth: 100,
-                    headerFilter: true,
-                    headerFilterParams: {
-                        values: {
-                            "": "select...",
-                            Ongoing: "Ongoing",
-                            Completed: "Completed",
-                        },
-                        clearable: true,
-                    },
-                },
-                {
-                    title: "Created At",
-                    field: "created_at",
-                    minWidth: 100,
-                },
-            ],
-        });
+function populateConcentrator() {
+    var selectConcentrator;
+    var defaultConcentrator;
+    if (modalType === "update") {
+        selectConcentrator = document.getElementById(
+            "selectUpdateConcentrator"
+        );
+        selectConcentrator.innerHTML = "";
+        defaultConcentrator = concentrator_data[0];
+        document.getElementById("existing_update_device_id").textContent =
+            defaultConcentrator.device_id
+                ? `${defaultConcentrator.device_id} | ${defaultConcentrator.concentrator_label}`
+                : "None Linked";
+        if (!defaultConcentrator.device_id) {
+            create_empty_option(selectConcentrator, "Choose Concentrator...");
+        }
     } else {
-        var table = new Tabulator("#example-table", {
-            pagination: "local",
-            data: tabledata,
-            layout: "fitColumns",
-            placeholder: "Not authorised",
-            paginationElement: document.getElementById("table_pages"),
-            paginationSize: 20,
-            paginationCounter: "rows",
-            dataTree: true,
-            dataTreeStartExpanded: true,
-            selectable: 1,
-            columns: [
-                {
-                    formatter: "rowSelection",
-                    titleFormatter: "rowSelection",
-                    hozAlign: "center",
-                    headerSort: false,
-                    frozen: true,
-                    width: 30,
-                },
-                {
-                    title: "Name",
-                    field: "name",
-                    headerFilter: "input",
-                    minWidth: 100,
-                    frozen: true,
-                    responsive: 0,
-                },
-                {
-                    title: "Jobsite Location",
-                    field: "jobsite_location",
-                    minWidth: 100,
-                    headerFilter: "input",
-                },
-                {
-                    title: "Project Description",
-                    field: "project_description",
-                    minWidth: window.innerWidth * 0.3,
-                    headerSort: false,
-                },
-                {
-                    title: "BCA Reference Number",
-                    field: "bca_reference_number",
-                    headerSort: false,
-                    minWidth: 100,
-                },
-                {
-                    title: "Created At",
-                    field: "created_at",
-                    minWidth: 100,
-                },
-            ],
-        });
+        selectConcentrator = document.getElementById("selectConcentrator");
+        selectConcentrator.innerHTML = "";
+        create_empty_option(selectConcentrator, "Choose Concentrator...");
     }
-    table.on("rowClick", function (e, row) {
+
+    const url = "http://localhost:8000/concentrators/";
+    fetch(url)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log(data);
+            data = data.concentrators;
+
+            // Create options from fetched data
+            data.forEach((concentrator) => {
+                const option = document.createElement("option");
+                option.value = concentrator.id;
+                option.textContent =
+                    concentrator.device_id +
+                    " | " +
+                    concentrator.concentrator_label;
+
+                if (
+                    defaultConcentrator &&
+                    concentrator.id == defaultConcentrator.concentrator_id
+                ) {
+                    console.log(concentrator.id);
+                    console.log(defaultConcentrator.id);
+                    option.selected = true;
+                }
+                selectConcentrator.appendChild(option);
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+}
+
+function populateNoiseMeter() {
+    var selectNoiseMeter;
+    var defaultNoiseMeter;
+    if (modalType == "update") {
+        selectNoiseMeter = document.getElementById("selectUpdateNoiseMeter");
+        selectNoiseMeter.innerHTML = "";
+        defaultNoiseMeter = noise_meter_data[0];
+        document.getElementById("existing_update_serial").textContent =
+            defaultNoiseMeter.serial_number
+                ? `${defaultNoiseMeter.serial_number} | ${defaultNoiseMeter.noise_meter_label}`
+                : "None linked";
+        if (!defaultNoiseMeter.serial_number) {
+            create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
+        }
+    } else {
+        selectNoiseMeter = document.getElementById("selectNoiseMeter");
+        selectNoiseMeter.innerHTML = "";
+        create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
+    }
+
+    const url = "http://localhost:8000/noise_meters";
+    fetch(url)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
+            }
+            return response.json();
+        })
+        .then((data) => {
+            data = data.noise_meters;
+
+            data.forEach((noise_meter) => {
+                const option = document.createElement("option");
+                option.value = noise_meter.id;
+                option.textContent =
+                    noise_meter.serial_number +
+                    " | " +
+                    noise_meter.noise_meter_label;
+                if (
+                    defaultNoiseMeter &&
+                    noise_meter.id == defaultNoiseMeter.noise_meter_id
+                ) {
+                    option.selected = true;
+                }
+
+                selectNoiseMeter.appendChild(option);
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+}
+
+function populateSelects() {
+    populateConcentrator();
+    populateNoiseMeter();
+}
+
+function set_contact_table() {
+    var contactTable = new Tabulator("#contacts_table", {
+        layout: "fitColumns",
+        data: window.contacts,
+        placeholder: "No linked Contacts",
+        columns: [
+            {
+                title: "Name",
+                field: "contact_person_name",
+                headerSort: false,
+                minWidth: 100,
+            },
+            {
+                title: "Designation",
+                field: "designation",
+                headerSort: false,
+                minWidth: 100,
+            },
+            {
+                title: "Email",
+                field: "email",
+                headerSort: false,
+                minWidth: 100,
+            },
+            {
+                title: "SMS",
+                field: "phone_number",
+                headerSort: false,
+                minWidth: 100,
+            },
+        ],
+    });
+}
+
+function set_measurement_point_table(measurementPoint_data) {
+    var measurementPointTable = new Tabulator("#measurement_point_table", {
+        layout: "fitColumns",
+        data: measurementPoint_data,
+        placeholder: "No Linked Measurement Points",
+        paginationSize: 20,
+        pagination: "local",
+        paginationCounter: "rows",
+        paginationElement: document.getElementById("measurement_point_pages"),
+        selectable: 1,
+        columns: [
+            {
+                formatter: "rowSelection",
+                titleFormatter: "rowSelection",
+                hozAlign: "center",
+                headerSort: false,
+                frozen: true,
+                width: 30,
+            },
+            {
+                title: "Point Name",
+                field: "point_name",
+                minWidth: 100,
+                headerFilter: "input",
+                frozen: true,
+            },
+            {
+                title: "Point Location",
+                field: "device_location",
+                headerSort: false,
+                headerFilter: "input",
+                minWidth: 100,
+            },
+            {
+                title: "Concentrator Serial",
+                field: "device_id",
+                headerFilter: "input",
+                minWidth: 100,
+            },
+            {
+                title: "Concentrator Battery Voltage",
+                field: "battery_voltage",
+                headerSort: false,
+                headerFilter: "input",
+                minWidth: 100,
+            },
+            {
+                title: "Concentrator CSQ",
+                field: "concentrator_csq",
+                headerSort: false,
+                headerFilter: "input",
+                minWidth: 100,
+            },
+            {
+                title: "Last Concentrator Communication",
+                field: "last_communication_packet_sent",
+                headerSort: false,
+                headerFilter: "input",
+                minWidth: 100,
+            },
+            {
+                title: "Noise Serial",
+                field: "serial_number",
+                minWidth: 100,
+                headerFilter: "input",
+            },
+            {
+                title: "Data Status",
+                field: "data_status",
+                headerSort: false,
+                headerFilter: "input",
+                minWidth: 100,
+                formatter: "tickCross",
+            },
+        ],
+    });
+    measurementPointTable.on("rowClick", function (e, row) {
         window.location.href = "/measurement_point/" + row.getIndex();
     });
-    table.on("rowSelectionChanged", function (data, rows) {
+    measurementPointTable.on("rowSelectionChanged", function (data, rows) {
         table_row_changed(data);
     });
-    window.table = table;
+    window.measurementPointTable = measurementPointTable;
 }
 
 function table_row_changed(data) {
     if (data && data.length > 0) {
         document.getElementById("editButton").disabled = false;
         document.getElementById("deleteButton").disabled = false;
-        inputprojectId = data[0].id;
-        fetch_project_data(data[0]);
+        inputMeasurementPointId = data[0].id;
+        fetch_measurement_point_data(data[0]);
     } else {
         document.getElementById("editButton").disabled = true;
         document.getElementById("deleteButton").disabled = true;
     }
 }
 
-function changeTab(event, project_type) {
-    document.querySelectorAll(".nav-link").forEach((tab) => {
-        tab.classList.remove("active");
-    });
+function fetch_measurement_point_data(data) {
+    noise_meter_data = [];
+    concentrator_data = [];
+    var pointName = document.getElementById("inputUpdatePointName");
+    var remarks = document.getElementById("inputUpdateRemarks");
+    var device_location = document.getElementById("inputUpdateDeviceLocation");
 
-    event.currentTarget.classList.add("active");
+    if (data) {
+        pointName.value = data.point_name;
+        remarks.value = data.remarks;
+        device_location.value = data.device_location;
 
-    fetch_data(project_type);
+        concentrator_data.push({
+            concentrator_id: data.concentrator_id,
+            concentrator_label: data.concentrator_label,
+            device_id: data.device_id,
+        });
+
+        noise_meter_data.push({
+            noise_meter_id: data.noise_meter_id,
+            noise_meter_label: data.noise_meter_label,
+            serial_number: data.serial_number,
+        });
+    }
 }
 
-function fetch_data(project_type) {
-    fetch("http://localhost:8000/projects", {
-        method: "post",
+function getProjectId() {
+    inputprojectId = document.getElementById("inputprojectId").value;
+}
+
+function get_measurement_point_data() {
+    fetch("http://localhost:8000/measurement_points/" + inputprojectId, {
+        method: "get",
         headers: {
             "Content-type": "application/json; charset=UTF-8",
             "X-CSRF-TOKEN": document
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content"),
         },
-        body: JSON.stringify({
-            project_type: project_type,
-        }),
     })
         .then((response) => {
             if (!response.ok) {
-                settable(tabledata, project_type);
-                throw new Error("User not Authorised");
+                return response.text().then((text) => {
+                    throw new Error(text);
+                });
             }
             return response.json();
         })
         .then((json) => {
-            tabledata = json.projects;
-            settable(tabledata, project_type);
+            var measurementPoint_data = json.measurement_point;
+            set_measurement_point_table(measurementPoint_data);
+        })
+        .catch((error) => {
+            console.log(error);
         });
 }
 
@@ -223,166 +341,12 @@ function create_users(projectId, csrfToken) {
         });
     });
 }
-function create_project() {
-    const form = document.getElementById("projectCreateForm");
-    const csrfToken = document.querySelector('input[name="_token"]').value;
-    const formData = new FormData(form);
 
-    fetch(form.action, {
-        method: form.method,
-        headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-        },
-        body: formData,
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
-            }
-            return response.json();
-        })
-        .then((json) => {
-            create_users(json.project_id, csrfToken);
-            closeModal("projectcreateModal");
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert("There was an error: " + error.message);
-        });
-}
-
-function toggleEndUserName() {
-    var rentalRadio = document.getElementById("projectTypeRental");
-    var endUserNameDiv = document.getElementById("endUserNameDiv");
-    if (rentalRadio.checked) {
-        endUserNameDiv.style.display = "none";
-    } else {
-        endUserNameDiv.style.display = "flex";
-    }
-}
-
-function deleteUser(event) {
-    if (event) {
-        event.preventDefault();
-    }
+function handle_create_measurement_point() {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-
-    fetch("http://localhost:8000/users/" + inputUserId, {
-        method: "DELETE",
-        headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                console.log("Error:", response);
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then((data) => {
-            if (modalType == "update") {
-                populateUser("userUpdateSelectList", inputprojectId);
-            } else {
-                populateUser("userselectList", inputprojectId);
-            }
-
-            // Close the modal
-            closeModal("deleteModal");
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
-}
-
-function handleDelete(event) {
-    if (event) {
-        event.preventDefault();
-    }
-    var csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
-    var confirmation = document.getElementById("inputDeleteConfirmation").value;
-
-    if (confirmation == "DELETE") {
-        fetch("http://localhost:8000/project/" + inputprojectId, {
-            method: "DELETE",
-            headers: {
-                "X-CSRF-TOKEN": csrfToken,
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    console.log("Error:", response);
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                closeModal("deleteConfirmationModal");
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-    } else {
-        var error = document.getElementById("deleteConfirmationError");
-        error.hidden = false;
-    }
-}
-
-function fetch_project_data(data) {
-    var updatejobNumber = document.getElementById("inputupdatejobnumber");
-    var clientName = document.getElementById("inputUpdateClientName");
-    var projectDescription = document.getElementById(
-        "inputUpdateProjectDescription"
-    );
-    var jobsiteLocation = document.getElementById("inputUpdateJobsiteLocation");
-    var bcaReferenceNumber = document.getElementById(
-        "inputUpdateBcaReferenceNumber"
-    );
-    var sms_count = document.getElementById("inputUpdateSmsCount");
-    var projectTypeRental = document.getElementById("projectUpdateTypeRental");
-    var projectTypeSales = document.getElementById("projectUpdateTypeSales");
-    var endUserName = document.getElementById("inputUpdateEndUserName");
-    var endUserNameDiv = document.getElementById("endUserNameDiv");
-
-    if (data) {
-        updatejobNumber.value = data.job_number;
-        console.log(data.sms_count);
-        clientName.value = data.client_name;
-        projectDescription.value = data.project_description;
-        jobsiteLocation.value = data.jobsite_location;
-        bcaReferenceNumber.value = data.bca_reference_number;
-        sms_count.value = data.sms_count;
-        if (data.end_user_name) {
-            projectTypeSales.checked = true;
-            endUserNameDiv.style.display = "block"; // Show the end user name field
-            endUserName.value = data.end_user_name;
-        } else {
-            projectTypeRental.checked = true;
-            endUserNameDiv.style.display = "none"; // Hide the end user name field
-        }
-        // fetch_users("inputUpdateUserSelect", data.user_id);
-
-        populateUser("userUpdateSelectList", data.id);
-    }
-}
-
-function handleUpdate() {
-    var csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
-    var form = document.getElementById("updateProjectForm");
+    var form = document.getElementById("measurement_point_create_form");
 
     var formData = new FormData(form);
 
@@ -391,8 +355,8 @@ function handleUpdate() {
         formDataJson[key] = value;
     });
 
-    fetch("http://localhost:8000/project/" + inputprojectId, {
-        method: "PATCH",
+    fetch(form.action, {
+        method: form.method,
         headers: {
             "X-CSRF-TOKEN": csrfToken,
             "Content-Type": "application/json",
@@ -410,14 +374,56 @@ function handleUpdate() {
             return response.json();
         })
         .then((json) => {
-            create_users(inputprojectId, csrfToken);
-            closeModal("updateModal");
+            closeModal("measurementPointCreateModal");
         })
         .catch((error) => {
             console.error("Error:", error);
             alert("There was an error: " + error.message);
         });
+    return false;
+}
 
+function handle_measurement_point_update() {
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    var form = document.getElementById("measurementPointUpdateForm");
+
+    var formData = new FormData(form);
+
+    var formDataJson = {};
+    formData.forEach((value, key) => {
+        formDataJson[key] = value;
+    });
+
+    fetch(
+        "http://localhost:8000/measurement_points/" + inputMeasurementPointId,
+        {
+            method: "PATCH",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify(formDataJson),
+        }
+    )
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
+            }
+            return response.json();
+        })
+        .then((json) => {
+            closeModal("measurementPointUpdateModal");
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("There was an error: " + error.message);
+        });
     return false;
 }
 
@@ -437,10 +443,14 @@ function handle_create_dummy_user() {
     closeModal("userCreateModal");
 }
 
-function populateUser(element, project_id = null) {
+function handleSelection(item) {
+    inputUserId = item.id;
+}
+
+function populateUser(element) {
     window.userselectList = document.getElementById(element);
-    if (project_id) {
-        fetch("http://localhost:8000/users/" + project_id)
+    if (inputprojectId) {
+        fetch("http://localhost:8000/users/" + inputprojectId)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
@@ -489,8 +499,128 @@ function populateList(data) {
     });
 }
 
-function handleSelection(item) {
-    inputUserId = item.id;
+function deleteUser(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+    fetch("http://localhost:8000/users/" + inputUserId, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                console.log("Error:", response);
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            if (modalType == "update") {
+                populateUser("userUpdateSelectList", inputprojectId);
+            } else {
+                populateUser("userselectList", inputprojectId);
+            }
+
+            // Close the modal
+            const modalElement = document.getElementById("deleteModal");
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance.hide();
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
+function handleDelete(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+    var confirmation = document.getElementById("inputDeleteConfirmation").value;
+    if (confirmation == "DELETE") {
+        fetch(
+            "http://localhost:8000/measurement_points/" +
+                inputMeasurementPointId,
+            {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    Accept: "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }
+        )
+            .then((response) => {
+                if (!response.ok) {
+                    console.log("Error:", response);
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Success:", data);
+                closeModal("deleteConfirmationModal");
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    } else {
+        var error = document.getElementById("deleteConfirmationError");
+        error.hidden = false;
+    }
+}
+
+function handleUpdate() {
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    var form = document.getElementById("updateProjectForm");
+
+    var formData = new FormData(form);
+
+    var formDataJson = {};
+    formData.forEach((value, key) => {
+        formDataJson[key] = value;
+    });
+
+    fetch("http://localhost:8000/project/" + inputprojectId, {
+        method: "PATCH",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify(formDataJson),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
+            }
+            return response.json();
+        })
+        .then((json) => {
+            create_users(inputprojectId, csrfToken);
+            closeModal("updateModal");
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("There was an error: " + error.message);
+        });
+    return false;
 }
 
 function openModal(modalName) {
@@ -500,10 +630,13 @@ function openModal(modalName) {
     if (modalName == "updateModal") {
         userList = [];
         modalType = "update";
-    } else if (modalName == "projectcreateModal") {
-        userList = [];
-        inputprojectId = "";
+        populateUser("userUpdateSelectList");
+    } else if (modalName == "measurementPointCreateModal") {
         modalType = "create";
+        populateSelects();
+    } else if (modalName == "measurementPointUpdateModal") {
+        modalType = "update";
+        populateSelects();
     }
 }
 
@@ -546,17 +679,15 @@ function closeModal(modal) {
     location.reload();
 }
 
-window.deleteUser = deleteUser;
-window.openModal = openModal;
-window.openSecondModal = openSecondModal;
-window.populateUser = populateUser;
+window.handle_measurement_point_update = handle_measurement_point_update;
+window.handle_create_measurement_point = handle_create_measurement_point;
 window.handleDelete = handleDelete;
 window.handleUpdate = handleUpdate;
+window.openModal = openModal;
+window.openSecondModal = openSecondModal;
+window.deleteUser = deleteUser;
 window.handle_create_dummy_user = handle_create_dummy_user;
-window.changeTab = changeTab;
-window.fetch_data = fetch_data;
-window.toggleEndUserName = toggleEndUserName;
-window.create_project = create_project;
+window.set_contact_table = set_contact_table;
+getProjectId();
 
-fetch_data("rental");
-toggleEndUserName();
+get_measurement_point_data();

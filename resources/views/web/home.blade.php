@@ -9,7 +9,7 @@
     <link href="https://unpkg.com/tabulator-tables@5.4.3/dist/css/tabulator.min.css" rel="stylesheet" />
     <!-- Include Tabulator JS from CDN -->
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.4.3/dist/js/tabulator.min.js"></script>
-    @vite(["resources/scss/home.scss","resources/js/home.js","resources/scss/base.scss"])
+    @vite(['resources/scss/home.scss', 'resources/js/home.js', 'resources/scss/base.scss'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
@@ -32,12 +32,12 @@
     <div class="container">
         <h1> Welcome, {{ Auth::user()->username }}</h1>
         <div class="button-container">
-            <a href="{{ route('project.show') }}" class="btn">Project</a>
+            <a href="{{ route('project.admin') }}" class="btn">Project</a>
             <a href="{{ route('measurement_point.show') }}" class="btn">Measurement Point</a>
-            <a href="{{ route('project.show') }}" class="btn">Concentrator</a>
-            <a href="{{ route('project.show') }}" class="btn">Noise Meter</a>
-            <a href="{{ route('project.show') }}" class="btn">Contact</a>
-            <a href="{{ route('project.show') }}" class="btn">Contact</a>
+            <a href="{{ route('project.admin') }}" class="btn">Concentrator</a>
+            <a href="{{ route('project.admin') }}" class="btn">Noise Meter</a>
+            <a href="{{ route('project.admin') }}" class="btn">Contact</a>
+            <a href="{{ route('project.admin') }}" class="btn">Contact</a>
         </div>
 
         <div class="footer">

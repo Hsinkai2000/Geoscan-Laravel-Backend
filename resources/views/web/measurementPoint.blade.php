@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Geoscan | Main</title>
+    <title>Geoscan | {{ $measurementPoint->point_name }}</title>
 
     <!-- Include jQuery from CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -27,137 +27,81 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><img class="me-2" id="geoscan_logo" style="width: 50px;"
-                    src="{{ asset('image/geoscanlogo_yellow.png') }}" alt="geoscan-logo"></img>Geoscan NMS</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Concentrators</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Noise Meters</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Users</a>
-                    </li>
-                </ul>
-                <form class="d-flex" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-outline-secondary" type="submit">Logout</button>
-                </form>
-            </div>
-        </div>
-    </nav>
+    <x-nav.navbar />
 
     <div class="container-fluid pt-3 p-5">
         <h3 class="text-dark">Measurement Points</h3>
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('project.show') }}">Projects</a></li>
-                <li class="breadcrumb-item"><a href="#">Measurement Point</a></li>
+                @if (Auth::user()->isAdmin())
+                    <li class="breadcrumb-item"><a href="{{ route('project.admin') }}">Projects</a></li>
+                @endif
+                <li class="breadcrumb-item"><a
+                        href="{{ route('project.show', $measurementPoint->project->id) }}">Measurement
+                        Points</a>
+                </li>
+                <li class="breadcrumb-item"><a href="#">{{ $measurementPoint->point_name }}</a></li>
             </ol>
         </nav>
         <div class="mb-3">
-            <h5 class="d-inline me-4">Project Information</h5>
+            <h5 class="d-inline me-4">Measurement Point Information</h5>
             <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editProjectButton"
-                onclick="openModal('updateModal')">Edit Project</button>
+                onclick="openModal('measurementPointUpdateModal')">Edit Measurement Point</button>
         </div>
         <table class="table">
             <tr>
                 <th scope='row'>PJO Number</th>
-                <td scope='row'>{{ $project['job_number'] }}</td>
+                <td scope='row'>{{ $measurementPoint->project->job_number }}</td>
             </tr>
             <tr>
-                <th scope='row'>Client</th>
-                <td scope='row'>{{ $project['client_name'] }}</td>
+                <th scope='row'>Point Name</th>
+                <td scope='row'>{{ $measurementPoint->point_name }}</td>
             </tr>
             <tr>
-                <th scope='row'>Location</th>
-                <td scope='row'>{{ $project['jobsite_location'] }}</td>
+                <th scope='row'>Device Location</th>
+                <td scope='row'>{{ $measurementPoint->device_location }}</td>
             </tr>
             <tr>
-                <th scope='row'>Project Description</th>
-                <td scope='row'>{{ $project['project_description'] }}</td>
-            </tr>
-            <tr>
-                <th scope='row'>BCA Reference Number</th>
-                <td scope='row'>{{ $project['bca_reference_number'] }}</td>
-            </tr>
-            <tr>
-                <th scope='row'>SMS Alerts</th>
-                <td scope='row'>{{ $project['sms_count'] }}</td>
-            </tr>
-            <tr>
-                <th scope='row'>Status</th>
-                <td scope='row'>{{ $project['status'] }}</td>
+                <th scope='row'>Remarks</th>
+                <td scope='row'>{{ $measurementPoint->remarks }}</td>
             </tr>
         </table>
-        <div class="bg-light p-2 mb-3 shadow rounded">
-            <h5>Contacts</h5>
-            <div class="shadow" id="contacts_table"></div>
-        </div>
-        <div class="rounded bg-light p-2 shadow">
-            <h5>Measurement Points Information</h5>
-            <div id="measurement_point_table"></div>
 
-            <div class="d-flex flex-row mt-3 justify-content-between">
-                <button class="btn btn-light text-danger border shadow-sm" id="deleteButton"
-                    onclick="openModal('deleteConfirmationModal')">Delete</button>
-                <div id="measurement_point_pages"></div>
-                <div>
-                    <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
-                        onclick='openModal("measurementPointUpdateModal")'>Edit</button>
-                    <button class="btn btn-primary text-light shadow-sm" id="createButton"
-                        onclick='openModal("measurementPointCreateModal")'>Create</button>
-                </div>
-            </div>
+        <h6>Noise Meter</h6>
+        <div id='noise_meter_table'>
         </div>
 
-        <x-project.project-update-modal :project="$project" />
-        <x-delete-confirmation-modal type='Measurement Point' />
-        <x-delete-modal type='user' />
-        <x-user.user-create-modal />
-        <x-measurementPoint.measurement-point-create-modal :project="$project" />
-        <x-measurementPoint.measurement-point-update-modal :project="$project" />
-        <input hidden id="inputprojectId" value="{{ $project['id'] }}">
+        <h6>Concentrator</h6>
+        <div id='concentrator_table'>
+        </div>
+        <br />
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm"
+                onclick="openModal('viewPdfModal')">View Report</button>
+        </div>
     </div>
+
+    <x-measurementPoint.measurement-point-update-modal :project="$measurementPoint->project" />
+    <x-pdfs.view-pdf-component />
+
 </body>
 
 <script>
-    $('#selectConcentrator').select2({
-        dropdownParent: $('#measurementPointCreateModal'),
-        placeholder: 'Select Concentrator...'
-    });
-
-    $('#selectNoiseMeter').select2({
-        dropdownParent: $('#measurementPointCreateModal'),
-        placeholder: 'Select Noise Meter...'
-    });
-
     $('#selectUpdateConcentrator').select2({
         dropdownParent: $('#measurementPointUpdateModal'),
 
     });
     $('#selectUpdateNoiseMeter').select2({
         dropdownParent: $('#measurementPointUpdateModal'),
+
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        window.project = @json($project);
+        window.measurementPointData = @json($measurementPoint);
 
-        window.contacts = @json($project->contact);
-        window.set_contact_table()
+        window.measurementPointData.noise_meter = @json($measurementPoint->noiseMeter);
+        window.measurementPointData.concentrator = @json($measurementPoint->concentrator);
+        set_tables(window.measurementPointData);
     });
 </script>
 

@@ -2,9 +2,7 @@
 use App\Http\Controllers\MeasurementPointController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/measurement_point', [MeasurementPointController::class, 'show'])->name('measurement_point.show');
-Route::get("/measurement_point/{id}", [MeasurementPointController::class, 'show_by_project'])->name('measurement_point.show_by_project');
-Route::get("/measurement_point/indiv/{id}", [MeasurementPointController::class, 'show_indiv_point'])->name('measurement_point.show_indiv_point');
+Route::get("/measurement_point/{id}", [MeasurementPointController::class, 'show'])->name('measurement_point.show');
 
 Route::post("/measurement_points", [MeasurementPointController::class, 'create'])->name('measurement_point.create');
 Route::get("/measurement_points", [MeasurementPointController::class, 'index'])->name('measurement_point_all');

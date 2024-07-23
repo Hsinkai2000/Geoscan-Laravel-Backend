@@ -5,29 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Concentrator;
 use App\Models\MeasurementPoint;
 use App\Models\NoiseMeter;
-use App\Models\Project;
 use Exception;
 use Illuminate\Http\Request;
 
 class MeasurementPointController extends Controller
 {
 
-    public function show()
-    {
-        return view('web.measurementPoint');
-    }
-
-    public function show_by_project($id)
-    {
-        $project = Project::find($id);
-        return view('web.measurementPoint', ['project' => $project])->render();
-    }
-
-    public function show_indiv_point($id)
+    public function show($id)
     {
         debug_log('here');
         $measurement_point = MeasurementPoint::find($id);
-        return view('web.indiv-measurementPoint', ['measurementPoint' => $measurement_point])->render();
+        return view('web.measurementPoint', ['measurementPoint' => $measurement_point])->render();
     }
 
     public function create(Request $request)

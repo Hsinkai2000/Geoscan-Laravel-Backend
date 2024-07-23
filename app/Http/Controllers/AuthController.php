@@ -26,8 +26,8 @@ class AuthController extends Controller
 
     private function getUserProject($userId)
     {
-        $user = User::find($userId)->get();
-        return $user[0]['project_id'];
+        $user = User::find($userId);
+        return $user['project_id'];
     }
 
     public function loginPost(Request $request)
@@ -38,10 +38,9 @@ class AuthController extends Controller
         if (Auth::attempt(['username' => $user_params['username'], 'password' => $user_params['password']])) {
             $request->session()->regenerate();
             if (Auth::user()->user_type == 'admin') {
-                return redirect()->route('project.show')->with('success', 'Login success');
+                return redirect()->route('project.admin')->with('success', 'Login success');
             } else {
-
-                return redirect()->route('measurement_point.show_by_project', ['id' => $this->getUserProject(Auth::user()->id)])->with('success', 'Login success');
+                return redirect()->route('project.show', ['id' => $this->getUserProject(Auth::user()->id)])->with('success', 'Login success');
             }
 
         };

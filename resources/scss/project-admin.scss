@@ -1,9 +1,17 @@
+// Default variable overrides
+
 @import "./base.scss";
 
-#noise_meter_table,
-#concentrator_table {
-    margin-bottom: 20px;
+#deleteButton {
+    &:hover {
+        color: $white !important;
+        background-color: $danger;
+    }
+}
+
+#example-table {
     background-color: $light;
+    height: 55vh;
     border-top: none;
     border-color: $border-color;
     padding: 10px;
@@ -48,9 +56,38 @@
     }
 }
 
-.box,
-.datepicker {
-    z-index: 9999;
+/* Basic styling for the list container */
+#userUpdateSelectList {
+    max-height: 300px;
+    padding: 0;
+    list-style: none; /* Ensure no default list styling */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Basic styling for each list item */
+.list-item {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+/* Styling for the selected item */
+.list-item.selected {
+    background-color: $hover;
+}
+
+.modal:nth-of-type(even) {
+    z-index: 1052 !important;
+}
+.modal-backdrop.show:nth-of-type(even) {
+    z-index: 1051 !important;
+}
+
+@media only screen and (min-width: 768px) {
+    #example-table {
+        height: 65vh;
+    }
 }
 
 @import "../../node_modules/bootstrap/scss/bootstrap";

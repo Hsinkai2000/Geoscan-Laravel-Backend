@@ -1,17 +1,55 @@
-// Default variable overrides
-
 @import "./base.scss";
 
-#deleteButton {
-    &:hover {
-        color: $white !important;
-        background-color: $danger;
+#contacts_table {
+    margin-bottom: 20px;
+    background-color: $light;
+    border-top: none;
+    border-color: $border-color;
+    padding: 10px;
+    border-radius: 0 10px 10px 10px;
+    .tabulator-header {
+        background-color: $light;
+        color: $dark;
+        border-bottom: 3px solid $primary;
+        margin-bottom: 5px;
+        .tabulator-col,
+        .tabulator-row-handle {
+            white-space: normal;
+            background-color: $light;
+            .tabulator-col-content {
+                text-overflow: clip;
+            }
+        }
+    }
+
+    .tabulator-tableholder {
+        .tabulator-table {
+            .tabulator-row {
+                color: $dark;
+                background-color: $light;
+                margin-bottom: 2px;
+                &:hover {
+                    background-color: $hover;
+                }
+
+                .tabulator-cell {
+                    white-space: normal;
+                }
+
+                &:nth-child(even) {
+                    background-color: $white;
+                    &:hover {
+                        background-color: $hover;
+                    }
+                }
+            }
+        }
     }
 }
 
-#example-table {
+#measurement_point_table {
     background-color: $light;
-    height: 55vh;
+    height: 33vh;
     border-top: none;
     border-color: $border-color;
     padding: 10px;
