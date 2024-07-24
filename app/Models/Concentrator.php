@@ -43,11 +43,6 @@ class Concentrator extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class, 'project_id');
-    }
-
     public function measurementPoint(): BelongsTo
     {
         return $this->belongsTo(MeasurementPoint::class, 'id', 'concentrator_id');
@@ -55,7 +50,7 @@ class Concentrator extends Model
 
     public function has_running_project()
     {
-        $project = $this->project;
+        $project = $this->measurementPoint->project;
         return $project !== null && $project->isRunning();
     }
 

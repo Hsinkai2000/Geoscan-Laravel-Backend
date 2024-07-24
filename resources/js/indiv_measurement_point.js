@@ -1,6 +1,6 @@
 import AirDatepicker from "air-datepicker";
-import localeEn from 'air-datepicker/locale/en';
 import "air-datepicker/air-datepicker.css";
+import localeEn from 'air-datepicker/locale/en';
 
 var modalType = "";
 var dpMin, dpMax;
@@ -326,8 +326,8 @@ function initDatePicker() {
     dpMin = new AirDatepicker("#start_date", {
         autoClose: true,
         dateFormat: "dd-MM-yyyy",
-        container: "#viewPdfModal",
         locale: localeEn,
+        container: "#viewPdfModal",
         onSelect({ date }) {
             dpMax.update({
                 minDate: date,
@@ -339,8 +339,8 @@ function initDatePicker() {
     dpMax = new AirDatepicker("#end_date", {
         autoClose: true,
         dateFormat: "dd-MM-yyyy",
-        container: "#viewPdfModal",
         locale: localeEn,
+        container: "#viewPdfModal",
         onSelect({ date }) {
             dpMin.update({
                 maxDate: date,

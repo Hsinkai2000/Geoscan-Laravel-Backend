@@ -4,6 +4,11 @@ import laravel from "laravel-vite-plugin";
 export default defineConfig({
     server: {
         host: "0.0.0.0",
+        port:8000,
+        hmr: {
+            host: "0.0.0.0",
+            port:8000,
+        }
     },
     plugins: [
         laravel({
@@ -12,7 +17,6 @@ export default defineConfig({
                 "resources/js/app.js",
                 "resources/scss/login.scss",
                 "resources/scss/home.scss",
-                "resources/js/home.js",
                 "resources/scss/base.scss",
                 "resources/scss/project-admin.scss",
                 "resources/js/project-admin.js",

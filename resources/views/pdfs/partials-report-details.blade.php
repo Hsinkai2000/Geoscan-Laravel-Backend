@@ -56,7 +56,7 @@
     <hr>
     <br />
     <h3>Measurement Point Details:</h3>
-    <table class="table-bordered">
+    <table class="table-bordered w-100">
         <tr>
             <th>Device ID</th>
             <th>Serial No.</th>

@@ -43,7 +43,7 @@ class PagesController extends Controller
             $this->check_message_0_conditions($concentrator);
             $s_values = $geoscanLib->summary_values();
             $this->updateConcentrator($request, $s_values, $concentrator);
-
+            Log::info('Concentrator updated successfully');
             render_ok("ok");
         } catch (Exception $e) {
             render_unprocessable_entity($e->getMessage());
@@ -55,23 +55,23 @@ class PagesController extends Controller
         try {
             $noise_meter = $geoscanLib->noise_meter();
             $concentrator = $geoscanLib->concentrator();
-
+            
             $this->check_message_1_conditions($noise_meter, $geoscanLib, $concentrator);
-
+            
             $measurement_point = $noise_meter->measurementPoint;
             $s_values = $geoscanLib->summary_values();
             $noise_data_params = $this->noise_data_params($geoscanLib, $s_values);
-
+            
             try {
-
+                
                 $noise_data_id = DB::table('noise_data')->insertGetId($noise_data_params);
                 $noise_data = NoiseData::find($noise_data_id);
                 $this->updateConcentrator($request, $s_values, $concentrator);
-
+                
                 $ndevice_params = $this->prepareNdeviceParams($noise_data, $measurement_point);
                 $this->update_measurement_point($measurement_point, $ndevice_params);
                 $measurement_point->check_last_data_for_alert();
-
+                Log::info('Record Successfully updated', ['noise_data' => $noise_data]);
                 render_ok("Record Successfully updated");
             } catch (Exception $e) {
                 throw new Exception("Error processing noise data : " . $e->getMessage());
@@ -113,7 +113,6 @@ class PagesController extends Controller
         try {
             $updatedValues = $this->prepareUpdatedValues($request, $s_values);
             $concentrator->update($updatedValues);
-            Log::info('Concentrator updated successfully', ['concentrator_id' => $concentrator->id]);
         } catch (\Exception $e) {
             Log::error('Failed to update concentrator', [
                 'concentrator_id' => $concentrator->id,
