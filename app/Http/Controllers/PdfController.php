@@ -16,7 +16,6 @@ class PdfController extends Controller
         $measurmentPointId = $request->route('id');
         $start_date = Carbon::createFromFormat('d-m-Y', $request->route('start_date'));
         $end_date = Carbon::createFromFormat('d-m-Y', $request->route('end_date'));
-        debug_log("dates", [$measurmentPointId, $start_date, $end_date]);
         $measurementPoint = MeasurementPoint::find($measurmentPointId);
         $contacts = Contact::where('project_id', $measurementPoint->project->id)->get();
 

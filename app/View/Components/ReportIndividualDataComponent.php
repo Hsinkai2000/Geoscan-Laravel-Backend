@@ -66,15 +66,18 @@ class ReportIndividualDataComponent extends Component
             }
 
         } else if ($this->type == 'max') {
-            $datenow = Carbon::now();
-            debug_log('time', [$this->slotDate]);
+            $datenow = Carbon::now('Asia/Singapore');
+            $date = new Carbon($this->slotDate);
+            if ($date->hour == 7) {
+                $date->hour = 18;
+            }
             if (!empty($noiseData)) {
-                $noiseData = new NoiseData(['received_at' => $this->slotDate]);
+                $noiseData = new NoiseData(['received_at' => $date]);
             } else {
                 $noiseData = $noiseData[0];
             }
             [$calculated_dose_percentage, $num_blanks, $limit, $decision] = $this->measurementPoint->check_last_data_for_alert($noiseData);
-            if ($datenow > $this->slotDate) {
+            if ($datenow > $date) {
                 $leq_data['leq_data'] = 'FIN';
             } else {
                 if ($num_blanks == 0) {
@@ -83,9 +86,9 @@ class ReportIndividualDataComponent extends Component
                     $leq_data['leq_data'] = 'NA';
                 } else {
                     if ($decision == '12h') {
-                        $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($this->slotDate, 1);
+                        $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($date, 1);
                     } else {
-                        $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($this->slotDate, 2);
+                        $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($date, 2);
                     }
                 }
             }
