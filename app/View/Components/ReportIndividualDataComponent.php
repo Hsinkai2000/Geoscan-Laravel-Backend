@@ -82,13 +82,23 @@ class ReportIndividualDataComponent extends Component
             } else {
                 if ($num_blanks == 0) {
                     $leq_data['leq_data'] = 'FIN';
-                } else if ($num_blanks == 12 || $num_blanks == 144 || $limit == 140) {
-                    $leq_data['leq_data'] = 'NA';
                 } else {
-                    if ($decision == '12h') {
-                        $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($date, 1);
+                    if ($calculated_dose_percentage < 1 && $num_blanks != 12 && $num_blanks != 144) {
+                        $missingVal = $decision == '12h' ? 144 : 12;
+                        if ($missingVal ==144){
+                            
+                            [$leq_5mins_should_alert, $leq5limit] = $this->measurementPoint->leq_5_mins_exceed_and_alert($noiseData);
+                            
+                            $sum = round(convert_to_db((1 - ($calculated_dose_percentage/100)) * ((linearise_leq($limit) * $missingVal) / $num_blanks)),1);
+
+                            $leq_data['leq_data'] = min([$sum, $leq5limit]);
+                        }else if($missingVal == 12){
+                            $sum = 10 * log10((1 - ($calculated_dose_percentage/100)) * (pow(10, $limit / 10) * $missingVal) / $num_blanks);
+                        
+                            $leq_data['leq_data'] = $sum;
+                        }                        
                     } else {
-                        $leq_data['leq_data'] = $this->measurementPoint->calc_laeq5_max($date, 2);
+                        $leq_data['leq_data'] = 'N.A.';
                     }
                 }
             }
