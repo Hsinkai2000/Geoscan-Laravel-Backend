@@ -437,7 +437,7 @@ function handle_create_dummy_user() {
         password: inputPassword,
     });
     if (modalType == "update") {
-        populateUser("userUpdateSelectList", inputprojectId);
+        populateUser("userUpdateSelectList");
     } else {
         populateUser("userselectList");
     }
@@ -678,7 +678,6 @@ function closeModal(modal) {
     const modalElement = document.getElementById(modal);
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
     modalInstance.hide();
-    location.reload();
 }
 
 window.handle_measurement_point_update = handle_measurement_point_update;
