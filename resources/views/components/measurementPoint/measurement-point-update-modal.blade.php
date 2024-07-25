@@ -95,6 +95,41 @@
                         </div>
 
 
+                        </br>
+                        <hr>
+                        </br>
+
+                        <div class="mb-3 row">
+                            <h4 class="col-md-6 col-sm-12">
+                                Category
+                            </h4>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col-md-6 col-sm-12">
+                                Existing Category
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <span id="category">
+                                    @if ($measurementPoint)
+                                        {{ $measurementPoint->soundLimit->category }}
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col-md-6 col-sm-12">
+                                New Category
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <select id='selectCategory' name='category' style="width: 100%">
+                                    <option value="Residential">Residential</option>
+                                    <option value="Residential">Residential</option>
+                                    <option value="Hospital/Schools">Hospital/Schools</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <input hidden name='project_id' value="{{ $project['id'] }}" />
                     </div>
 

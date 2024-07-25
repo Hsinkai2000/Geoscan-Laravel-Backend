@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\MeasurementPoint;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PdfController extends Controller
@@ -13,8 +14,8 @@ class PdfController extends Controller
     public function generatePdf(Request $request)
     {
         $measurmentPointId = $request->route('id');
-        $start_date = $request->date('start_date');
-        $end_date = $request->date('end_date');
+        $start_date = Carbon::createFromFormat('d-m-Y', $request->route('start_date'));
+        $end_date = Carbon::createFromFormat('d-m-Y', $request->route('end_date'));
         debug_log("dates", [$measurmentPointId, $start_date, $end_date]);
         $measurementPoint = MeasurementPoint::find($measurmentPointId);
         $contacts = Contact::where('project_id', $measurementPoint->project->id)->get();
@@ -30,10 +31,8 @@ class PdfController extends Controller
         $pdf->setoptions([
             'margin-bottom' => 8,
             'footer-spacing' => 0,
-            'encoding' => 'UTF-8',
-            'footer-html' => $footerHtml,
-            'enable-javascript' => true]);
-        return $pdf->stream();
+            'footer-html' => $footerHtml]);
+        return $pdf->inline();
 
     }
 }

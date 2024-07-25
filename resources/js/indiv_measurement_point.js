@@ -1,6 +1,6 @@
 import AirDatepicker from "air-datepicker";
 import "air-datepicker/air-datepicker.css";
-import localeEn from 'air-datepicker/locale/en';
+import localeEn from "air-datepicker/locale/en";
 
 var modalType = "";
 var dpMin, dpMax;
@@ -117,7 +117,7 @@ function populateConcentrator() {
         create_empty_option(selectConcentrator, "Choose Concentrator...");
     }
 
-    const url = "http://18.138.56.250/concentrators/";
+    const url = "http://localhost:8000/concentrators/";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -170,7 +170,7 @@ function populateNoiseMeter() {
         create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
     }
 
-    const url = "http://18.138.56.250/noise_meters";
+    const url = "http://localhost:8000/noise_meters";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -234,7 +234,7 @@ function handle_measurement_point_update() {
     });
 
     fetch(
-        "http://18.138.56.250/measurement_points/" +
+        "http://localhost:8000/measurement_points/" +
             window.measurementPointData.id,
         {
             method: "PATCH",
@@ -363,7 +363,7 @@ function openPdf() {
         console.log("asdasd" + key + value);
     });
 
-    fetch("http://18.138.56.250/pdf/" + window.measurementPointData.id, {
+    fetch("http://localhost:8000/pdf/" + window.measurementPointData.id, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

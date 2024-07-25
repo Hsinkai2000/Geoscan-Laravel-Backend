@@ -66,6 +66,76 @@ class SoundLimit extends Model
         'updated_at' => 'datetime',
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        if (isset($this->category)) {
+            $this->initializeValues();
+        }
+    }
+
+    private function initializeValues()
+    {
+        switch ($this->category) {
+            case 'Residential':
+                $this->mon_sat_7am_7pm_leq5min = 90.0;
+                $this->mon_sat_7pm_10pm_leq5min = 70.0;
+                $this->mon_sat_10pm_12am_leq5min = 55.0;
+                $this->mon_sat_12am_7am_leq5min = 55.0;
+                $this->sun_ph_7am_7pm_leq5min = 75.0;
+                $this->sun_ph_7pm_10pm_leq5min = 65.0;
+                $this->sun_ph_10pm_12am_leq5min = 55.0;
+                $this->sun_ph_12am_7am_leq5min = 55.0;
+                $this->mon_sat_7am_7pm_leq12hr = 75.0;
+                $this->mon_sat_7pm_10pm_leq12hr = 65.0;
+                $this->mon_sat_10pm_12am_leq12hr = 55.0;
+                $this->mon_sat_12am_7am_leq12hr = 55.0;
+                $this->sun_ph_7am_7pm_leq12hr = 75.0;
+                $this->sun_ph_7pm_10pm_leq12hr = 140.0;
+                $this->sun_ph_10pm_12am_leq12hr = 140.0;
+                $this->sun_ph_12am_7am_leq12hr = 140.0;
+                break;
+
+            case 'Hospital/Schools':
+                $this->mon_sat_7am_7pm_leq5min = 75.0;
+                $this->mon_sat_7pm_10pm_leq5min = 55.0;
+                $this->mon_sat_10pm_12am_leq5min = 55.0;
+                $this->mon_sat_12am_7am_leq5min = 55.0;
+                $this->sun_ph_7am_7pm_leq5min = 75.0;
+                $this->sun_ph_7pm_10pm_leq5min = 55.0;
+                $this->sun_ph_10pm_12am_leq5min = 55.0;
+                $this->sun_ph_12am_7am_leq5min = 55.0;
+                $this->mon_sat_7am_7pm_leq12hr = 60.0;
+                $this->mon_sat_7pm_10pm_leq12hr = 50.0;
+                $this->mon_sat_10pm_12am_leq12hr = 50.0;
+                $this->mon_sat_12am_7am_leq12hr = 50.0;
+                $this->sun_ph_7am_7pm_leq12hr = 60.0;
+                $this->sun_ph_7pm_10pm_leq12hr = 50.0;
+                $this->sun_ph_10pm_12am_leq12hr = 50.0;
+                $this->sun_ph_12am_7am_leq12hr = 50.0;
+                break;
+
+            default:
+                $this->mon_sat_7am_7pm_leq5min = 90.0;
+                $this->mon_sat_7pm_10pm_leq5min = 70.0;
+                $this->mon_sat_10pm_12am_leq5min = 70.0;
+                $this->mon_sat_12am_7am_leq5min = 70.0;
+                $this->sun_ph_7am_7pm_leq5min = 90.0;
+                $this->sun_ph_7pm_10pm_leq5min = 70.0;
+                $this->sun_ph_10pm_12am_leq5min = 70.0;
+                $this->sun_ph_12am_7am_leq5min = 70.0;
+                $this->mon_sat_7am_7pm_leq12hr = 75.0;
+                $this->mon_sat_7pm_10pm_leq12hr = 65.0;
+                $this->mon_sat_10pm_12am_leq12hr = 65.0;
+                $this->mon_sat_12am_7am_leq12hr = 65.0;
+                $this->sun_ph_7am_7pm_leq12hr = 75.0;
+                $this->sun_ph_7pm_10pm_leq12hr = 65.0;
+                $this->sun_ph_10pm_12am_leq12hr = 65.0;
+                $this->sun_ph_12am_7am_leq12hr = 65.0;
+                break;
+        }
+    }
+
     public function measurementPoint(): BelongsTo
     {
         return $this->belongsTo(MeasurementPoint::class, 'measurement_point_id', 'id');

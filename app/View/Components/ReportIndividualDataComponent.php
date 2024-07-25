@@ -67,6 +67,7 @@ class ReportIndividualDataComponent extends Component
 
         } else if ($this->type == 'max') {
             $datenow = Carbon::now();
+            debug_log('time', [$this->slotDate]);
             if (!empty($noiseData)) {
                 $noiseData = new NoiseData(['received_at' => $this->slotDate]);
             } else {

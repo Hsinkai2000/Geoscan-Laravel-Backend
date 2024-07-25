@@ -36,7 +36,7 @@ function populateConcentrator() {
         create_empty_option(selectConcentrator, "Choose Concentrator...");
     }
 
-    const url = "http://18.138.56.250/concentrators/";
+    const url = "http://localhost:8000/concentrators/";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -95,7 +95,7 @@ function populateNoiseMeter() {
         create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
     }
 
-    const url = "http://18.138.56.250/noise_meters";
+    const url = "http://localhost:8000/noise_meters";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -272,11 +272,13 @@ function fetch_measurement_point_data(data) {
     var pointName = document.getElementById("inputUpdatePointName");
     var remarks = document.getElementById("inputUpdateRemarks");
     var device_location = document.getElementById("inputUpdateDeviceLocation");
+    var category = document.getElementBybId("category");
 
     if (data) {
         pointName.value = data.point_name;
         remarks.value = data.remarks;
         device_location.value = data.device_location;
+        category.innerHTML = data.category;
 
         concentrator_data.push({
             concentrator_id: data.concentrator_id,
@@ -297,7 +299,7 @@ function getProjectId() {
 }
 
 function get_measurement_point_data() {
-    fetch("http://18.138.56.250/measurement_points/" + inputprojectId, {
+    fetch("http://localhost:8000/measurement_points/" + inputprojectId, {
         method: "get",
         headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -326,7 +328,7 @@ function get_measurement_point_data() {
 function create_users(projectId, csrfToken) {
     userList.forEach((user) => {
         user.project_id = projectId;
-        fetch("http://18.138.56.250/user/", {
+        fetch("http://localhost:8000/user/", {
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
@@ -397,7 +399,7 @@ function handle_measurement_point_update() {
     });
 
     fetch(
-        "http://18.138.56.250/measurement_points/" + inputMeasurementPointId,
+        "http://localhost:8000/measurement_points/" + inputMeasurementPointId,
         {
             method: "PATCH",
             headers: {
@@ -450,7 +452,7 @@ function handleSelection(item) {
 function populateUser(element) {
     window.userselectList = document.getElementById(element);
     if (inputprojectId) {
-        fetch("http://18.138.56.250/users/" + inputprojectId)
+        fetch("http://localhost:8000/users/" + inputprojectId)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
@@ -507,7 +509,7 @@ function deleteUser(event) {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
 
-    fetch("http://18.138.56.250/users/" + inputUserId, {
+    fetch("http://localhost:8000/users/" + inputUserId, {
         method: "DELETE",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -550,7 +552,7 @@ function handleDelete(event) {
     var confirmation = document.getElementById("inputDeleteConfirmation").value;
     if (confirmation == "DELETE") {
         fetch(
-            "http://18.138.56.250/measurement_points/" +
+            "http://localhost:8000/measurement_points/" +
                 inputMeasurementPointId,
             {
                 method: "DELETE",
@@ -594,7 +596,7 @@ function handleUpdate() {
         formDataJson[key] = value;
     });
 
-    fetch("http://18.138.56.250/project/" + inputprojectId, {
+    fetch("http://localhost:8000/project/" + inputprojectId, {
         method: "PATCH",
         headers: {
             "X-CSRF-TOKEN": csrfToken,

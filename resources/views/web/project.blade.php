@@ -100,7 +100,7 @@
         <x-delete-modal type='user' />
         <x-user.user-create-modal />
         <x-measurementPoint.measurement-point-create-modal :project="$project" />
-        <x-measurementPoint.measurement-point-update-modal :project="$project" />
+        <x-measurementPoint.measurement-point-update-modal :project="$project" :measurementPoint='$project->measurementPoint' />
         <input hidden id="inputprojectId" value="{{ $project['id'] }}">
     </div>
 </body>

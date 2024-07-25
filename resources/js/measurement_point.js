@@ -1,5 +1,5 @@
 import AirDatepicker from "air-datepicker";
-import localeEn from 'air-datepicker/locale/en';
+import localeEn from "air-datepicker/locale/en";
 import "air-datepicker/air-datepicker.css";
 
 var modalType = "";
@@ -117,7 +117,7 @@ function populateConcentrator() {
         create_empty_option(selectConcentrator, "Choose Concentrator...");
     }
 
-    const url = "http://18.138.56.250/concentrators/";
+    const url = "http://localhost:8000/concentrators/";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -170,7 +170,7 @@ function populateNoiseMeter() {
         create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
     }
 
-    const url = "http://18.138.56.250/noise_meters";
+    const url = "http://localhost:8000/noise_meters";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -234,7 +234,7 @@ function handle_measurement_point_update() {
     });
 
     fetch(
-        "http://18.138.56.250/measurement_points/" +
+        "http://localhost:8000/measurement_points/" +
             window.measurementPointData.id,
         {
             method: "PATCH",
@@ -349,42 +349,21 @@ function initDatePicker() {
     });
 }
 
-function openPdf() {
-    var csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
-    var form = document.getElementById("viewPdfForm");
+async function openPdf() {
+    var select_start_date = document.getElementById("start_date");
+    var select_end_date = document.getElementById("end_date");
 
-    var formData = new FormData(form);
-
-    var formDataJson = {};
-    formData.forEach((value, key) => {
-        formDataJson[key] = value;
-        console.log("asdasd" + key + value);
-    });
-
-    fetch("http://18.138.56.250/pdf/" + window.measurementPointData.id, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/pdf",
-            "X-Requested-With": "XMLHttpRequest",
-        },
-        body: JSON.stringify(formDataJson),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.blob();
-        })
-        .then((blob) => {
-            const url = window.URL.createObjectURL(blob);
-            const newTab = window.open(url, "_blank");
-            newTab.focus();
-            closeModal("viewPdfModal");
-        })
-        .catch((error) => console.error("Error:", error));
+    const newTab = window.open(
+        "http://localhost:8000/pdf/" +
+            new URLSearchParams({
+                id: window.measurementPointData.id,
+                start_date: select_start_date.value,
+                end_date: select_end_date.value,
+            }).toString(),
+        "Report"
+    );
+    newTab.focus();
+    closeModal("viewPdfModal");
 }
 
 window.openPdf = openPdf;

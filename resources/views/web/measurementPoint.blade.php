@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <x-measurementPoint.measurement-point-update-modal :project="$measurementPoint->project" />
+    <x-measurementPoint.measurement-point-update-modal :project="$measurementPoint->project" :measurementPoint='$measurementPoint' />
     <x-pdfs.view-pdf-component />
 
 </body>

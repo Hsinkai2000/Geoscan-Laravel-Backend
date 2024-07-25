@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Concentrator;
 use App\Models\MeasurementPoint;
 use App\Models\NoiseMeter;
+use App\Models\SoundLimit;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,11 @@ class MeasurementPointController extends Controller
             $this->update_device_usage($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
             $measurement_point_id = MeasurementPoint::insertGetId($measurement_point_params);
             $measurement_point = MeasurementPoint::find($measurement_point_id);
+            if ($measurement_point) {
+                $sound_limit_params = ['category' => $request->get('category'), 'measurement_point_id' => $measurement_point_id];
+                $soundLimit = new SoundLimit($sound_limit_params);
+                $soundLimit->save();
+            }
             return render_ok(["measurement_point" => $measurement_point]);
 
         } catch (Exception $e) {
@@ -47,7 +53,6 @@ class MeasurementPointController extends Controller
         try {
 
             $id = $request->route('id');
-            debug_log($id);
             $measurementPoint = MeasurementPoint::where('project_id', $id)->get();
             if (!$measurementPoint) {
                 return render_unprocessable_entity("Unable to find Measurement point with id " . $id);
@@ -64,6 +69,7 @@ class MeasurementPointController extends Controller
                     'device_location' => $measurementPoint->device_location,
                     'remarks' => $measurementPoint->remarks,
                     'data_status' => $measurementPoint->check_data_status(),
+                    'category' => $measurementPoint->soundLimit->category,
                 ];
 
                 if ($concentrator) {

@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Models\MeasurementPoint;
 use App\Models\Project;
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -13,7 +14,7 @@ class MeasurementPointUpdateModal extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public Project $project, ) {
+        public Project $project, public MeasurementPoint $measurementPoint) {
     }
 
     /**

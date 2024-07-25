@@ -96,6 +96,24 @@
                         </div>
 
                         <input hidden name='project_id' value="{{ $project['id'] }}" />
+
+
+                        </br>
+                        <hr>
+                        </br>
+
+                        <div class="mb-3 row">
+                            <h4 class="col-md-6 col-sm-12">
+                                Category
+                            </h4>
+                            <div class="col-md-6 col-sm-12">
+                                <select id='selectCategory' name='category' style="width: 100%">
+                                    <option value="Residential" selected>Residential</option>
+                                    <option value="Hospital/Schools">Hospital/Schools</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
 
