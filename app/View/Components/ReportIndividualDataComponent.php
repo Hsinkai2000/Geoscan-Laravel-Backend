@@ -77,29 +77,18 @@ class ReportIndividualDataComponent extends Component
                 $noiseData = $noiseData[0];
             }
             [$calculated_dose_percentage, $num_blanks, $limit, $decision] = $this->measurementPoint->check_last_data_for_alert($noiseData);
-            if ($datenow > $date) {
+            if ($datenow > $date || $num_blanks == 0) {
                 $leq_data['leq_data'] = 'FIN';
             } else {
-                if ($num_blanks == 0) {
-                    $leq_data['leq_data'] = 'FIN';
-                } else {
-                    if ($calculated_dose_percentage < 1 && $num_blanks != 12 && $num_blanks != 144) {
-                        $missingVal = $decision == '12h' ? 144 : 12;
-                        if ($missingVal ==144){
-                            
-                            [$leq_5mins_should_alert, $leq5limit] = $this->measurementPoint->leq_5_mins_exceed_and_alert($noiseData);
-                            
-                            $sum = round(convert_to_db((1 - ($calculated_dose_percentage/100)) * ((linearise_leq($limit) * $missingVal) / $num_blanks)),1);
+                if ($calculated_dose_percentage < 1 && $num_blanks != 12 && $num_blanks != 144) {
+                    $missingVal = $decision == '12h' ? 144 : 12;
+                    [$leq_5mins_should_alert, $leq5limit] = $this->measurementPoint->leq_5_mins_exceed_and_alert($noiseData);
 
-                            $leq_data['leq_data'] = min([$sum, $leq5limit]);
-                        }else if($missingVal == 12){
-                            $sum = 10 * log10((1 - ($calculated_dose_percentage/100)) * (pow(10, $limit / 10) * $missingVal) / $num_blanks);
-                        
-                            $leq_data['leq_data'] = $sum;
-                        }                        
-                    } else {
-                        $leq_data['leq_data'] = 'N.A.';
-                    }
+                    $sum = round(convert_to_db((1 - ($calculated_dose_percentage / 100)) * ((linearise_leq($limit) * $missingVal) / $num_blanks)), 1);
+
+                    $leq_data['leq_data'] = min([$sum, $leq5limit]);
+                } else {
+                    $leq_data['leq_data'] = 'N.A.';
                 }
             }
         } else {
