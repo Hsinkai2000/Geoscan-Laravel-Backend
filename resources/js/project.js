@@ -3,6 +3,7 @@ var userList = [];
 var modalType = "";
 var inputUserId = null;
 var inputMeasurementPointId = null;
+var inputMeasurementPoint = null;
 var noise_meter_data = [];
 var concentrator_data = [];
 
@@ -17,13 +18,13 @@ function create_empty_option(select, text) {
 function populateConcentrator() {
     var selectConcentrator;
     var defaultConcentrator;
+    selectConcentrator = document.getElementById("selectConcentrator");
+    selectConcentrator.innerHTML = "";
     if (modalType === "update") {
-        selectConcentrator = document.getElementById(
-            "selectUpdateConcentrator"
-        );
-        selectConcentrator.innerHTML = "";
+        console.log("inside");
+        console.log(concentrator_data);
         defaultConcentrator = concentrator_data[0];
-        document.getElementById("existing_update_device_id").textContent =
+        document.getElementById("existing_device_id").textContent =
             defaultConcentrator.device_id
                 ? `${defaultConcentrator.device_id} | ${defaultConcentrator.concentrator_label}`
                 : "None Linked";
@@ -31,8 +32,6 @@ function populateConcentrator() {
             create_empty_option(selectConcentrator, "Choose Concentrator...");
         }
     } else {
-        selectConcentrator = document.getElementById("selectConcentrator");
-        selectConcentrator.innerHTML = "";
         create_empty_option(selectConcentrator, "Choose Concentrator...");
     }
 
@@ -78,11 +77,11 @@ function populateConcentrator() {
 function populateNoiseMeter() {
     var selectNoiseMeter;
     var defaultNoiseMeter;
+    selectNoiseMeter = document.getElementById("selectNoiseMeter");
+    selectNoiseMeter.innerHTML = "";
     if (modalType == "update") {
-        selectNoiseMeter = document.getElementById("selectUpdateNoiseMeter");
-        selectNoiseMeter.innerHTML = "";
         defaultNoiseMeter = noise_meter_data[0];
-        document.getElementById("existing_update_serial").textContent =
+        document.getElementById("existing_serial").textContent =
             defaultNoiseMeter.serial_number
                 ? `${defaultNoiseMeter.serial_number} | ${defaultNoiseMeter.noise_meter_label}`
                 : "None linked";
@@ -90,8 +89,6 @@ function populateNoiseMeter() {
             create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
         }
     } else {
-        selectNoiseMeter = document.getElementById("selectNoiseMeter");
-        selectNoiseMeter.innerHTML = "";
         create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
     }
 
@@ -259,21 +256,22 @@ function table_row_changed(data) {
         document.getElementById("editButton").disabled = false;
         document.getElementById("deleteButton").disabled = false;
         inputMeasurementPointId = data[0].id;
-        fetch_measurement_point_data(data[0]);
+        inputMeasurementPoint = data[0];
     } else {
         document.getElementById("editButton").disabled = true;
         document.getElementById("deleteButton").disabled = true;
     }
 }
 
-function fetch_measurement_point_data(data) {
+function fetch_measurement_point_data(data = null) {
     noise_meter_data = [];
     concentrator_data = [];
-    var pointName = document.getElementById("inputUpdatePointName");
-    var remarks = document.getElementById("inputUpdateRemarks");
-    var device_location = document.getElementById("inputUpdateDeviceLocation");
-    var category = document.getElementBybId("category");
-
+    var pointName = document.getElementById("inputPointName");
+    var remarks = document.getElementById("inputRemarks");
+    var device_location = document.getElementById("inputDeviceLocation");
+    var category = document.getElementById("category");
+    console.log("data");
+    console.log(data);
     if (data) {
         pointName.value = data.point_name;
         remarks.value = data.remarks;
@@ -291,6 +289,26 @@ function fetch_measurement_point_data(data) {
             noise_meter_label: data.noise_meter_label,
             serial_number: data.serial_number,
         });
+
+        document.getElementById("existing_devices").hidden = false;
+    } else {
+        pointName.value = null;
+        remarks.value = null;
+        device_location.value = null;
+        category.innerHTML = null;
+
+        concentrator_data.push({
+            concentrator_id: null,
+            concentrator_label: null,
+            device_id: null,
+        });
+
+        noise_meter_data.push({
+            noise_meter_id: null,
+            noise_meter_label: null,
+            serial_number: null,
+        });
+        document.getElementById("existing_devices").hidden = true;
     }
 }
 
@@ -305,7 +323,7 @@ function fetch_project_data() {
     var projectTypeSales = document.getElementById("projectTypeSales");
     var endUserName = document.getElementById("inputEndUserName");
     var endUserNameDiv = document.getElementById("endUserNameDiv");
-    console.log(window.project);
+
     updatejobNumber.value = window.project.job_number;
     clientName.value = window.project.client_name;
     projectDescription.value = window.project.project_description;
@@ -377,7 +395,7 @@ function handle_create_measurement_point() {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var form = document.getElementById("measurement_point_create_form");
+    var form = document.getElementById("measurement_point_form");
 
     var formData = new FormData(form);
 
@@ -386,8 +404,8 @@ function handle_create_measurement_point() {
         formDataJson[key] = value;
     });
 
-    fetch(form.action, {
-        method: form.method,
+    fetch("http://localhost:8000/measurement_point", {
+        method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
             "Content-Type": "application/json",
@@ -405,7 +423,7 @@ function handle_create_measurement_point() {
             return response.json();
         })
         .then((json) => {
-            closeModal("measurementPointCreateModal");
+            closeModal("measurementPointModal");
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -418,7 +436,7 @@ function handle_measurement_point_update() {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var form = document.getElementById("measurementPointUpdateForm");
+    var form = document.getElementById("measurement_point_form");
 
     var formData = new FormData(form);
 
@@ -449,7 +467,7 @@ function handle_measurement_point_update() {
             return response.json();
         })
         .then((json) => {
-            closeModal("measurementPointUpdateModal");
+            closeModal("measurementPointModal");
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -598,6 +616,7 @@ function handleDelete(event) {
             .then((data) => {
                 console.log("Success:", data);
                 closeModal("deleteConfirmationModal");
+                location.reload();
             })
             .catch((error) => {
                 console.error("Error:", error);
@@ -651,7 +670,16 @@ function submitClicked() {
     return false;
 }
 
-function openModal(modalName) {
+function handle_measurementpoint_submit() {
+    if (modalType == "update") {
+        handle_measurement_point_update();
+    } else {
+        handle_create_measurement_point();
+    }
+    location.reload();
+}
+
+function openModal(modalName, type = null) {
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
 
@@ -659,12 +687,16 @@ function openModal(modalName) {
         userList = [];
         modalType = "update";
         populateUser("userselectList");
-    } else if (modalName == "measurementPointCreateModal") {
-        modalType = "create";
-        populateSelects();
-    } else if (modalName == "measurementPointUpdateModal") {
-        modalType = "update";
-        populateSelects();
+    } else if (modalName == "measurementPointModal") {
+        if (type == "create") {
+            modalType = "create";
+            fetch_measurement_point_data();
+            populateSelects();
+        } else if (type == "update") {
+            modalType = "update";
+            fetch_measurement_point_data(inputMeasurementPoint);
+            populateSelects();
+        }
     }
 }
 
@@ -714,6 +746,7 @@ window.openModal = openModal;
 window.openSecondModal = openSecondModal;
 window.deleteUser = deleteUser;
 window.handle_create_dummy_user = handle_create_dummy_user;
+window.handle_measurementpoint_submit = handle_measurementpoint_submit;
 
 getProjectId();
 fetch_project_data();

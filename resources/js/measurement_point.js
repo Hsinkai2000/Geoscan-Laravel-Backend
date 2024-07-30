@@ -106,10 +106,10 @@ function populateConcentrator() {
     var selectConcentrator;
     var defaultConcentrator;
 
-    selectConcentrator = document.getElementById("selectUpdateConcentrator");
+    selectConcentrator = document.getElementById("selectConcentrator");
     selectConcentrator.innerHTML = "";
     defaultConcentrator = window.measurementPointData.concentrator;
-    document.getElementById("existing_update_device_id").textContent =
+    document.getElementById("existing_device_id").textContent =
         defaultConcentrator
             ? `${defaultConcentrator.device_id} | ${defaultConcentrator.concentrator_label}`
             : "None Linked";
@@ -159,13 +159,12 @@ function populateNoiseMeter() {
     var selectNoiseMeter;
     var defaultNoiseMeter;
 
-    selectNoiseMeter = document.getElementById("selectUpdateNoiseMeter");
+    selectNoiseMeter = document.getElementById("selectNoiseMeter");
     selectNoiseMeter.innerHTML = "";
     defaultNoiseMeter = window.measurementPointData.noise_meter;
-    document.getElementById("existing_update_serial").textContent =
-        defaultNoiseMeter
-            ? `${defaultNoiseMeter.serial_number} | ${defaultNoiseMeter.noise_meter_label}`
-            : "None linked";
+    document.getElementById("existing_serial").textContent = defaultNoiseMeter
+        ? `${defaultNoiseMeter.serial_number} | ${defaultNoiseMeter.noise_meter_label}`
+        : "None linked";
     if (!defaultNoiseMeter) {
         create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
     }
@@ -211,20 +210,23 @@ function populateSelects() {
 }
 
 function populateData() {
-    console.log("populateData");
-    document.getElementById("inputUpdatePointName").value =
+    console.log(window.measurementPointData);
+    document.getElementById("inputPointName").value =
         window.measurementPointData.point_name;
-    document.getElementById("inputUpdateRemarks").value =
+    document.getElementById("inputRemarks").value =
         window.measurementPointData.remarks;
-    document.getElementById("inputUpdateDeviceLocation").value =
+    document.getElementById("inputDeviceLocation").value =
         window.measurementPointData.device_location;
+    document.getElementById("existing_devices").hidden = false;
+    document.getElementById("category").innerHTML =
+        window.measurementPointData.category;
 }
 
-function handle_measurement_point_update() {
+function handle_measurementpoint_submit() {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var form = document.getElementById("measurementPointUpdateForm");
+    var form = document.getElementById("measurement_point_form");
 
     var formData = new FormData(form);
 
@@ -256,7 +258,7 @@ function handle_measurement_point_update() {
             return response.json();
         })
         .then((json) => {
-            closeModal("measurementPointUpdateModal");
+            closeModal("measurementPointModal");
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -265,16 +267,13 @@ function handle_measurement_point_update() {
     return false;
 }
 
-function openModal(modalName) {
+function openModal(modalName, type) {
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
 
     if (modalName == "viewPdfModal") {
         initDatePicker();
-    } else if (modalName == "measurementPointCreateModal") {
-        modalType = "create";
-        populateSelects();
-    } else if (modalName == "measurementPointUpdateModal") {
+    } else if (modalName == "measurementPointModal") {
         modalType = "update";
         populateSelects();
         populateData();
@@ -370,4 +369,4 @@ window.openPdf = openPdf;
 window.openModal = openModal;
 window.openSecondModal = openSecondModal;
 window.set_tables = set_tables;
-window.handle_measurement_point_update = handle_measurement_point_update;
+window.handle_measurementpoint_submit = handle_measurementpoint_submit;

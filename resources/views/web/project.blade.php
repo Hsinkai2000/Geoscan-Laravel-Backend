@@ -88,9 +88,9 @@
                 <div id="measurement_point_pages"></div>
                 <div>
                     <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
-                        onclick='openModal("measurementPointUpdateModal")'>Edit</button>
+                        onclick='openModal("measurementPointModal", "update")'>Edit</button>
                     <button class="btn btn-primary text-light shadow-sm" id="createButton"
-                        onclick='openModal("measurementPointCreateModal")'>Create</button>
+                        onclick='openModal("measurementPointModal", "create")'>Create</button>
                 </div>
             </div>
         </div>
@@ -99,29 +99,28 @@
         <x-delete-confirmation-modal type='Measurement Point' />
         <x-delete-modal type='user' />
         <x-user.user-create-modal />
-        <x-measurementPoint.measurement-point-create-modal :project="$project" />
-        <x-measurementPoint.measurement-point-update-modal :project="$project" :measurementPoint='$project->measurementPoint' />
+        <x-measurementPoint.measurement-point-modal :project="$project" />
         <input hidden id="inputprojectId" value="{{ $project['id'] }}">
     </div>
 </body>
 
 <script>
     $('#selectConcentrator').select2({
-        dropdownParent: $('#measurementPointCreateModal'),
+        dropdownParent: $('#measurementPointModal'),
         placeholder: 'Select Concentrator...'
     });
 
     $('#selectNoiseMeter').select2({
-        dropdownParent: $('#measurementPointCreateModal'),
+        dropdownParent: $('#measurementPointModal'),
         placeholder: 'Select Noise Meter...'
     });
 
     $('#selectUpdateConcentrator').select2({
-        dropdownParent: $('#measurementPointUpdateModal'),
+        dropdownParent: $('#measurementPointModal'),
 
     });
     $('#selectUpdateNoiseMeter').select2({
-        dropdownParent: $('#measurementPointUpdateModal'),
+        dropdownParent: $('#measurementPointModal'),
     });
 
     window.project = @json($project);

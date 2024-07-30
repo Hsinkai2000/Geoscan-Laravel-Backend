@@ -7,13 +7,13 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class MeasurementPointCreateModal extends Component
+class MeasurementPointModal extends Component
 {
     /**
      * Create a new component instance.
      */
     public function __construct(
-        public Project $project, ) {
+        public Project $project) {
     }
 
     /**
@@ -21,6 +21,6 @@ class MeasurementPointCreateModal extends Component
      */
     public function render(): View | Closure | string
     {
-        return view('components.measurement-point-create-modal');
+        return view('components.measurement-point-modal');
     }
 }

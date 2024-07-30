@@ -1,21 +1,22 @@
-<div class="modal fade shadow" id="measurementPointUpdateModal" tabindex="-1" aria-labelledby="measurementPointUpdateModal"
+<div class="modal fade shadow" id="measurementPointModal" tabindex="-1" aria-labelledby="measurementPointLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="measurementpointUpdatelabel">Edit Measurement Point</h5>
+                <h5 class="modal-title" id="measurementPointLabel">Measurement Point</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id='measurementPointUpdateForm' method="PATCH">
+                <form id='measurement_point_form' method="POST">
                     @csrf
                     <div>
+                        <h4>Measurement Point</h4>
                         <div class="mb-3 row">
                             <label for="point_name"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Measurement Point
                                 Name</label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputUpdatePointName" name="point_name">
+                                <input type="text" class="form-control" id="inputPointName" name="point_name">
                             </div>
                         </div>
 
@@ -23,7 +24,7 @@
                             <label for="remarks"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Remarks</label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputUpdateRemarks" name="remarks">
+                                <input type="text" class="form-control" id="inputRemarks" name="remarks">
                             </div>
                         </div>
 
@@ -31,11 +32,10 @@
                             <label for="device_location"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Device Location</label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="text" class="form-control" id="inputUpdateDeviceLocation"
+                                <input type="text" class="form-control" id="inputDeviceLocation"
                                     name="device_location">
                             </div>
                         </div>
-
                         </br>
                         <hr>
                         </br>
@@ -53,13 +53,13 @@
                             </div>
                         </div>
 
-                        <div class="mb-3 row" id="existing_devices">
+                        <div class="mb-3 row" id="existing_devices" hidden>
                             <div class="col-6">
                                 <div class="col">
                                     Existing Device Id:
                                 </div>
                                 <div class="col">
-                                    <span id="existing_update_device_id"></span>
+                                    <span id="existing_device_id"></span>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -67,7 +67,7 @@
                                     Existing Noise Meter
                                 </div>
                                 <div class="col">
-                                    <span id="existing_update_serial"></span>
+                                    <span id="existing_serial"></span>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
                                     New Device Id:
                                 </div>
                                 <div class="col">
-                                    <select id="selectUpdateConcentrator" name="concentrator_id" style="width: 80%">
+                                    <select id="selectConcentrator" name="concentrator_id" style="width: 80%">
                                     </select>
                                 </div>
                             </div>
@@ -88,32 +88,24 @@
                                     New Noise Meter
                                 </div>
                                 <div class="col">
-                                    <select id="selectUpdateNoiseMeter" name="noise_meter_id" style="width: 80%">
+                                    <select id="selectNoiseMeter" name="noise_meter_id" style="width: 80%">
                                     </select>
                                 </div>
                             </div>
                         </div>
 
+                        <input hidden name='project_id' value="{{ $project['id'] }}" />
+
 
                         </br>
                         <hr>
                         </br>
-
-                        <div class="mb-3 row">
-                            <h4 class="col-md-6 col-sm-12">
-                                Category
-                            </h4>
-                        </div>
                         <div class="mb-3 row">
                             <div class="col-md-6 col-sm-12">
                                 Existing Category
                             </div>
                             <div class="col-md-6 col-sm-12">
-                                <span id="category">
-                                    @if ($measurementPoint)
-                                        {{ $measurementPoint->soundLimit->category }}
-                                    @endif
-                                </span>
+                                <span id="category"></span>
                             </div>
                         </div>
                         <div class="mb-3 row">
@@ -122,23 +114,20 @@
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <select id='selectCategory' name='category' style="width: 100%">
-                                    <option value="Residential">Residential</option>
-                                    <option value="Residential">Residential</option>
+                                    <option value="Residential" selected>Residential</option>
                                     <option value="Hospital/Schools">Hospital/Schools</option>
                                     <option value="Others">Others</option>
                                 </select>
                             </div>
                         </div>
-
-                        <input hidden name='project_id' value="{{ $project['id'] }}" />
                     </div>
 
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary bg-white text-primary"
                             data-bs-dismiss="modal">Discard</button>
-                        <button type='button' onclick="handle_measurement_point_update()"
-                            class="btn btn-primary text-white">Create</button>
+                        <button type='button' onclick="handle_measurementpoint_submit()"
+                            class="btn btn-primary text-white">Submit</button>
                     </div>
                 </form>
             </div>
