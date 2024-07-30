@@ -13,14 +13,14 @@ class ProjectController extends Controller
 
     public function show_admin()
     {
-        return view('web.projects-admin');
+        return view('web.projects-admin', ['projects' => Project::all()]);
     }
 
     public function show_project($id)
     {
         debug_log($id);
         $project = Project::find($id);
-        return view('web.project', ['project' => $project])->render();
+        return view('web.project', ['project' => $project]);
     }
 
     public function create(Request $request)

@@ -45,19 +45,22 @@
 
             <div>
                 <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
-                    onclick="openModal('updateModal','update')">Edit</button>
+                    onclick="openModal('projectModal','update')">Edit</button>
                 <button class="btn btn-primary text-light  shadow-sm" id="createButton"
-                    onclick="openModal('projectcreateModal')">Create</button>
+                    onclick="openModal('projectModal','create')">Create</button>
             </div>
         </div>
     </div>
 
-    <x-project.project-create-modal />
+    <x-project.project-modal />
     <x-delete-confirmation-modal type='project' />
     <x-delete-modal type='user' />
-    <x-project.project-update-modal />
     <x-user.user-create-modal />
 
 </body>
+<script>
+    window.projects = @json($projects);
+    console.log(window.projects);
+</script>
 
 </html>

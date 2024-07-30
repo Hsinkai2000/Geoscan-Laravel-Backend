@@ -42,7 +42,7 @@
         <div class="mb-3">
             <h5 class="d-inline me-4">Project Information</h5>
             <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editProjectButton"
-                onclick="openModal('updateModal')">Edit Project</button>
+                onclick="openModal('projectModal')">Edit Project</button>
         </div>
         <table class="table">
             <tr>
@@ -95,7 +95,7 @@
             </div>
         </div>
 
-        <x-project.project-update-modal :project="$project" />
+        <x-project.project-modal />
         <x-delete-confirmation-modal type='Measurement Point' />
         <x-delete-modal type='user' />
         <x-user.user-create-modal />
@@ -124,12 +124,9 @@
         dropdownParent: $('#measurementPointUpdateModal'),
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        window.project = @json($project);
+    window.project = @json($project);
 
-        window.contacts = @json($project->contact);
-        window.set_contact_table()
-    });
+    window.contacts = @json($project->contact);
 </script>
 
 </html>

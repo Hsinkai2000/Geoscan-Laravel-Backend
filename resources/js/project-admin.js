@@ -162,7 +162,6 @@ function table_row_changed(data) {
         document.getElementById("editButton").disabled = false;
         document.getElementById("deleteButton").disabled = false;
         inputprojectId = data[0].id;
-        fetch_project_data(data[0]);
     } else {
         document.getElementById("editButton").disabled = true;
         document.getElementById("deleteButton").disabled = true;
@@ -223,8 +222,8 @@ function create_users(projectId, csrfToken) {
         });
     });
 }
-function create_project() {
-    const form = document.getElementById("projectCreateForm");
+function handleCreate() {
+    const form = document.getElementById("projectForm");
     const csrfToken = document.querySelector('input[name="_token"]').value;
     const formData = new FormData(form);
 
@@ -247,7 +246,7 @@ function create_project() {
         })
         .then((json) => {
             create_users(json.project_id, csrfToken);
-            closeModal("projectcreateModal");
+            closeModal("projectModal");
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -289,12 +288,7 @@ function deleteUser(event) {
             return response.json();
         })
         .then((data) => {
-            if (modalType == "update") {
-                populateUser("userUpdateSelectList", inputprojectId);
-            } else {
-                populateUser("userselectList", inputprojectId);
-            }
-
+            populateUser("userselectList", inputprojectId);
             // Close the modal
             closeModal("deleteModal");
         })
@@ -341,24 +335,19 @@ function handleDelete(event) {
 }
 
 function fetch_project_data(data) {
-    var updatejobNumber = document.getElementById("inputupdatejobnumber");
-    var clientName = document.getElementById("inputUpdateClientName");
-    var projectDescription = document.getElementById(
-        "inputUpdateProjectDescription"
-    );
-    var jobsiteLocation = document.getElementById("inputUpdateJobsiteLocation");
-    var bcaReferenceNumber = document.getElementById(
-        "inputUpdateBcaReferenceNumber"
-    );
-    var sms_count = document.getElementById("inputUpdateSmsCount");
-    var projectTypeRental = document.getElementById("projectUpdateTypeRental");
-    var projectTypeSales = document.getElementById("projectUpdateTypeSales");
-    var endUserName = document.getElementById("inputUpdateEndUserName");
+    var updatejobNumber = document.getElementById("inputJobNumber");
+    var clientName = document.getElementById("inputClientName");
+    var projectDescription = document.getElementById("inputProjectDescription");
+    var jobsiteLocation = document.getElementById("inputJobsiteLocation");
+    var bcaReferenceNumber = document.getElementById("inputBcaReferenceNumber");
+    var sms_count = document.getElementById("inputSmsCount");
+    var projectTypeRental = document.getElementById("projectTypeRental");
+    var projectTypeSales = document.getElementById("projectTypeSales");
+    var endUserName = document.getElementById("inputEndUserName");
     var endUserNameDiv = document.getElementById("endUserNameDiv");
 
-    if (data) {
+    if (data != null) {
         updatejobNumber.value = data.job_number;
-        console.log(data.sms_count);
         clientName.value = data.client_name;
         projectDescription.value = data.project_description;
         jobsiteLocation.value = data.jobsite_location;
@@ -372,9 +361,15 @@ function fetch_project_data(data) {
             projectTypeRental.checked = true;
             endUserNameDiv.style.display = "none"; // Hide the end user name field
         }
-        // fetch_users("inputUpdateUserSelect", data.user_id);
-
-        populateUser("userUpdateSelectList", data.id);
+        populateUser("userselectList", data.id);
+    } else {
+        updatejobNumber.value = null;
+        clientName.value = null;
+        projectDescription.value = null;
+        jobsiteLocation.value = null;
+        bcaReferenceNumber.value = null;
+        sms_count.value = null;
+        populateUser("userselectList");
     }
 }
 
@@ -382,7 +377,7 @@ function handleUpdate() {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var form = document.getElementById("updateProjectForm");
+    var form = document.getElementById("projectForm");
 
     var formData = new FormData(form);
 
@@ -411,7 +406,7 @@ function handleUpdate() {
         })
         .then((json) => {
             create_users(inputprojectId, csrfToken);
-            closeModal("updateModal");
+            closeModal("projectModal");
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -419,6 +414,14 @@ function handleUpdate() {
         });
 
     return false;
+}
+
+function submitClicked() {
+    if (modalType == "update") {
+        handleUpdate();
+    } else {
+        handleCreate();
+    }
 }
 
 function handle_create_dummy_user() {
@@ -429,7 +432,7 @@ function handle_create_dummy_user() {
         password: inputPassword,
     });
     if (modalType == "update") {
-        populateUser("userUpdateSelectList");
+        populateUser("userselectList", inputprojectId);
     } else {
         populateUser("userselectList");
     }
@@ -493,17 +496,20 @@ function handleSelection(item) {
     inputUserId = item.id;
 }
 
-function openModal(modalName) {
+function openModal(modalName, type) {
+    console.log("putsode: " + inputprojectId);
+
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
 
-    if (modalName == "updateModal") {
+    if (type == "update") {
         userList = [];
         modalType = "update";
-    } else if (modalName == "projectcreateModal") {
+        fetch_project_data(window.projects[inputprojectId - 1]);
+    } else if (type == "create") {
         userList = [];
-        inputprojectId = "";
         modalType = "create";
+        fetch_project_data(null);
     }
 }
 
@@ -550,12 +556,11 @@ window.openModal = openModal;
 window.openSecondModal = openSecondModal;
 window.populateUser = populateUser;
 window.handleDelete = handleDelete;
-window.handleUpdate = handleUpdate;
 window.handle_create_dummy_user = handle_create_dummy_user;
 window.changeTab = changeTab;
 window.fetch_data = fetch_data;
 window.toggleEndUserName = toggleEndUserName;
-window.create_project = create_project;
+window.submitClicked = submitClicked;
 
 fetch_data("rental");
 toggleEndUserName();

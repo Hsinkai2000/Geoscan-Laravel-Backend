@@ -294,6 +294,35 @@ function fetch_measurement_point_data(data) {
     }
 }
 
+function fetch_project_data() {
+    var updatejobNumber = document.getElementById("inputJobNumber");
+    var clientName = document.getElementById("inputClientName");
+    var projectDescription = document.getElementById("inputProjectDescription");
+    var jobsiteLocation = document.getElementById("inputJobsiteLocation");
+    var bcaReferenceNumber = document.getElementById("inputBcaReferenceNumber");
+    var sms_count = document.getElementById("inputSmsCount");
+    var projectTypeRental = document.getElementById("projectTypeRental");
+    var projectTypeSales = document.getElementById("projectTypeSales");
+    var endUserName = document.getElementById("inputEndUserName");
+    var endUserNameDiv = document.getElementById("endUserNameDiv");
+    console.log(window.project);
+    updatejobNumber.value = window.project.job_number;
+    clientName.value = window.project.client_name;
+    projectDescription.value = window.project.project_description;
+    jobsiteLocation.value = window.project.jobsite_location;
+    bcaReferenceNumber.value = window.project.bca_reference_number;
+    sms_count.value = window.project.sms_count;
+    if (window.project.end_user_name) {
+        projectTypeSales.checked = true;
+        endUserNameDiv.style.display = "block"; // Show the end user name field
+        endUserName.value = window.project.end_user_name;
+    } else {
+        projectTypeRental.checked = true;
+        endUserNameDiv.style.display = "none"; // Hide the end user name field
+    }
+    populateUser("userselectList", window.project.id);
+}
+
 function getProjectId() {
     inputprojectId = document.getElementById("inputprojectId").value;
 }
@@ -436,11 +465,7 @@ function handle_create_dummy_user() {
         username: inputUsername,
         password: inputPassword,
     });
-    if (modalType == "update") {
-        populateUser("userUpdateSelectList");
-    } else {
-        populateUser("userselectList");
-    }
+    populateUser("userselectList");
 
     closeModal("userCreateModal");
 }
@@ -583,11 +608,11 @@ function handleDelete(event) {
     }
 }
 
-function handleUpdate() {
+function submitClicked() {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    var form = document.getElementById("updateProjectForm");
+    var form = document.getElementById("projectForm");
 
     var formData = new FormData(form);
 
@@ -616,7 +641,8 @@ function handleUpdate() {
         })
         .then((json) => {
             create_users(inputprojectId, csrfToken);
-            closeModal("updateModal");
+            closeModal("projectModal");
+            location.reload();
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -629,10 +655,10 @@ function openModal(modalName) {
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
 
-    if (modalName == "updateModal") {
+    if (modalName == "projectModal") {
         userList = [];
         modalType = "update";
-        populateUser("userUpdateSelectList");
+        populateUser("userselectList");
     } else if (modalName == "measurementPointCreateModal") {
         modalType = "create";
         populateSelects();
@@ -683,12 +709,13 @@ function closeModal(modal) {
 window.handle_measurement_point_update = handle_measurement_point_update;
 window.handle_create_measurement_point = handle_create_measurement_point;
 window.handleDelete = handleDelete;
-window.handleUpdate = handleUpdate;
+window.submitClicked = submitClicked;
 window.openModal = openModal;
 window.openSecondModal = openSecondModal;
 window.deleteUser = deleteUser;
 window.handle_create_dummy_user = handle_create_dummy_user;
-window.set_contact_table = set_contact_table;
-getProjectId();
 
+getProjectId();
+fetch_project_data();
 get_measurement_point_data();
+set_contact_table();
