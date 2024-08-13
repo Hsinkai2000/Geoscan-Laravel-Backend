@@ -1,3 +1,6 @@
+@php
+    $soundlimit = $measurementPoint->soundLimit;
+@endphp
 <div>
     <br />
     <br />
@@ -23,35 +26,6 @@
             <th scope='row'>BCA Reference Number</th>
             <td scope='row'>{{ $measurementPoint->project->bca_reference_number }}</td>
         </tr>
-        <tr>
-            <th scope='row'>SMS Alerts</th>
-            <td scope='row'>{{ $measurementPoint->project->sms_count }}</td>
-        </tr>
-        <tr>
-            <th scope='row'>Status</th>
-            <td scope='row'>{{ $measurementPoint->project->status }}</td>
-        </tr>
-    </table>
-    <hr>
-    <br />
-    <h3>Contacts:</h3>
-    <table class="table-bordered w-100">
-        <tr>
-            <th>Name</th>
-            <th>Designation</th>
-            <th>Email</th>
-            <th>SMS</th>
-        </tr>
-
-        @foreach ($contacts as $contact)
-            <tr>
-                <td>{{ $contact->contact_person_name }}</td>
-                <td>{{ $contact->designation }}</td>
-                <td>{{ $contact->email }}</td>
-                <td>{{ $contact->phone_number }}</td>
-            </tr>
-        @endforeach
-
     </table>
     <hr>
     <br />
@@ -75,6 +49,53 @@
             <td>{{ $measurementPoint->remarks }}</td>
             <td>{{ $measurementPoint->soundLimit->category }}</td>
             <td>{{ $measurementPoint->device_location }}</td>
+        </tr>
+    </table>
+
+    <hr>
+    <br />
+    <h3>Sound Limits:</h3>
+    <table class="table-bordered w-100">
+        <tr>
+            <th rowspan="2">{{ $soundlimit->category }}</th>
+            <th colspan="2">Mon-Sat</th>
+            <th colspan="2">Sun/PH</th>
+        </tr>
+        <tr>
+            <th>Leq 5 mins</th>
+            <th>Leq 1/12 hour(s)</th>
+            <th>Leq 5 mins</th>
+            <th>Leq 1/12 hour(s)</th>
+        </tr>
+        <tr>
+            <th>7am-7pm</th>
+            <td>{{ $soundlimit->mon_sat_7am_7pm_leq5min }} dB</td>
+            <td>{{ $soundlimit->mon_sat_7am_7pm_leq12hr }} dB</td>
+            <td>{{ $soundlimit->sun_ph_7am_7pm_leq5min }} dB</td>
+            <td>{{ $soundlimit->sun_ph_7am_7pm_leq12hr }} dB</td>
+        </tr>
+        <tr>
+            <th>7pm-10pm</th>
+            <td>{{ $soundlimit->mon_sat_7pm_10pm_leq5min }} dB</td>
+            <td>{{ $soundlimit->mon_sat_7pm_10pm_leq12hr }} dB</td>
+            <td>{{ $soundlimit->sun_ph_7pm_10pm_leq5min }} dB</td>
+            <td>{{ $soundlimit->sun_ph_7pm_10pm_leq12hr }} dB</td>
+        </tr>
+        <tr>
+
+            <th>10pm-12am</th>
+            <td>{{ $soundlimit->mon_sat_10pm_12am_leq5min }} dB</td>
+            <td>{{ $soundlimit->mon_sat_10pm_12am_leq12hr }} dB</td>
+            <td>{{ $soundlimit->sun_ph_10pm_12am_leq5min }} dB</td>
+            <td>{{ $soundlimit->sun_ph_10pm_12am_leq12hr }} dB</td>
+        </tr>
+        <tr>
+
+            <th>12am-7am</th>
+            <td>{{ $soundlimit->mon_sat_12am_7am_leq5min }} dB</td>
+            <td>{{ $soundlimit->mon_sat_12am_7am_leq12hr }} dB</td>
+            <td>{{ $soundlimit->sun_ph_12am_7am_leq5min }} dB</td>
+            <td>{{ $soundlimit->sun_ph_12am_7am_leq12hr }} dB</td>
         </tr>
     </table>
 </div>

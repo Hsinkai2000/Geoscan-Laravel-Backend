@@ -15,9 +15,10 @@
 </head>
 
 <style>
-    body{
+    body {
         font-size: 14px;
     }
+
     .bottom-bar {
         position: absolute;
         bottom: 0;
@@ -25,8 +26,10 @@
         background-color: red;
         height: 30px
     }
-    
-    table, th, td {
+
+    table,
+    th,
+    td {
         border: 1px solid black;
         border-collapse: collapse;
     }
@@ -50,6 +53,10 @@
 
     .text-danger {
         color: red;
+    }
+
+    .time_col {
+        min-width: 50px;
     }
 </style>
 

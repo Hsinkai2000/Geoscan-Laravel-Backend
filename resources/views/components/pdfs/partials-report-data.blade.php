@@ -17,18 +17,18 @@
                 <td rowspan="2" class="w-10">Leq5 Max (dB)</td>
             </tr>
             <tr>
-                <td>00</td>
-                <td>05</td>
-                <td>10</td>
-                <td>15</td>
-                <td>20</td>
-                <td>25</td>
-                <td>30</td>
-                <td>35</td>
-                <td>40</td>
-                <td>45</td>
-                <td>50</td>
-                <td>55</td>
+                <td class='time_col'>05</td>
+                <td class='time_col'>00</td>
+                <td class='time_col'>10</td>
+                <td class='time_col'>15</td>
+                <td class='time_col'>20</td>
+                <td class='time_col'>25</td>
+                <td class='time_col'>30</td>
+                <td class='time_col'>35</td>
+                <td class='time_col'>40</td>
+                <td class='time_col'>45</td>
+                <td class='time_col'>50</td>
+                <td class='time_col'>55</td>
             </tr>
         </thead>
         <tbody>
