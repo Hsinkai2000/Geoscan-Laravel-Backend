@@ -164,17 +164,9 @@ function set_contact_table() {
     });
 }
 
-function set_measurement_point_table(measurementPoint_data) {
-    var measurementPointTable = new Tabulator("#measurement_point_table", {
-        layout: "fitColumns",
-        data: measurementPoint_data,
-        placeholder: "No Linked Measurement Points",
-        paginationSize: 20,
-        pagination: "local",
-        paginationCounter: "rows",
-        paginationElement: document.getElementById("measurement_point_pages"),
-        selectable: 1,
-        columns: [
+function manage_measurement_point_columns() {
+    if (window.admin) {
+        return [
             {
                 formatter: "rowSelection",
                 titleFormatter: "rowSelection",
@@ -238,7 +230,60 @@ function set_measurement_point_table(measurementPoint_data) {
                 minWidth: 100,
                 formatter: "tickCross",
             },
-        ],
+        ];
+    } else {
+        return [
+            {
+                formatter: "rowSelection",
+                titleFormatter: "rowSelection",
+                hozAlign: "center",
+                headerSort: false,
+                frozen: true,
+                width: 30,
+            },
+            {
+                title: "Point Name",
+                field: "point_name",
+                minWidth: 100,
+                headerFilter: "input",
+                frozen: true,
+            },
+            {
+                title: "Point Location",
+                field: "device_location",
+                headerSort: false,
+                headerFilter: "input",
+                minWidth: 100,
+            },
+            {
+                title: "Noise Serial",
+                field: "serial_number",
+                minWidth: 100,
+                headerFilter: "input",
+            },
+            {
+                title: "Data Status",
+                field: "data_status",
+                headerSort: false,
+                headerFilter: "input",
+                minWidth: 100,
+                formatter: "tickCross",
+            },
+        ];
+    }
+}
+
+function set_measurement_point_table(measurementPoint_data) {
+    var measurementPointTable = new Tabulator("#measurement_point_table", {
+        layout: "fitColumns",
+        data: measurementPoint_data,
+        placeholder: "No Linked Measurement Points",
+        paginationSize: 20,
+        pagination: "local",
+        paginationCounter: "rows",
+        paginationElement: document.getElementById("measurement_point_pages"),
+        selectable: 1,
+        columns: manage_measurement_point_columns(),
     });
     measurementPointTable.on("rowClick", function (e, row) {
         window.location.href = "/measurement_point/" + row.getIndex();

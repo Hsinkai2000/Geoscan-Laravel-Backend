@@ -48,10 +48,6 @@
         </div>
         <table class="table">
             <tr>
-                <th scope='row'>PJO Number</th>
-                <td scope='row'>{{ $measurementPoint->project->job_number }}</td>
-            </tr>
-            <tr>
                 <th scope='row'>Point Name</th>
                 <td scope='row'>{{ $measurementPoint->point_name }}</td>
             </tr>
@@ -69,9 +65,12 @@
         <div id='noise_meter_table'>
         </div>
 
-        <h6>Concentrator</h6>
-        <div id='concentrator_table'>
-        </div>
+        @if (Auth::user()->isAdmin())
+            <h6>Concentrator</h6>
+            <div id='concentrator_table'>
+            </div>
+        @endif
+
         <br />
         <div class="d-flex justify-content-center">
             <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm"
@@ -99,6 +98,7 @@
         window.measurementPointData.noise_meter = @json($measurementPoint->noiseMeter);
         window.measurementPointData.concentrator = @json($measurementPoint->concentrator);
         set_tables(window.measurementPointData);
+        window.admin = @json(Auth::user()->isAdmin());
     });
 </script>
 

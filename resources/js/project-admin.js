@@ -368,7 +368,7 @@ function fetch_project_data(data) {
         projectDescription.value = null;
         jobsiteLocation.value = null;
         bcaReferenceNumber.value = null;
-        sms_count.value = null;
+        sms_count.value = 0;
         populateUser("userselectList");
     }
 }

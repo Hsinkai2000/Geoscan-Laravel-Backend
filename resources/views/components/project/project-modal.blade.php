@@ -58,10 +58,11 @@
                         </div>
 
                         <div class="mb-3 row">
-                            <label for="sms_count" class="col-md-3 col-sm-12 text-align-center col-form-label">BCA
-                                SMS Contacts</label>
+                            <label for="sms_count" class="col-md-3 col-sm-12 text-align-center col-form-label">No. of
+                                Contacts</label>
                             <div class="col-sm-8 align-content-center">
-                                <input type="number" class="form-control" id="inputSmsCount" name='sms_count' value=1>
+                                <input type="number" class="form-control" id="inputSmsCount" name='sms_count' value=0
+                                    max="20">
                             </div>
                         </div>
 

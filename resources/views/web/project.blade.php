@@ -64,7 +64,7 @@
                 <td scope='row'>{{ $project['bca_reference_number'] }}</td>
             </tr>
             <tr>
-                <th scope='row'>SMS Alerts</th>
+                <th scope='row'>No. of Contacts</th>
                 <td scope='row'>{{ $project['sms_count'] }}</td>
             </tr>
             <tr>
@@ -121,6 +121,7 @@
     });
 
     window.contacts = @json($project->contact);
+    window.admin = @json(Auth::user()->isAdmin());
 </script>
 
 </html>
