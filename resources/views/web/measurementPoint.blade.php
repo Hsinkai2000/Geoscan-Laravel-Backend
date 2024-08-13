@@ -45,8 +45,6 @@
         </nav>
         <div class="mb-3">
             <h5 class="d-inline me-4">Measurement Point Information</h5>
-            <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editProjectButton"
-                onclick="openModal('measurementPointModal')">Edit Measurement Point</button>
         </div>
         <table class="table">
             <tr>
@@ -81,7 +79,6 @@
         </div>
     </div>
 
-    <x-measurementPoint.measurement-point-modal :project="$measurementPoint->project" />
     <x-pdfs.view-pdf-component />
 
 </body>

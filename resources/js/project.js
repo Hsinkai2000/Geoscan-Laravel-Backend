@@ -46,7 +46,6 @@ function populateConcentrator() {
             return response.json();
         })
         .then((data) => {
-            console.log("data 123");
             console.log(data);
             data = data.concentrators;
 
@@ -311,35 +310,6 @@ function fetch_measurement_point_data(data = null) {
     }
 }
 
-function fetch_project_data() {
-    var updatejobNumber = document.getElementById("inputJobNumber");
-    var clientName = document.getElementById("inputClientName");
-    var projectDescription = document.getElementById("inputProjectDescription");
-    var jobsiteLocation = document.getElementById("inputJobsiteLocation");
-    var bcaReferenceNumber = document.getElementById("inputBcaReferenceNumber");
-    var sms_count = document.getElementById("inputSmsCount");
-    var projectTypeRental = document.getElementById("projectTypeRental");
-    var projectTypeSales = document.getElementById("projectTypeSales");
-    var endUserName = document.getElementById("inputEndUserName");
-    var endUserNameDiv = document.getElementById("endUserNameDiv");
-
-    updatejobNumber.value = window.project.job_number;
-    clientName.value = window.project.client_name;
-    projectDescription.value = window.project.project_description;
-    jobsiteLocation.value = window.project.jobsite_location;
-    bcaReferenceNumber.value = window.project.bca_reference_number;
-    sms_count.value = window.project.sms_count;
-    if (window.project.end_user_name) {
-        projectTypeSales.checked = true;
-        endUserNameDiv.style.display = "block"; // Show the end user name field
-        endUserName.value = window.project.end_user_name;
-    } else {
-        projectTypeRental.checked = true;
-        endUserNameDiv.style.display = "none"; // Hide the end user name field
-    }
-    populateUser("userselectList", window.project.id);
-}
-
 function getProjectId() {
     inputprojectId = document.getElementById("inputprojectId").value;
 }
@@ -369,25 +339,6 @@ function get_measurement_point_data() {
         .catch((error) => {
             console.log(error);
         });
-}
-
-function create_users(projectId, csrfToken) {
-    userList.forEach((user) => {
-        user.project_id = projectId;
-        fetch("http://localhost:8000/user/", {
-            method: "POST",
-            headers: {
-                "X-CSRF-TOKEN": csrfToken,
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: JSON.stringify(user),
-        }).then((response) => {
-            if (response.ok) {
-                console.log(user.username + "added");
-            }
-        });
-    });
 }
 
 function handle_create_measurement_point() {
@@ -475,114 +426,6 @@ function handle_measurement_point_update() {
     return false;
 }
 
-function handle_create_dummy_user() {
-    var inputUsername = document.getElementById("inputUsername").value;
-    var inputPassword = document.getElementById("inputPassword").value;
-    userList.push({
-        username: inputUsername,
-        password: inputPassword,
-    });
-    populateUser("userselectList");
-
-    closeModal("userCreateModal");
-}
-
-function handleSelection(item) {
-    inputUserId = item.id;
-}
-
-function populateUser(element) {
-    window.userselectList = document.getElementById(element);
-    if (inputprojectId) {
-        fetch("http://localhost:8000/users/" + inputprojectId)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                populateList(data.users);
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-            });
-    } else {
-        populateList([]);
-    }
-}
-
-function populateList(data) {
-    window.userselectList.innerHTML = "";
-
-    let selectedListItem = null;
-    if (userList != []) {
-        userList.forEach((user) => {
-            data.push(user);
-        });
-    }
-
-    data.forEach((item) => {
-        const listItem = document.createElement("div");
-        listItem.textContent = item.username;
-        listItem.className = "list-item";
-
-        listItem.addEventListener("click", function () {
-            handleSelection(item);
-
-            if (selectedListItem) {
-                selectedListItem.classList.remove("selected");
-            }
-
-            listItem.classList.add("selected");
-
-            selectedListItem = listItem;
-        });
-
-        window.userselectList.appendChild(listItem);
-    });
-}
-
-function deleteUser(event) {
-    if (event) {
-        event.preventDefault();
-    }
-    var csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
-
-    fetch("http://localhost:8000/users/" + inputUserId, {
-        method: "DELETE",
-        headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                console.log("Error:", response);
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then((data) => {
-            if (modalType == "update") {
-                populateUser("userUpdateSelectList", inputprojectId);
-            } else {
-                populateUser("userselectList", inputprojectId);
-            }
-
-            // Close the modal
-            const modalElement = document.getElementById("deleteModal");
-            const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            modalInstance.hide();
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
-}
-
 function handleDelete(event) {
     if (event) {
         event.preventDefault();
@@ -626,49 +469,6 @@ function handleDelete(event) {
     }
 }
 
-function submitClicked() {
-    var csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
-    var form = document.getElementById("projectForm");
-
-    var formData = new FormData(form);
-
-    var formDataJson = {};
-    formData.forEach((value, key) => {
-        formDataJson[key] = value;
-    });
-
-    fetch("http://localhost:8000/project/" + inputprojectId, {
-        method: "PATCH",
-        headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-        },
-        body: JSON.stringify(formDataJson),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
-            }
-            return response.json();
-        })
-        .then((json) => {
-            create_users(inputprojectId, csrfToken);
-            closeModal("projectModal");
-            location.reload();
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert("There was an error: " + error.message);
-        });
-    return false;
-}
-
 function handle_measurementpoint_submit() {
     if (modalType == "update") {
         handle_measurement_point_update();
@@ -682,52 +482,15 @@ function openModal(modalName, type = null) {
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
 
-    if (modalName == "projectModal") {
-        userList = [];
+    if (type == "create") {
+        modalType = "create";
+        fetch_measurement_point_data();
+        populateSelects();
+    } else if (type == "update") {
         modalType = "update";
-        populateUser("userselectList");
-    } else if (modalName == "measurementPointModal") {
-        if (type == "create") {
-            modalType = "create";
-            fetch_measurement_point_data();
-            populateSelects();
-        } else if (type == "update") {
-            modalType = "update";
-            fetch_measurement_point_data(inputMeasurementPoint);
-            populateSelects();
-        }
+        fetch_measurement_point_data(inputMeasurementPoint);
+        populateSelects();
     }
-}
-
-function openSecondModal(initialModal, newModal) {
-    var firstModalEl = document.getElementById(initialModal);
-    var firstModal = bootstrap.Modal.getInstance(firstModalEl);
-
-    firstModal.hide();
-
-    firstModalEl.addEventListener(
-        "hidden.bs.modal",
-        function () {
-            var secondModal = new bootstrap.Modal(
-                document.getElementById(newModal)
-            );
-
-            if (newModal == "userCreateModal") {
-                document.getElementById("inputUsername").value = "";
-                document.getElementById("inputPassword").value = "";
-            }
-            secondModal.show();
-
-            document.getElementById(newModal).addEventListener(
-                "hidden.bs.modal",
-                function () {
-                    firstModal.show();
-                },
-                { once: true }
-            );
-        },
-        { once: true }
-    );
 }
 
 function closeModal(modal) {
@@ -740,14 +503,9 @@ function closeModal(modal) {
 window.handle_measurement_point_update = handle_measurement_point_update;
 window.handle_create_measurement_point = handle_create_measurement_point;
 window.handleDelete = handleDelete;
-window.submitClicked = submitClicked;
 window.openModal = openModal;
-window.openSecondModal = openSecondModal;
-window.deleteUser = deleteUser;
-window.handle_create_dummy_user = handle_create_dummy_user;
 window.handle_measurementpoint_submit = handle_measurementpoint_submit;
 
 getProjectId();
-fetch_project_data();
 get_measurement_point_data();
 set_contact_table();

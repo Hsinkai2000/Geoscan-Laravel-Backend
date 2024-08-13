@@ -41,8 +41,6 @@
         </nav>
         <div class="mb-3">
             <h5 class="d-inline me-4">Project Information</h5>
-            <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editProjectButton"
-                onclick="openModal('projectModal')">Edit Project</button>
         </div>
         <table class="table">
             <tr>
@@ -95,7 +93,6 @@
             </div>
         </div>
 
-        <x-project.project-modal />
         <x-delete-confirmation-modal type='Measurement Point' />
         <x-delete-modal type='user' />
         <x-user.user-create-modal />
@@ -122,8 +119,6 @@
     $('#selectUpdateNoiseMeter').select2({
         dropdownParent: $('#measurementPointModal'),
     });
-
-    window.project = @json($project);
 
     window.contacts = @json($project->contact);
 </script>
