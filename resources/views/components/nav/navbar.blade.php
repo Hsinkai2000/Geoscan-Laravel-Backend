@@ -8,13 +8,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Projects</a>
+                <a class="nav-link active" aria-current="page" href="{{ route('project.admin') }}">Projects</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Concentrators</a>
+                <a class="nav-link" href="{{ route('concentrator.show') }}">Concentrators</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Noise Meters</a>
+                <a class="nav-link" href="{{ route('noise_meter.show') }}">Noise Meters</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Users</a>

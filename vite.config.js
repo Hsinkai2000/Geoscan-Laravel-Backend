@@ -21,6 +21,8 @@ export default defineConfig({
                 "resources/js/measurement_point.js",
                 "resources/scss/pdf.scss",
                 "resources/js/pdf.js",
+                "resources/scss/noise_meters.scss",
+                "resources/js/noise_meters.js",
             ],
             refresh: true,
         }),

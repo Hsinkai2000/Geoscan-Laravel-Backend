@@ -46,6 +46,7 @@ function populateConcentrator() {
             return response.json();
         })
         .then((data) => {
+            console.log("data 123");
             console.log(data);
             data = data.concentrators;
 
@@ -62,8 +63,6 @@ function populateConcentrator() {
                     defaultConcentrator &&
                     concentrator.id == defaultConcentrator.concentrator_id
                 ) {
-                    console.log(concentrator.id);
-                    console.log(defaultConcentrator.id);
                     option.selected = true;
                 }
                 selectConcentrator.appendChild(option);

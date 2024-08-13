@@ -12,6 +12,7 @@ class NoiseMeterController extends Controller
     {
         try {
             $noise_meter_params = $request->only((new NoiseMeter)->getFillable());
+            debug_log($noise_meter_params);
             if (strlen($noise_meter_params['serial_number']) !== 4) {
                 return render_unprocessable_entity('Noise meter serial number not 16 bits');
             }
@@ -24,21 +25,18 @@ class NoiseMeterController extends Controller
         }
     }
 
-    public function get_available_noise_meters()
+    public function show()
     {
         try {
-            $noise_meter = NoiseMeter::where('use_flag', 0)->get();
-            return render_ok(['noise_meter' => $noise_meter]);
+            return view('web.noiseMeters', ["noise_meters" => NoiseMeter::all()]);
         } catch (Exception $e) {
-            return render_error($e);
+            return render_error($e->getMessage());
         }
     }
-
     public function index()
     {
         try {
-
-            return render_ok(["noise_meters" => NoiseMeter::all()]);
+            return ["noise_meters" => NoiseMeter::all()];
         } catch (Exception $e) {
             return render_error($e->getMessage());
         }
@@ -60,6 +58,7 @@ class NoiseMeterController extends Controller
 
     public function update(Request $request)
     {
+        debug_log($request->all());
         try {
             $id = $request->route('id');
             $noise_meter_params = $request->only((new NoiseMeter)->getFillable());

@@ -24,20 +24,19 @@ class ConcentratorController extends Controller
         }
     }
 
-    public function get_available_concentrators()
+    public function index()
     {
         try {
-            $concentrator = Concentrator::where('use_flag', 0)->get();
-            return render_ok(['concentrators' => $concentrator]);
+            return ["concentrators" => Concentrator::all()];
         } catch (Exception $e) {
             return render_error($e);
         }
     }
 
-    public function index()
+    public function show()
     {
         try {
-            return render_ok(["concentrators" => Concentrator::all()]);
+            return view('web.concentrators', ["concentrators" => Concentrator::all()]);
         } catch (Exception $e) {
             return render_error($e);
         }
@@ -64,6 +63,7 @@ class ConcentratorController extends Controller
         try {
             $id = $request->route('id');
             $concentrator_params = $request->only((new Concentrator)->getFillable());
+            debug_log('asd', [$concentrator_params]);
             $concentrator = Concentrator::find($id);
             if (!$concentrator) {
                 return render_unprocessable_entity("Unable to find concentrator with id " . $id);
