@@ -7,6 +7,194 @@ var inputMeasurementPoint = null;
 var noise_meter_data = [];
 var concentrator_data = [];
 
+const valueMap = {
+    Residential: {
+        mon_sat_7am_7pm_leq5min: 90.0,
+        mon_sat_7pm_10pm_leq5min: 70.0,
+        mon_sat_10pm_12am_leq5min: 55.0,
+        mon_sat_12am_7am_leq5min: 55.0,
+        sun_ph_7am_7pm_leq5min: 75.0,
+        sun_ph_7pm_10pm_leq5min: 65.0,
+        sun_ph_10pm_12am_leq5min: 55.0,
+        sun_ph_12am_7am_leq5min: 55.0,
+        mon_sat_7am_7pm_leq12hr: 75.0,
+        mon_sat_7pm_10pm_leq12hr: 65.0,
+        mon_sat_10pm_12am_leq12hr: 55.0,
+        mon_sat_12am_7am_leq12hr: 55.0,
+        sun_ph_7am_7pm_leq12hr: 75.0,
+        sun_ph_7pm_10pm_leq12hr: 140.0,
+        sun_ph_10pm_12am_leq12hr: 140.0,
+        sun_ph_12am_7am_leq12hr: 140.0,
+    },
+    "Hospital/Schools": {
+        mon_sat_7am_7pm_leq5min: 75.0,
+        mon_sat_7pm_10pm_leq5min: 55.0,
+        mon_sat_10pm_12am_leq5min: 55.0,
+        mon_sat_12am_7am_leq5min: 55.0,
+        sun_ph_7am_7pm_leq5min: 75.0,
+        sun_ph_7pm_10pm_leq5min: 55.0,
+        sun_ph_10pm_12am_leq5min: 55.0,
+        sun_ph_12am_7am_leq5min: 55.0,
+        mon_sat_7am_7pm_leq12hr: 60.0,
+        mon_sat_7pm_10pm_leq12hr: 50.0,
+        mon_sat_10pm_12am_leq12hr: 50.0,
+        mon_sat_12am_7am_leq12hr: 50.0,
+        sun_ph_7am_7pm_leq12hr: 60.0,
+        sun_ph_7pm_10pm_leq12hr: 50.0,
+        sun_ph_10pm_12am_leq12hr: 50.0,
+        sun_ph_12am_7am_leq12hr: 50.0,
+    },
+    Others: {
+        mon_sat_7am_7pm_leq5min: 90.0,
+        mon_sat_7pm_10pm_leq5min: 70.0,
+        mon_sat_10pm_12am_leq5min: 70.0,
+        mon_sat_12am_7am_leq5min: 70.0,
+        sun_ph_7am_7pm_leq5min: 90.0,
+        sun_ph_7pm_10pm_leq5min: 70.0,
+        sun_ph_10pm_12am_leq5min: 70.0,
+        sun_ph_12am_7am_leq5min: 70.0,
+        mon_sat_7am_7pm_leq12hr: 75.0,
+        mon_sat_7pm_10pm_leq12hr: 65.0,
+        mon_sat_10pm_12am_leq12hr: 65.0,
+        mon_sat_12am_7am_leq12hr: 65.0,
+        sun_ph_7am_7pm_leq12hr: 75.0,
+        sun_ph_7pm_10pm_leq12hr: 65.0,
+        sun_ph_10pm_12am_leq12hr: 65.0,
+        sun_ph_12am_7am_leq12hr: 65.0,
+    },
+};
+
+function toggle_soundLimits() {
+    var soundlimit = document.getElementById("advanced_sound_limits");
+    soundlimit.hidden
+        ? (soundlimit.hidden = false)
+        : (soundlimit.hidden = true);
+}
+
+function populate_soundLimits() {
+    var inputmonsat7am7pmleq5 = document.getElementById(
+        "inputmonsat7am7pmleq5"
+    );
+    var inputmonsat7pm10pmleq5 = document.getElementById(
+        "inputmonsat7pm10pmleq5"
+    );
+    var inputmonsat10pm12amleq5 = document.getElementById(
+        "inputmonsat10pm12amleq5"
+    );
+    var inputmonsat12am7amleq5 = document.getElementById(
+        "inputmonsat12am7amleq5"
+    );
+
+    var inputmonsat7am7pmleq12 = document.getElementById(
+        "inputmonsat7am7pmleq12"
+    );
+    var inputmonsat7pm10pmleq12 = document.getElementById(
+        "inputmonsat7pm10pmleq12"
+    );
+    var inputmonsat10pm12amleq12 = document.getElementById(
+        "inputmonsat10pm12amleq12"
+    );
+    var inputmonsat12am7amleq12 = document.getElementById(
+        "inputmonsat12am7amleq12"
+    );
+
+    var inputsunph7am7pmleq5 = document.getElementById("inputsunph7am7pmleq5");
+    var inputsunph7pm10pmleq5 = document.getElementById(
+        "inputsunph7pm10pmleq5"
+    );
+    var inputsunph10pm12amleq5 = document.getElementById(
+        "inputsunph10pm12amleq5"
+    );
+    var inputsunph12am7amleq5 = document.getElementById(
+        "inputsunph12am7amleq5"
+    );
+
+    var inputsunph7am7pmleq12 = document.getElementById(
+        "inputsunph7am7pmleq12"
+    );
+    var inputsunph7pm10pmleq12 = document.getElementById(
+        "inputsunph7pm10pmleq12"
+    );
+    var inputsunph10pm12amleq12 = document.getElementById(
+        "inputsunph10pm12amleq12"
+    );
+    var inputsunph12am7amleq12 = document.getElementById(
+        "inputsunph12am7amleq12"
+    );
+    if (modalType == "update") {
+        inputmonsat7am7pmleq5.value =
+            inputMeasurementPoint.soundLimit.mon_sat_7am_7pm_leq5min;
+        inputmonsat7pm10pmleq5.value =
+            inputMeasurementPoint.soundLimit.mon_sat_7pm_10pm_leq5min;
+        inputmonsat10pm12amleq5.value =
+            inputMeasurementPoint.soundLimit.mon_sat_10pm_12am_leq5min;
+        inputmonsat12am7amleq5.value =
+            inputMeasurementPoint.soundLimit.mon_sat_12am_7am_leq5min;
+
+        inputmonsat7am7pmleq12.value =
+            inputMeasurementPoint.soundLimit.mon_sat_7am_7pm_leq12hr;
+        inputmonsat7pm10pmleq12.value =
+            inputMeasurementPoint.soundLimit.mon_sat_7pm_10pm_leq12hr;
+        inputmonsat10pm12amleq12.value =
+            inputMeasurementPoint.soundLimit.mon_sat_10pm_12am_leq12hr;
+        inputmonsat12am7amleq12.value =
+            inputMeasurementPoint.soundLimit.mon_sat_12am_7am_leq12hr;
+
+        inputsunph7am7pmleq5.value =
+            inputMeasurementPoint.soundLimit.sun_ph_7am_7pm_leq5min;
+        inputsunph7pm10pmleq5.value =
+            inputMeasurementPoint.soundLimit.sun_ph_7pm_10pm_leq5min;
+        inputsunph10pm12amleq5.value =
+            inputMeasurementPoint.soundLimit.sun_ph_10pm_12am_leq5min;
+        inputsunph12am7amleq5.value =
+            inputMeasurementPoint.soundLimit.sun_ph_12am_7am_leq5min;
+
+        inputsunph7am7pmleq12.value =
+            inputMeasurementPoint.soundLimit.sun_ph_7am_7pm_leq12hr;
+        inputsunph7pm10pmleq12.value =
+            inputMeasurementPoint.soundLimit.sun_ph_7pm_10pm_leq12hr;
+        inputsunph10pm12amleq12.value =
+            inputMeasurementPoint.soundLimit.sun_ph_10pm_12am_leq12hr;
+        inputsunph12am7amleq12.value =
+            inputMeasurementPoint.soundLimit.sun_ph_12am_7am_leq12hr;
+    } else if (modalType == "create") {
+        var category = document.getElementById("selectCategory").value;
+        inputmonsat7am7pmleq5.value =
+            valueMap[category].mon_sat_7am_7pm_leq5min;
+        inputmonsat7pm10pmleq5.value =
+            valueMap[category].mon_sat_7pm_10pm_leq5min;
+        inputmonsat10pm12amleq5.value =
+            valueMap[category].mon_sat_10pm_12am_leq5min;
+        inputmonsat12am7amleq5.value =
+            valueMap[category].mon_sat_12am_7am_leq5min;
+
+        inputmonsat7am7pmleq12.value =
+            valueMap[category].mon_sat_7am_7pm_leq12hr;
+        inputmonsat7pm10pmleq12.value =
+            valueMap[category].mon_sat_7pm_10pm_leq12hr;
+        inputmonsat10pm12amleq12.value =
+            valueMap[category].mon_sat_10pm_12am_leq12hr;
+        inputmonsat12am7amleq12.value =
+            valueMap[category].mon_sat_12am_7am_leq12hr;
+
+        inputsunph7am7pmleq5.value = valueMap[category].sun_ph_7am_7pm_leq5min;
+        inputsunph7pm10pmleq5.value =
+            valueMap[category].sun_ph_7pm_10pm_leq5min;
+        inputsunph10pm12amleq5.value =
+            valueMap[category].sun_ph_10pm_12am_leq5min;
+        inputsunph12am7amleq5.value =
+            valueMap[category].sun_ph_12am_7am_leq5min;
+
+        inputsunph7am7pmleq12.value = valueMap[category].sun_ph_7am_7pm_leq12hr;
+        inputsunph7pm10pmleq12.value =
+            valueMap[category].sun_ph_7pm_10pm_leq12hr;
+        inputsunph10pm12amleq12.value =
+            valueMap[category].sun_ph_10pm_12am_leq12hr;
+        inputsunph12am7amleq12.value =
+            valueMap[category].sun_ph_12am_7am_leq12hr;
+    }
+}
+
 function create_empty_option(select, text) {
     var defaultOption = document.createElement("option");
     defaultOption.textContent = text;
@@ -313,8 +501,6 @@ function fetch_measurement_point_data(data = null) {
     var remarks = document.getElementById("inputRemarks");
     var device_location = document.getElementById("inputDeviceLocation");
     var category = document.getElementById("category");
-    console.log("data");
-    console.log(data);
     if (data) {
         pointName.value = data.point_name;
         remarks.value = data.remarks;
@@ -334,6 +520,8 @@ function fetch_measurement_point_data(data = null) {
         });
 
         document.getElementById("existing_devices").hidden = false;
+        document.getElementById("existing_category").hidden = false;
+        document.getElementById("advanced_sound_limits").hidden = true;
     } else {
         pointName.value = null;
         remarks.value = null;
@@ -352,6 +540,8 @@ function fetch_measurement_point_data(data = null) {
             serial_number: null,
         });
         document.getElementById("existing_devices").hidden = true;
+        document.getElementById("existing_category").hidden = true;
+        document.getElementById("advanced_sound_limits").hidden = true;
     }
 }
 
@@ -386,6 +576,63 @@ function get_measurement_point_data() {
         });
 }
 
+function update_sound_limits(formDataJson) {
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    fetch(
+        "http://localhost:8000/soundlimits/" +
+            inputMeasurementPoint.soundLimit.id,
+        {
+            method: "PATCH",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify(formDataJson),
+        }
+    ).then((response) => {
+        if (!response.ok) {
+            throw new Error(
+                "Network response was not ok " + response.statusText
+            );
+        }
+        closeModal("measurementPointModal");
+    });
+
+    return false;
+}
+
+function create_sound_limits(formDataJson) {
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    fetch("http://localhost:8000/soundlimits", {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify(formDataJson),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
+            }
+            return response.json();
+        })
+        .then((json) => {
+            closeModal("measurementPointModal");
+        });
+    return false;
+}
+
 function handle_create_measurement_point() {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
@@ -418,7 +665,7 @@ function handle_create_measurement_point() {
             return response.json();
         })
         .then((json) => {
-            closeModal("measurementPointModal");
+            create_sound_limits(formDataJson);
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -459,10 +706,7 @@ function handle_measurement_point_update() {
                     "Network response was not ok " + response.statusText
                 );
             }
-            return response.json();
-        })
-        .then((json) => {
-            closeModal("measurementPointModal");
+            update_sound_limits(formDataJson);
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -520,7 +764,7 @@ function handle_measurementpoint_submit() {
     } else {
         handle_create_measurement_point();
     }
-    location.reload();
+    get_measurement_point_data();
 }
 
 function openModal(modalName, type = null) {
@@ -530,12 +774,12 @@ function openModal(modalName, type = null) {
     if (type == "create") {
         modalType = "create";
         fetch_measurement_point_data();
-        populateSelects();
     } else if (type == "update") {
         modalType = "update";
         fetch_measurement_point_data(inputMeasurementPoint);
-        populateSelects();
     }
+    populateSelects();
+    populate_soundLimits();
 }
 
 function closeModal(modal) {
@@ -550,6 +794,8 @@ window.handle_create_measurement_point = handle_create_measurement_point;
 window.handleDelete = handleDelete;
 window.openModal = openModal;
 window.handle_measurementpoint_submit = handle_measurementpoint_submit;
+window.populate_soundLimits = populate_soundLimits;
+window.toggle_soundLimits = toggle_soundLimits;
 
 getProjectId();
 get_measurement_point_data();

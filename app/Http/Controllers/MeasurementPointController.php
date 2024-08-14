@@ -84,6 +84,7 @@ class MeasurementPointController extends Controller
                     $data['noise_meter_label'] = $noise_meter->noise_meter_label;
                     $data['serial_number'] = $noise_meter->serial_number;
                 }
+                $data['soundLimit'] = $measurementPoint->soundLimit;
 
                 return $data;
             });

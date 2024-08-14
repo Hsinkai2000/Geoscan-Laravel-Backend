@@ -49,6 +49,7 @@ class SoundLimitController extends Controller
         try {
             $id = $request->route('id');
             $sound_limit_params = $request->only((new SoundLimit)->getFillable());
+
             $sound_limit = SoundLimit::find($id);
             if (!$sound_limit) {
                 return render_unprocessable_entity("Unable to find sound limit with id " . $id);

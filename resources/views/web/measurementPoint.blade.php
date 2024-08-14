@@ -30,15 +30,14 @@
     <x-nav.navbar />
 
     <div class="container-fluid pt-3 p-5">
-        <h3 class="text-dark">Measurement Points</h3>
+        <h3 class="text-dark">Measurement Point</h3>
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 @if (Auth::user()->isAdmin())
                     <li class="breadcrumb-item"><a href="{{ route('project.admin') }}">Projects</a></li>
                 @endif
                 <li class="breadcrumb-item"><a
-                        href="{{ route('project.show', $measurementPoint->project->id) }}">Measurement
-                        Points</a>
+                        href="{{ route('project.show', $measurementPoint->project->id) }}">{{ $measurementPoint->project->job_number }}</a>
                 </li>
                 <li class="breadcrumb-item"><a href="#">{{ $measurementPoint->point_name }}</a></li>
             </ol>
