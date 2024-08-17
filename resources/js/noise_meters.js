@@ -72,6 +72,7 @@ function fill_data() {
     );
     var remarks = document.getElementById("inputRemarks");
     var brand = document.getElementById("inputBrand");
+    document.getElementById("error_message").innerHTML = "";
 
     if (window.modalType == "update") {
         console.log(window.noise_meter_id);
@@ -115,19 +116,17 @@ function handle_update() {
         body: JSON.stringify(formDataJson),
     })
         .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
+            if (response.status == 422) {
+                response.json().then((errorData) => {
+                    document.getElementById("error_message").innerHTML =
+                        errorData["Unprocessable Entity"];
+                });
+            } else {
+                closeModal("noiseMeterModal");
             }
-            return response.json();
-        })
-        .then((json) => {
-            closeModal("noiseMeterModal");
         })
         .catch((error) => {
-            console.error("Error:", error);
-            alert("There was an error: " + error.message);
+            alert("There was an error while processing");
         });
     return false;
 }
@@ -136,6 +135,7 @@ function handle_create() {
     const form = document.getElementById("noise_meter_form");
     const csrfToken = document.querySelector('input[name="_token"]').value;
     const formData = new FormData(form);
+
     fetch("http://localhost:8000/noise_meters/", {
         method: "POST",
         headers: {
@@ -146,20 +146,19 @@ function handle_create() {
         body: formData,
     })
         .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
+            if (response.status == 422) {
+                response.json().then((errorData) => {
+                    document.getElementById("error_message").innerHTML =
+                        errorData["Unprocessable Entity"];
+                });
+            } else {
+                closeModal("noiseMeterModal");
             }
-            return response.json();
-        })
-        .then((json) => {
-            closeModal("noiseMeterModal");
         })
         .catch((error) => {
-            console.error("Error:", error);
-            alert("There was an error: " + error.message);
+            alert("There was an error while processing");
         });
+    return false;
 }
 
 function handle_noise_meter_submit(event) {

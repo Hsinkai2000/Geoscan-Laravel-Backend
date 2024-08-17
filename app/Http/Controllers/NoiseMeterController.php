@@ -16,12 +16,16 @@ class NoiseMeterController extends Controller
             if (strlen($noise_meter_params['serial_number']) !== 4) {
                 return render_unprocessable_entity('Noise meter serial number not 16 bits');
             }
-            $noise_meter_id = NoiseMeter::insertGetId($noise_meter_params);
-            $noise_meter = NoiseMeter::find($noise_meter_id);
+            try {
+                $noise_meter_id = NoiseMeter::insertGetId($noise_meter_params);
+                $noise_meter = NoiseMeter::find($noise_meter_id);
+            } catch (Exception $e) {
+                return render_unprocessable_entity('Noise meter serial number already in use');
+            }
             return render_ok(["noise_meter" => $noise_meter]);
 
         } catch (Exception $e) {
-            return render_error($e->getMessage());
+            return render_error($e);
         }
     }
 
@@ -58,19 +62,24 @@ class NoiseMeterController extends Controller
 
     public function update(Request $request)
     {
-        debug_log($request->all());
         try {
             $id = $request->route('id');
             $noise_meter_params = $request->only((new NoiseMeter)->getFillable());
             $noise_meter = NoiseMeter::find($id);
+            debug_log('here');
             if (!$noise_meter) {
+                debug_log('here1');
                 return render_unprocessable_entity("Unable to find noise meter with id " . $id);
             }
 
-            if (!$noise_meter->update($noise_meter_params)) {
-                throw new Exception("Unable to update noise meter");
+            try {
+                $noise_meter->update($noise_meter_params);
+            } catch (Exception $e) {
+                debug_log('here2');
+                return render_unprocessable_entity("Unable to update noise meter");
             }
 
+            debug_log('here3');
             return render_ok(["noise_meter" => $noise_meter]);
 
         } catch (Exception $e) {
