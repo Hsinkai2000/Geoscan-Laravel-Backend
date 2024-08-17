@@ -13,7 +13,6 @@ class Concentrator extends Model
     protected $table = "concentrators";
 
     protected $fillable = [
-        'use_flag',
         'device_id',
         'concentrator_label',
         'concentrator_csq',
@@ -28,7 +27,6 @@ class Concentrator extends Model
 
     protected $casts = [
         'id' => 'integer',
-        'use_flag' => 'boolean',
         'device_id' => 'string',
         'concentrator_label' => 'string',
         'concentrator_csq' => 'integer',
@@ -57,11 +55,5 @@ class Concentrator extends Model
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d');
-    }
-
-    public function toggle_use_flag()
-    {
-        $this->use_flag = !$this->use_flag;
-        $this->save();
     }
 }

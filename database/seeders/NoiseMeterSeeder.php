@@ -16,7 +16,7 @@ class NoiseMeterSeeder extends Seeder
         $now = date("Y-m-d");
         DB::table('noise_meters')->insert([
             [
-                'use_flag' => true,
+
                 'serial_number' => 9900,
                 'brand' => 'SINUS TANGO',
                 'remarks' => $faker->text(),
@@ -26,7 +26,7 @@ class NoiseMeterSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'use_flag' => true,
+
                 'serial_number' => 9901,
                 'brand' => 'SINUS TANGO',
                 'remarks' => $faker->text(),
@@ -36,7 +36,7 @@ class NoiseMeterSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'use_flag' => true,
+
                 'serial_number' => 9902,
                 'brand' => 'SINUS TANGO',
                 'remarks' => $faker->text(),
@@ -46,7 +46,7 @@ class NoiseMeterSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'use_flag' => true,
+
                 'serial_number' => 9903,
                 'brand' => 'SINUS TANGO',
                 'remarks' => $faker->text(),
@@ -56,7 +56,7 @@ class NoiseMeterSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'use_flag' => false,
+
                 'serial_number' => 9904,
                 'brand' => 'SINUS TANGO',
                 'remarks' => $faker->text(),
@@ -65,7 +65,7 @@ class NoiseMeterSeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ], [
-                'use_flag' => false,
+
                 'serial_number' => 1397,
                 'brand' => 'Tango',
                 'last_calibration_date' => '2024-06-05',

@@ -13,7 +13,6 @@ class NoiseMeter extends Model
     protected $table = 'noise_meters';
 
     protected $fillable = [
-        'use_flag',
         'serial_number',
         'noise_meter_label',
         'brand',
@@ -25,7 +24,6 @@ class NoiseMeter extends Model
 
     protected $casts = [
         'id' => 'integer',
-        'use_flag' => 'boolean',
         'last_calibration_date' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -51,9 +49,4 @@ class NoiseMeter extends Model
         return $date->format('Y-m-d');
     }
 
-    public function toggle_use_flag()
-    {
-        $this->use_flag = !$this->use_flag;
-        $this->save();
-    }
 }
