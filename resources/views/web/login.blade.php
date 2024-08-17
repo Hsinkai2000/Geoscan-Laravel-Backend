@@ -5,36 +5,50 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-    @vite(["resources/scss/login.scss"]);
+    @vite(['resources/scss/login.scss'])
 </head>
 
 <body>
-    <div class="container">
-        <img id="geoscan_logo" src="{{ asset('image/geoscan-logo.png') }}" alt="geoscan-logo" />
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div id="maincard" class="card text-white" style="border-radius: 1rem;">
+                        <div class="card-body p-5 ">
+                            <div class="mb-md-5 mt-md-4 pb-5">
+                                <div class="text-center">
 
-        <h2>Realtime Geoscan</h2>
+                                    <img id="geoscan_logo" src="{{ asset('image/geoscan-logo.png') }}"
+                                        alt="geoscan-logo" />
+                                    <h2 class="fw-bold mb-5 text-uppercase text-dark">Geoscan NMS</h2>
+                                </div>
+                                <form action="{{ route('login') }}" method="POST">
+                                    @csrf
+                                    <div data-mdb-input-init class="form-outline form-white mb-4">
+                                        <label class="form-label" for="typeEmailX">Username</label>
+                                        <input type="text" name='username' id="typeUserName" hint='Enter username'
+                                            class="form-control form-control-lg" />
+                                    </div>
 
-        <h3>User Login</h3>
-        <form action="{{ route('login') }}" method="POST">
-            @csrf
-            <div class="login-container">
-                <p>Username:</p>
-                <input id="username" class="input username" name="username" />
+                                    <div data-mdb-input-init class="form-outline form-white mb-4">
+                                        <label class="form-label" for="typePasswordX">Password</label>
+                                        <input type="password" id="typePassword" name="password" hint='Enter password'
+                                            class="form-control form-control-lg" />
+                                    </div>
+                                    @if (session('error'))
+                                        <p class="error-message text-danger mt-3">{{ session('error') }}</p>
+                                    @endif
+                                    <button data-mdb-button-init data-mdb-ripple-init id="btn-login"
+                                        class="btn btn-dark btn-lg w-100 mt-5" type="submit">Login</button>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="login-container">
-                <p>Password:</p>
-                <input type='password' id="password" class="input username" name="password" />
-            </div>
-            <p class="error-message"></p>
-            <button id="btn-login" class="btn-login">Login</button>
-        </form>
-    </div>
-    <div class="footer">
-        <p>Tel: +65 6781 1919</p>
-        <p>Fax: +65 6781 9297</p>
-        <p>Email: enquiry@geoscan.com.sg</p>
-        <p>Web: geoscan.com.sg</p>
-    </div>
+        </div>
+    </section>
 </body>
 
 </html>
