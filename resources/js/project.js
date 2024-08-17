@@ -323,7 +323,16 @@ function set_contact_table() {
         layout: "fitColumns",
         data: window.contacts,
         placeholder: "No linked Contacts",
+        selectable: 1,
         columns: [
+            {
+                formatter: "rowSelection",
+                titleFormatter: "rowSelection",
+                hozAlign: "center",
+                headerSort: false,
+                frozen: true,
+                width: 30,
+            },
             {
                 title: "Name",
                 field: "contact_person_name",
@@ -350,6 +359,32 @@ function set_contact_table() {
             },
         ],
     });
+    contactTable.on("rowSelectionChanged", function (data, rows) {
+        contactTableRowChanged(data);
+    });
+}
+
+function fetch_contact_data() {
+    var inputName = document.getElementById("inputName");
+    var inputDesignation = document.getElementById("inputDesignation");
+    var inputEmail = document.getElementById("inputEmail");
+    var inputPhoneNumber = document.getElementById("inputPhoneNumber");
+    var inputContactProjectID = document.getElementById(
+        "inputContactProjectID"
+    );
+
+    inputContactProjectID.value = inputprojectId;
+    if (modalType == "create") {
+        inputName.value = null;
+        inputDesignation.value = null;
+        inputEmail.value = null;
+        inputPhoneNumber.value = null;
+    } else if (modalType == "update") {
+        inputName.value = window.selectedContact.contact_person_name;
+        inputDesignation.value = window.selectedContact.designation;
+        inputEmail.value = window.selectedContact.email;
+        inputPhoneNumber.value = window.selectedContact.phone_number;
+    }
 }
 
 function manage_measurement_point_columns() {
@@ -480,6 +515,18 @@ function set_measurement_point_table(measurementPoint_data) {
         table_row_changed(data);
     });
     window.measurementPointTable = measurementPointTable;
+}
+
+function contactTableRowChanged(data) {
+    if (data && data.length > 0) {
+        document.getElementById("editContactButton").disabled = false;
+        document.getElementById("deleteContactButton").disabled = false;
+        window.selectedContactid = data[0].id;
+        window.selectedContact = data[0];
+    } else {
+        document.getElementById("editContactButton").disabled = true;
+        document.getElementById("deleteContactButton").disabled = true;
+    }
 }
 
 function table_row_changed(data) {
@@ -715,6 +762,143 @@ function handle_measurement_point_update() {
     return false;
 }
 
+function handleContactSubmit() {
+    modalType == "create" ? handleCreateContact() : handleUpdateContact();
+    location.reload();
+}
+
+function handleUpdateContact() {
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    var form = document.getElementById("contact_form");
+
+    var formData = new FormData(form);
+
+    var formDataJson = {};
+    formData.forEach((value, key) => {
+        formDataJson[key] = value;
+    });
+
+    fetch("http://localhost:8000/contacts/" + window.selectedContactid, {
+        method: "PATCH",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify(formDataJson),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
+            }
+            closeModal("contactModal");
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("There was an error: " + error.message);
+        });
+    return false;
+}
+
+function handleCreateContact() {
+    var csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+    var form = document.getElementById("contact_form");
+
+    var formData = new FormData(form);
+
+    var formDataJson = {};
+    formData.forEach((value, key) => {
+        formDataJson[key] = value;
+    });
+
+    fetch("http://localhost:8000/contacts/", {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify(formDataJson),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Network response was not ok " + response.statusText
+                );
+            }
+            closeModal("contactModal");
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("There was an error: " + error.message);
+        });
+    return false;
+}
+
+function handleMeasurementPointDelete(csrfToken) {
+    fetch(
+        "http://localhost:8000/measurement_points/" + inputMeasurementPointId,
+        {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        }
+    )
+        .then((response) => {
+            if (!response.ok) {
+                console.log("Error:", response);
+                throw new Error("Network response was not ok");
+            }
+            ß;
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Success:", data);
+            closeModal("deleteConfirmationModal");
+            location.reload();
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
+function handleContactDelete(csrfToken) {
+    fetch("http://localhost:8000/contacts/" + window.selectedContactid, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                console.log("Error:", response);
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Success:", data);
+            closeModal("deleteConfirmationModal");
+            location.reload();
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
 function handleDelete(event) {
     if (event) {
         event.preventDefault();
@@ -725,33 +909,11 @@ function handleDelete(event) {
 
     var confirmation = document.getElementById("inputDeleteConfirmation").value;
     if (confirmation == "DELETE") {
-        fetch(
-            "http://localhost:8000/measurement_points/" +
-                inputMeasurementPointId,
-            {
-                method: "DELETE",
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken,
-                    Accept: "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }
-        )
-            .then((response) => {
-                if (!response.ok) {
-                    console.log("Error:", response);
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log("Success:", data);
-                closeModal("deleteConfirmationModal");
-                location.reload();
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
+        if (window.deleteType == "measurementPoints") {
+            handleMeasurementPointDelete(csrfToken);
+        } else if (window.deleteType == "contact") {
+            handleContactDelete(csrfToken);
+        }
     } else {
         var error = document.getElementById("deleteConfirmationError");
         error.hidden = false;
@@ -771,15 +933,28 @@ function openModal(modalName, type = null) {
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
 
-    if (type == "create") {
-        modalType = "create";
-        fetch_measurement_point_data();
-    } else if (type == "update") {
-        modalType = "update";
-        fetch_measurement_point_data(inputMeasurementPoint);
+    if (modalName == "measurementPointModal") {
+        if (type == "create") {
+            modalType = "create";
+            fetch_measurement_point_data();
+        } else if (type == "update") {
+            modalType = "update";
+            fetch_measurement_point_data(inputMeasurementPoint);
+        }
+        populateSelects();
+        populate_soundLimits();
+    } else if (modalName == "contactModal") {
+        if (type == "create") {
+            modalType = "create";
+        } else if ((type = "update")) {
+            modalType = "update";
+        }
+        fetch_contact_data();
+    } else if (modalName == "deleteConfirmationModal") {
+        type == "contact"
+            ? (window.deleteType = "contact")
+            : (window.deleteType = "measurementPoint");
     }
-    populateSelects();
-    populate_soundLimits();
 }
 
 function closeModal(modal) {
@@ -789,6 +964,12 @@ function closeModal(modal) {
     modalInstance.hide();
 }
 
+function check_contact_max() {
+    if (window.contacts.length == window.project.sms_count) {
+        document.getElementById("createContactButton").disabled = true;
+    }
+}
+
 window.handle_measurement_point_update = handle_measurement_point_update;
 window.handle_create_measurement_point = handle_create_measurement_point;
 window.handleDelete = handleDelete;
@@ -796,7 +977,8 @@ window.openModal = openModal;
 window.handle_measurementpoint_submit = handle_measurementpoint_submit;
 window.populate_soundLimits = populate_soundLimits;
 window.toggle_soundLimits = toggle_soundLimits;
-
+window.handleContactSubmit = handleContactSubmit;
 getProjectId();
 get_measurement_point_data();
 set_contact_table();
+check_contact_max();

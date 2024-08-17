@@ -72,8 +72,21 @@
                 <td scope='row'>{{ $project['status'] }}</td>
             </tr>
         </table>
+
         <div class="bg-light p-2 mb-3 shadow rounded">
-            <h5>Contacts</h5>
+            <div>
+                <h5 class="d-inline">Contacts | </h5>
+                <h6 class="d-inline @if (count($project->contact) == $project['sms_count']) text-danger  s @endif">
+                    {{ count($project->contact) }} / {{ $project['sms_count'] }}</h6>
+            </div>
+            <div class="mt-2 mb-3 ">
+                <button class="d-inline btn btn-primary text-light shadow-sm" id="createContactButton"
+                    onclick='openModal("contactModal","create")'>Add</button>
+                <button class="d-inline btn btn-dark text-light shadow-sm"ß id="editContactButton"
+                    onclick='openModal("contactModal","update")'>Edit</button>
+                <button class="btn btn-light text-danger border shadow-sm" id="deleteContactButton"
+                    onclick='openModal("deleteConfirmationModal","contact")'>Delete</button>
+            </div>
             <div class="shadow" id="contacts_table"></div>
         </div>
         <div class="rounded bg-light p-2 shadow">
@@ -82,18 +95,19 @@
 
             <div class="d-flex flex-row mt-3 justify-content-between">
                 <button class="btn btn-light text-danger border shadow-sm" id="deleteButton"
-                    onclick="openModal('deleteConfirmationModal')">Delete</button>
+                    onclick="openModal('deleteConfirmationModal','delete')">Delete</button>
                 <div id="measurement_point_pages"></div>
                 <div>
                     <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
                         onclick='openModal("measurementPointModal", "update")'>Edit</button>
                     <button class="btn btn-primary text-light shadow-sm" id="createButton"
-                        onclick='openModal("measurementPointModal", "create")'>Create</button>
+                        onclick='openModal("measurementPointModal", "measurementPoint")'>Create</button>
                 </div>
             </div>
         </div>
 
-        <x-delete-confirmation-modal type='Measurement Point' />
+        <x-contacts.contact-modal />
+        <x-delete-confirmation-modal />
         <x-delete-modal type='user' />
         <x-user.user-create-modal />
         <x-measurementPoint.measurement-point-modal :project="$project" />
@@ -119,7 +133,7 @@
     $('#selectUpdateNoiseMeter').select2({
         dropdownParent: $('#measurementPointModal'),
     });
-
+    window.project = @json($project);
     window.contacts = @json($project->contact);
     window.admin = @json(Auth::user()->isAdmin());
 </script>
