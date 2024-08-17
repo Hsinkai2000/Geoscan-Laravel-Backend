@@ -45,7 +45,7 @@ class AuthController extends Controller
 
         };
 
-        back()->with('error', 'username or Password invalid');
+        return back()->with('error', 'Username or Password invalid');
     }
 
     public function logout()
