@@ -6,20 +6,21 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class nav.navbar extends Component
+class navbar extends Component
 {
+    public string $type;
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct(string $type = 'projects')
     {
-        //
+        $this->type = $type;
     }
 
     /**
      * Get the view / contents that represent the component.
      */
-    public function render(): View|Closure|string
+    public function render(): View | Closure | string
     {
         return view('components.nav.navbar');
     }

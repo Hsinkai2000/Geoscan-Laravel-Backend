@@ -497,6 +497,7 @@ function manage_measurement_point_columns() {
 }
 
 function set_measurement_point_table(measurementPoint_data) {
+    document.getElementById("measurement_point_pages").innerHTML = "";
     var measurementPointTable = new Tabulator("#measurement_point_table", {
         layout: "fitColumns",
         data: measurementPoint_data,
@@ -548,6 +549,7 @@ function fetch_measurement_point_data(data = null) {
     var remarks = document.getElementById("inputRemarks");
     var device_location = document.getElementById("inputDeviceLocation");
     var category = document.getElementById("category");
+    document.getElementById("error_message").innerHTML = "";
     if (data) {
         pointName.value = data.point_name;
         remarks.value = data.remarks;

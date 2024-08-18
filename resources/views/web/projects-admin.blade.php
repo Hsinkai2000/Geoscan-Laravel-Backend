@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <x-nav.navbar />
+    <x-navbar />
 
     <div class="container-fluid p-sm-5 pt-sm-3">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">

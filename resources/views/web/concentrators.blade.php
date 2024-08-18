@@ -27,13 +27,12 @@
 </head>
 
 <body>
-    <x-nav.navbar />
+    <x-navbar type='concentrator' />
 
     <div class="container-fluid pt-3 p-5">
 
         <div class="mb-3">
             <h3 class=" text-dark d-inline me-4">Concentrators</h3>
-
         </div>
         <div class="mb-3">
 

@@ -27,7 +27,7 @@
 </head>
 
 <body>
-    <x-nav.navbar />
+    <x-navbar />
 
     <div class="container-fluid pt-3 p-5">
         <h3 class="text-dark">Measurement Point</h3>
