@@ -141,19 +141,17 @@ function handle_update() {
         body: JSON.stringify(formDataJson),
     })
         .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
+            if (response.status == 422) {
+                response.json().then((errorData) => {
+                    document.getElementById("error_message").innerHTML =
+                        errorData["Unprocessable Entity"];
+                });
+            } else {
+                closeModal("concentratorModal");
             }
-            return response.json();
-        })
-        .then((json) => {
-            closeModal("concentratorModal");
         })
         .catch((error) => {
-            console.error("Error:", error);
-            alert("There was an error: " + error.message);
+            alert("There was an error while processing");
         });
     return false;
 }
@@ -172,20 +170,19 @@ function handle_create() {
         body: formData,
     })
         .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
+            if (response.status == 422) {
+                response.json().then((errorData) => {
+                    document.getElementById("error_message").innerHTML =
+                        errorData["Unprocessable Entity"];
+                });
+            } else {
+                closeModal("concentratorModal");
             }
-            return response.json();
-        })
-        .then((json) => {
-            closeModal("concentratorModal");
         })
         .catch((error) => {
-            console.error("Error:", error);
-            alert("There was an error: " + error.message);
+            alert("There was an error while processing");
         });
+    return false;
 }
 
 function handle_concentrator_submit(event) {

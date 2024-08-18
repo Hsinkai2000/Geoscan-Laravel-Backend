@@ -15,9 +15,13 @@ class ConcentratorController extends Controller
             if (strlen("00" . $concentrator_params['device_id']) !== 16) {
                 return render_unprocessable_entity('Concentrator device id not 64 bits');
             }
-            $concentrator_id = Concentrator::insertGetId($concentrator_params);
-            $concentrator = Concentrator::find($concentrator_id);
-            return render_ok(["concentrator" => $concentrator]);
+            try {
+                $concentrator_id = Concentrator::insertGetId($concentrator_params);
+                $concentrator = Concentrator::find($concentrator_id);
+                return render_ok(["concentrator" => $concentrator]);
+            } catch (Exception $e) {
+                return render_unprocessable_entity("Concentrator Device ID already in use.");
+            }
 
         } catch (Exception $e) {
             return render_error($e);
@@ -69,10 +73,12 @@ class ConcentratorController extends Controller
                 return render_unprocessable_entity("Unable to find concentrator with id " . $id);
             }
 
-            if (!$concentrator->update($concentrator_params)) {
-                throw new Exception("Unable to update concentrator");
+            try {
+                $concentrator->update($concentrator_params);
+                return render_ok(["concentrator" => $concentrator_params]);
+            } catch (Exception $e) {
+                return render_unprocessable_entity("Unable to update concentrator");
             }
-            return render_ok(["concentrator" => $concentrator_params]);
 
         } catch (Exception $e) {
             render_error($e);

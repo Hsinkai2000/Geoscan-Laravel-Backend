@@ -82,7 +82,7 @@
             <div class="mt-2 mb-3 ">
                 <button class="d-inline btn btn-primary text-light shadow-sm" id="createContactButton"
                     onclick='openModal("contactModal","create")'>Add</button>
-                <button class="d-inline btn btn-dark text-light shadow-sm"ß id="editContactButton"
+                <button class="d-inline btn btn-dark text-light shadow-sm" id="editContactButton"
                     onclick='openModal("contactModal","update")'>Edit</button>
                 <button class="btn btn-light text-danger border shadow-sm" id="deleteContactButton"
                     onclick='openModal("deleteConfirmationModal","contact")'>Delete</button>

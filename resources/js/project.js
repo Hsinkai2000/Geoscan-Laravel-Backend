@@ -860,7 +860,6 @@ function handleMeasurementPointDelete(csrfToken) {
                 console.log("Error:", response);
                 throw new Error("Network response was not ok");
             }
-            ß;
             return response.json();
         })
         .then((data) => {

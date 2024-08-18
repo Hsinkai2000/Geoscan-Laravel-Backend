@@ -74,13 +74,11 @@ class NoiseMeterController extends Controller
 
             try {
                 $noise_meter->update($noise_meter_params);
+                return render_ok(["noise_meter" => $noise_meter]);
             } catch (Exception $e) {
                 debug_log('here2');
                 return render_unprocessable_entity("Unable to update noise meter");
             }
-
-            debug_log('here3');
-            return render_ok(["noise_meter" => $noise_meter]);
 
         } catch (Exception $e) {
             render_error($e->getMessage());
