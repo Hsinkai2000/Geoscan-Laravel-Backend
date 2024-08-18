@@ -1,4 +1,4 @@
-p<div class="modal fade shadow" id="measurementPointModal" tabindex="-1" aria-labelledby="measurementPointLabel"
+<div class="modal fade shadow" id="measurementPointModal" tabindex="-1" aria-labelledby="measurementPointLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">

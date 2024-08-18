@@ -21,7 +21,7 @@
                     <!-- Submit button to delete the project -->
                     <button onclick="handleDelete(event)" id="deleteButton" type="button"
                         class="btn btn-primary text-white">Delete</button>
-                    <p id="deleteConfirmationError" class=s"text-danger" hidden>Delete Confirmation Failed!</p>
+                    <p id="deleteConfirmationError" class="d-inline text-danger" hidden>Delete Confirmation Failed!</p>
                 </form>
             </div>
         </div>

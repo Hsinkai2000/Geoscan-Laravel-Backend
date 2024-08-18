@@ -951,7 +951,7 @@ function openModal(modalName, type = null) {
     } else if (modalName == "deleteConfirmationModal") {
         type == "contact"
             ? (window.deleteType = "contact")
-            : (window.deleteType = "measurementPoint");
+            : (window.deleteType = "measurementPoints");
     }
 }
 
