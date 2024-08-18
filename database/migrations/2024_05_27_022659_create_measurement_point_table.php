@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::dropIfExists('measurement_points');
         Schema::create('measurement_points', function (Blueprint $table) {
             $table->id();
-            $table->integer('project_id')->index();
+            $table->integer('project_id');
             $table->integer('noise_meter_id')->index()->nullable();
             $table->integer('concentrator_id')->index()->nullable();
             $table->string('point_name', 255);
@@ -30,7 +30,12 @@ return new class extends Migration
             $table->dateTime('dose_100_last_alert_at')->nullable();
             $table->dateTime('created_at')->default(now());
             $table->dateTime('updated_at')->default(now());
+
+            $table->unique(['point_name', 'project_id']);
+            $table->index('point_name');
+            $table->index('project_id');
         });
+
     }
 
     /**

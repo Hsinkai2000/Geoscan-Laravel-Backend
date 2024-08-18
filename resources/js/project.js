@@ -665,18 +665,16 @@ function create_sound_limits(formDataJson) {
             "X-Requested-With": "XMLHttpRequest",
         },
         body: JSON.stringify(formDataJson),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
-            }
-            return response.json();
-        })
-        .then((json) => {
+    }).then((response) => {
+        if (response.status == 422) {
+            response.json().then((errorData) => {
+                document.getElementById("error_message").innerHTML =
+                    errorData["Unprocessable Entity"];
+            });
+        } else {
             closeModal("measurementPointModal");
-        });
+        }
+    });
     return false;
 }
 
@@ -704,15 +702,14 @@ function handle_create_measurement_point() {
         body: JSON.stringify(formDataJson),
     })
         .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
+            if (response.status == 422) {
+                response.json().then((errorData) => {
+                    document.getElementById("error_message").innerHTML =
+                        errorData["Unprocessable Entity"];
+                });
+            } else {
+                create_sound_limits(formDataJson);
             }
-            return response.json();
-        })
-        .then((json) => {
-            create_sound_limits(formDataJson);
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -748,12 +745,14 @@ function handle_measurement_point_update() {
         }
     )
         .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
+            if (response.status == 422) {
+                response.json().then((errorData) => {
+                    document.getElementById("error_message").innerHTML =
+                        errorData["Unprocessable Entity"];
+                });
+            } else {
+                update_sound_limits(formDataJson);
             }
-            update_sound_limits(formDataJson);
         })
         .catch((error) => {
             console.error("Error:", error);

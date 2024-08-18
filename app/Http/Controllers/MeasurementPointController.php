@@ -14,7 +14,6 @@ class MeasurementPointController extends Controller
 
     public function show($id)
     {
-        debug_log('here');
         $measurement_point = MeasurementPoint::find($id);
         return view('web.measurementPoint', ['measurementPoint' => $measurement_point])->render();
     }
@@ -24,15 +23,22 @@ class MeasurementPointController extends Controller
         try {
             $measurement_point_params = $request->only((new MeasurementPoint)->getFillable());
 
-            $this->update_device_usage($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
-            $measurement_point_id = MeasurementPoint::insertGetId($measurement_point_params);
-            $measurement_point = MeasurementPoint::find($measurement_point_id);
-            if ($measurement_point) {
-                $sound_limit_params = ['category' => $request->get('category'), 'measurement_point_id' => $measurement_point_id];
-                $soundLimit = new SoundLimit($sound_limit_params);
-                $soundLimit->save();
+            if (isset($measurement_point_params['concentrator_id']) && isset($measurement_point_params['noise_meter_id'])) {
+                $this->update_device_usage($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
             }
-            return render_ok(["measurement_point" => $measurement_point]);
+
+            try {
+                $measurement_point_id = MeasurementPoint::insertGetId($measurement_point_params);
+                $measurement_point = MeasurementPoint::find($measurement_point_id);
+                if ($measurement_point) {
+                    $sound_limit_params = ['category' => $request->get('category'), 'measurement_point_id' => $measurement_point_id];
+                    $soundLimit = new SoundLimit($sound_limit_params);
+                    $soundLimit->save();
+                }
+                return render_ok(["measurement_point" => $measurement_point]);
+            } catch (Exception $e) {
+                render_unprocessable_entity('Please ensure measurement point name is unique within project');
+            }
 
         } catch (Exception $e) {
             return render_error($e);
@@ -100,7 +106,6 @@ class MeasurementPointController extends Controller
         try {
             $id = $request->route('id');
             $measurement_point_params = $request->only((new MeasurementPoint)->getFillable());
-            debug_log($measurement_point_params);
 
             if (!isset($measurement_point_params['concentrator_id'])) {
                 $measurement_point_params['concentrator_id'] = null;
@@ -108,19 +113,19 @@ class MeasurementPointController extends Controller
             if (!isset($measurement_point_params['noise_meter_id'])) {
                 $measurement_point_params['noise_meter_id'] = null;
             }
-
-            $this->update_device_usage($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
-
+            if (isset($measurement_point_params['concentrator_id']) && isset($measurement_point_params['noise_meter_id'])) {
+                $this->update_device_usage($measurement_point_params['concentrator_id'], $measurement_point_params['noise_meter_id']);
+            }
             $measurement_point = MeasurementPoint::find($id);
             if (!$measurement_point) {
                 return render_unprocessable_entity("Unable to find Measurement point with id " . $id);
             }
-
-            if (!$measurement_point->update($measurement_point_params)) {
-                throw new Exception("Unable to update Measurement point");
-            }
-
-            return render_ok(["measurement_point" => $measurement_point]);
+            try {
+                $measurement_point->update($measurement_point_params);
+                return render_ok(["measurement_point" => $measurement_point]);
+            } catch (Exception $e) {
+                return render_unprocessable_entity('Please ensure measurement point name is unique within project');
+            };
 
         } catch (Exception $e) {
             render_error($e->getMessage());

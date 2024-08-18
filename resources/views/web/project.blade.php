@@ -95,13 +95,13 @@
 
             <div class="d-flex flex-row mt-3 justify-content-between">
                 <button class="btn btn-light text-danger border shadow-sm" id="deleteButton"
-                    onclick="openModal('deleteConfirmationModal','delete')">Delete</button>
+                    onclick="openModal('deleteConfirmationModal','measurementPoints')">Delete</button>
                 <div id="measurement_point_pages"></div>
                 <div>
                     <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
                         onclick='openModal("measurementPointModal", "update")'>Edit</button>
                     <button class="btn btn-primary text-light shadow-sm" id="createButton"
-                        onclick='openModal("measurementPointModal", "measurementPoint")'>Create</button>
+                        onclick='openModal("measurementPointModal", "create")'>Create</button>
                 </div>
             </div>
         </div>

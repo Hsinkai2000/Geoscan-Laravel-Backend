@@ -1,4 +1,4 @@
-<div class="modal fade shadow" id="measurementPointModal" tabindex="-1" aria-labelledby="measurementPointLabel"
+p<div class="modal fade shadow" id="measurementPointModal" tabindex="-1" aria-labelledby="measurementPointLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -300,6 +300,7 @@
 
 
                         <div class="modal-footer">
+                            <div id="error_message" class="text-danger me-auto"></div>
                             <button type="button" class="btn btn-primary bg-white text-primary"
                                 data-bs-dismiss="modal">Discard</button>
                             <button type='button' onclick="handle_measurementpoint_submit()"
