@@ -38,16 +38,6 @@
                         </div>
 
                         <div class="mb-3 row">
-                            <label for="last_calibration_date"
-                                class="col-md-3 col-sm-12 text-align-center col-form-label">Last
-                                Calibration Date</label>
-                            <div class="col-sm-8 align-content-center">
-                                <input type="date" class="form-control" id="inputLastCalibrationDate"
-                                    name="last_calibration_date" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-3 row">
                             <label for="remarks"
                                 class="col-md-3 col-sm-12 text-align-center col-form-label">Remarks</label>
                             <div class="col-sm-8 align-content-center">
@@ -63,9 +53,6 @@
                         <button type='submit' onclick="handle_noise_meter_submit(event)"
                             class="btn btn-primary text-white">Submit</button>
                     </div>
-
-
-
                 </form>
             </div>
         </div>
