@@ -48,6 +48,15 @@ class AuthController extends Controller
         return back()->with('error', 'Username or Password invalid');
     }
 
+    public function verify_logged_in()
+    {
+        if (Auth::user()->user_type == 'admin') {
+            return redirect()->route('project.admin')->with('success', 'Login success');
+        } else {
+            return redirect()->route('project.show', ['id' => $this->getUserProject(Auth::user()->id)])->with('success', 'Login success');
+        }
+    }
+
     public function logout()
     {
         Auth::logout();

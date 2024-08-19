@@ -27,7 +27,7 @@
 </head>
 
 <body>
-    <x-navbar />
+    <x-navbar projectId="{{ $measurementPoint->project->id }}" />
 
     <div class="container-fluid pt-3 p-5">
         <h3 class="text-dark">Measurement Point</h3>

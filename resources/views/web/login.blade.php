@@ -22,7 +22,7 @@
                                         alt="geoscan-logo" />
                                     <h2 class="fw-bold mb-5 text-uppercase text-dark">Geoscan NMS</h2>
                                 </div>
-                                <form action="{{ route('login') }}" method="POST">
+                                <form action="{{ route('login.post') }}" method="POST">
                                     @csrf
                                     <div data-mdb-input-init class="form-outline form-white mb-4">
                                         <label class="form-label" for="typeEmailX">Username</label>
