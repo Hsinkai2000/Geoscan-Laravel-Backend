@@ -27,7 +27,8 @@
 </head>
 
 <body>
-    <x-navbar projectId="{{ $project['id'] }}" />
+    
+    <x-nav.navbar projectId="{{ $project['id'] }}" />
 
     <div class="container-fluid pt-3 p-5">
         <h3 class="text-dark">Project</h3>

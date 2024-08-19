@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class deleteConfirmationModal extends Component
+class DeleteConfirmationModal extends Component
 {
     public string $type;
     /**

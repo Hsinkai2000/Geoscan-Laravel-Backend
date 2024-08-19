@@ -27,7 +27,7 @@
 </head>
 
 <body>
-    <x-navbar type='noise_meter' />
+    <x-nav.navbar type='noise_meter' />
 
     <div class="container-fluid pt-3 p-5">
 

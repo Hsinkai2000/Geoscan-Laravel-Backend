@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\nav;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class navbar extends Component
+class Navbar extends Component
 {
     public string $type;
     public string $projectId;
@@ -19,12 +19,12 @@ class navbar extends Component
         $this->projectId = $projectId;
     }
 
+
     /**
      * Get the view / contents that represent the component.
      */
-    public function render(): View | Closure | string
+    public function render(): View|Closure|string
     {
-        debug_log('asdasd', [$this->projectId]);
         return view('components.nav.navbar');
     }
 }

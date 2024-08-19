@@ -27,7 +27,7 @@
 </head>
 
 <body>
-    <x-navbar type='concentrator' />
+    <x-nav.navbar type='concentrator' />
 
     <div class="container-fluid pt-3 p-5">
 

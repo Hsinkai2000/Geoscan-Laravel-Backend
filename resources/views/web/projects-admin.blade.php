@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <x-navbar />
+    <x-nav.navbar/>
 
     <div class="container-fluid p-sm-5 pt-sm-3">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -53,7 +53,7 @@
     </div>
 
     <x-project.project-modal />
-    <x-delete-confirmation-modal type='project' />
+    <x-delete-confirmation-modal />
     <x-delete-modal type='user' />
     <x-user.user-create-modal />
 
