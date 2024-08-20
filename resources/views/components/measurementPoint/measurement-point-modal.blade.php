@@ -72,7 +72,7 @@
                             </div>
                         </div>
 
-
+                        @if(Auth::user()->isAdmin())
                         <div class="mb-3 row">
                             <div class="col-6">
                                 <div class="col">
@@ -93,6 +93,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
 
                         <input hidden name='project_id' value="{{ $project['id'] }}" />
 

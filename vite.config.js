@@ -4,6 +4,11 @@ import laravel from "laravel-vite-plugin";
 export default defineConfig({
     server: {
         host: "0.0.0.0",
+        port: "8000",
+        hmr: {
+            host: "0.0.0.0",
+            port: "8000",
+        }
     },
     plugins: [
         laravel({
@@ -23,6 +28,8 @@ export default defineConfig({
                 "resources/js/pdf.js",
                 "resources/scss/noise_meters.scss",
                 "resources/js/noise_meters.js",
+                "resources/scss/concentrator.scss",
+                "resources/js/concentrator.js",
             ],
             refresh: true,
         }),

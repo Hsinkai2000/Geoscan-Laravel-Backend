@@ -14,16 +14,13 @@
     <!-- Include Tabulator JS from CDN -->
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.4.3/dist/js/tabulator.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
-        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
-        integrity="sha512-nprojectidMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" integrity="sha512-aD9ophpFQ61nFZP6hXYu4Q/b/USW7rpLCQLX6Bi0WJHXNO7Js/fUENpBQf/+P4NtpzNX0jSgR5zVvPOJp+W2Kg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js" integrity="sha512-4MvcHwcbqXKUHB6Lx3Zb5CEAVoE9u84qN+ZSMM6s7z8IeJriExrV3ND5zRze9mxNlABJ6k864P/Vl8m0Sd3DtQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     @vite(['resources/scss/project.scss', 'resources/js/app.js', 'resources/js/project.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+ 
 </head>
 
 <body>
@@ -95,14 +92,18 @@
             <div id="measurement_point_table"></div>
 
             <div class="d-flex flex-row mt-3 justify-content-between">
-                <button class="btn btn-light text-danger border shadow-sm" id="deleteButton"
-                    onclick="openModal('deleteConfirmationModal','measurementPoints')">Delete</button>
-                <div id="measurement_point_pages"></div>
+                    @if(Auth::user()->isAdmin())
+                        <button class="btn btn-light text-danger border shadow-sm" id="deleteButton"
+                            onclick="openModal('deleteConfirmationModal','measurementPoints')">Delete</button>
+                    @endif
+                <div id="measurement_point_pages" class="ms-auto me-auto"></div>
                 <div>
                     <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
                         onclick='openModal("measurementPointModal", "update")'>Edit</button>
-                    <button class="btn btn-primary text-light shadow-sm" id="createButton"
+                    @if(Auth::user()->isAdmin())
+                        <button class="btn btn-primary text-light shadow-sm" id="createButton"
                         onclick='openModal("measurementPointModal", "create")'>Create</button>
+                    @endif
                 </div>
             </div>
         </div>
@@ -117,23 +118,16 @@
 </body>
 
 <script>
-    $('#selectConcentrator').select2({
-        dropdownParent: $('#measurementPointModal'),
-        placeholder: 'Select Concentrator...'
+    $(document).ready(function() {
+        $('#selectConcentrator').select2({
+            dropdownParent: $('#measurementPointModal'),
+        });
+
+        $('#selectNoiseMeter').select2({
+            dropdownParent: $('#measurementPointModal'),
+        });
     });
 
-    $('#selectNoiseMeter').select2({
-        dropdownParent: $('#measurementPointModal'),
-        placeholder: 'Select Noise Meter...'
-    });
-
-    $('#selectUpdateConcentrator').select2({
-        dropdownParent: $('#measurementPointModal'),
-
-    });
-    $('#selectUpdateNoiseMeter').select2({
-        dropdownParent: $('#measurementPointModal'),
-    });
     window.project = @json($project);
     window.contacts = @json($project->contact);
     window.admin = @json(Auth::user()->isAdmin());

@@ -4,7 +4,7 @@
 <div>
     <br />
     <br />
-    <table class="table-bordered">
+    <table class="table-bordered w-100">
         <tr>
             <th scope='row'>PJO Number</th>
             <td scope='row'>{{ $measurementPoint->project->job_number }}</td>

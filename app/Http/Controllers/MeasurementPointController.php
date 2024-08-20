@@ -83,7 +83,7 @@ class MeasurementPointController extends Controller
                     $data['device_id'] = $concentrator->device_id;
                     $data['battery_voltage'] = $concentrator->battery_voltage;
                     $data['concentrator_csq'] = $concentrator->concentrator_csq;
-                    $data['last_communication_packet_sent'] = $concentrator->last_communication_packet_sent->format('Y-m-d H:m:s');
+                    $data['last_communication_packet_sent'] = $concentrator->last_communication_packet_sent ? $concentrator->last_communication_packet_sent->format('Y-m-d H:m:s') : "";
                 }
 
                 if ($noise_meter) {

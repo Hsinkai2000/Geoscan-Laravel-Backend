@@ -82,15 +82,6 @@
 </body>
 
 <script>
-    $('#selectUpdateConcentrator').select2({
-        dropdownParent: $('#measurementPointModal'),
-
-    });
-    $('#selectUpdateNoiseMeter').select2({
-        dropdownParent: $('#measurementPointModal'),
-
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
         window.measurementPointData = @json($measurementPoint);
 
