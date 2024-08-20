@@ -57,44 +57,40 @@
     <h3>Sound Limits:</h3>
     <table class="table-bordered w-100">
         <tr>
-            <th rowspan="2">{{ $soundlimit->category }}</th>
-            <th colspan="2">Mon-Sat</th>
-            <th colspan="2">Sun/PH</th>
-        </tr>
-        <tr>
-            <th>Leq 5 mins</th>
-            <th>Leq 1/12 hour(s)</th>
-            <th>Leq 5 mins</th>
-            <th>Leq 1/12 hour(s)</th>
-        </tr>
-        <tr>
+            <th colspan="2">{{ $soundlimit->category }}</th>
             <th>7am-7pm</th>
-            <td>{{ $soundlimit->mon_sat_7am_7pm_leq5min }} dB</td>
-            <td>{{ $soundlimit->mon_sat_7am_7pm_leq12hr }} dB</td>
-            <td>{{ $soundlimit->sun_ph_7am_7pm_leq5min }} dB</td>
-            <td>{{ $soundlimit->sun_ph_7am_7pm_leq12hr }} dB</td>
-        </tr>
-        <tr>
             <th>7pm-10pm</th>
-            <td>{{ $soundlimit->mon_sat_7pm_10pm_leq5min }} dB</td>
-            <td>{{ $soundlimit->mon_sat_7pm_10pm_leq12hr }} dB</td>
-            <td>{{ $soundlimit->sun_ph_7pm_10pm_leq5min }} dB</td>
-            <td>{{ $soundlimit->sun_ph_7pm_10pm_leq12hr }} dB</td>
-        </tr>
-        <tr>
-
             <th>10pm-12am</th>
-            <td>{{ $soundlimit->mon_sat_10pm_12am_leq5min }} dB</td>
-            <td>{{ $soundlimit->mon_sat_10pm_12am_leq12hr }} dB</td>
-            <td>{{ $soundlimit->sun_ph_10pm_12am_leq5min }} dB</td>
-            <td>{{ $soundlimit->sun_ph_10pm_12am_leq12hr }} dB</td>
+            <th>12am-7am</th>
         </tr>
         <tr>
-
-            <th>12am-7am</th>
+            <th rowspan="2"">Mon-Sat</th>
+            <th>Leq 5 mins</th>
+            <td>{{ $soundlimit->mon_sat_7am_7pm_leq5min }} dB</td>
+            <td>{{ $soundlimit->mon_sat_7pm_10pm_leq5min }} dB</td>
+            <td>{{ $soundlimit->mon_sat_10pm_12am_leq5min }} dB</td>
             <td>{{ $soundlimit->mon_sat_12am_7am_leq5min }} dB</td>
+        </tr>
+        <tr>
+            <th>Leq 1/12 hour(s)</th>
+            <td>{{ $soundlimit->mon_sat_7am_7pm_leq12hr }} dB</td>
+            <td>{{ $soundlimit->mon_sat_7pm_10pm_leq12hr }} dB</td>
+            <td>{{ $soundlimit->mon_sat_10pm_12am_leq12hr }} dB</td>
             <td>{{ $soundlimit->mon_sat_12am_7am_leq12hr }} dB</td>
+        </tr>
+        <tr>
+            <th rowspan="2"">Sun/Ph</th>
+            <th>Leq 5 mins</th>
+            <td>{{ $soundlimit->sun_ph_7am_7pm_leq5min }} dB</td>
+            <td>{{ $soundlimit->sun_ph_7pm_10pm_leq5min }} dB</td>
+            <td>{{ $soundlimit->sun_ph_10pm_12am_leq5min }} dB</td>
             <td>{{ $soundlimit->sun_ph_12am_7am_leq5min }} dB</td>
+        </tr>
+        <tr>
+            <th>Leq 1/12 hour(s)</th>
+            <td>{{ $soundlimit->sun_ph_7am_7pm_leq12hr }} dB</td>
+            <td>{{ $soundlimit->sun_ph_7pm_10pm_leq12hr }} dB</td>
+            <td>{{ $soundlimit->sun_ph_10pm_12am_leq12hr }} dB</td>
             <td>{{ $soundlimit->sun_ph_12am_7am_leq12hr }} dB</td>
         </tr>
     </table>

@@ -222,7 +222,7 @@ function populateConcentrator() {
         create_empty_option(selectConcentrator, "Choose Concentrator...");
     }
 
-    const url = "http://18.138.56.250/concentrators/";
+    const url = "http://localhost:8000/concentrators/";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -277,7 +277,7 @@ function populateNoiseMeter() {
         create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
     }
 
-    const url = "http://18.138.56.250/noise_meters";
+    const url = "http://localhost:8000/noise_meters";
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -510,11 +510,11 @@ function set_measurement_point_table(measurementPoint_data) {
         columns: manage_measurement_point_columns(),
     });
     measurementPointTable.on("rowClick", function (e, row) {
+        window.location.href = "/measurement_point/" + row.getIndex();
     });
     measurementPointTable.on("rowSelectionChanged", function (data, rows) {
         table_row_changed(data);
     });
-    window.measurementPointTable = measurementPointTable;
 }
 
 function contactTableRowChanged(data) {
@@ -598,8 +598,8 @@ function getProjectId() {
 }
 
 function get_measurement_point_data() {
-    console.log('in here');
-    fetch("http://18.138.56.250/measurement_points/" + inputprojectId, {
+    console.log("in here");
+    fetch("http://localhost:8000/measurement_points/" + inputprojectId, {
         method: "get",
         headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -617,9 +617,9 @@ function get_measurement_point_data() {
             return response.json();
         })
         .then((json) => {
-            console.log('responded');
+            console.log("responded");
             var measurementPoint_data = json.measurement_point;
-            (measurementPoint_data);
+            set_measurement_point_table(measurementPoint_data);
         })
         .catch((error) => {
             console.log(error);
@@ -631,7 +631,7 @@ function update_sound_limits(formDataJson) {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
     fetch(
-        "http://18.138.56.250/soundlimits/" +
+        "http://localhost:8000/soundlimits/" +
             inputMeasurementPoint.soundLimit.id,
         {
             method: "PATCH",
@@ -659,7 +659,7 @@ function create_sound_limits(formDataJson) {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    fetch("http://18.138.56.250/soundlimits", {
+    fetch("http://localhost:8000/soundlimits", {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -694,7 +694,7 @@ function handle_create_measurement_point() {
         formDataJson[key] = value;
     });
 
-    fetch("http://18.138.56.250/measurement_point", {
+    fetch("http://localhost:8000/measurement_point", {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -735,7 +735,7 @@ function handle_measurement_point_update() {
     });
 
     fetch(
-        "http://18.138.56.250/measurement_points/" + inputMeasurementPointId,
+        "http://localhost:8000/measurement_points/" + inputMeasurementPointId,
         {
             method: "PATCH",
             headers: {
@@ -782,7 +782,7 @@ function handleUpdateContact() {
         formDataJson[key] = value;
     });
 
-    fetch("http://18.138.56.250/contacts/" + window.selectedContactid, {
+    fetch("http://localhost:8000/contacts/" + window.selectedContactid, {
         method: "PATCH",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -820,7 +820,7 @@ function handleCreateContact() {
         formDataJson[key] = value;
     });
 
-    fetch("http://18.138.56.250/contacts/", {
+    fetch("http://localhost:8000/contacts/", {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -847,7 +847,7 @@ function handleCreateContact() {
 
 function handleMeasurementPointDelete(csrfToken) {
     fetch(
-        "http://18.138.56.250/measurement_points/" + inputMeasurementPointId,
+        "http://localhost:8000/measurement_points/" + inputMeasurementPointId,
         {
             method: "DELETE",
             headers: {
@@ -875,7 +875,7 @@ function handleMeasurementPointDelete(csrfToken) {
 }
 
 function handleContactDelete(csrfToken) {
-    fetch("http://18.138.56.250/contacts/" + window.selectedContactid, {
+    fetch("http://localhost:8000/contacts/" + window.selectedContactid, {
         method: "DELETE",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -927,9 +927,9 @@ function handle_measurementpoint_submit() {
     } else {
         handle_create_measurement_point();
     }
-    console.log('here');
+    console.log("here");
     get_measurement_point_data();
-    console.log('executed');
+    console.log("executed");
 }
 
 function openModal(modalName, type = null) {
@@ -939,19 +939,18 @@ function openModal(modalName, type = null) {
     if (modalName == "measurementPointModal") {
         if (type == "create") {
             modalType = "create";
-            fetch_measurement_point_data(); 
+            fetch_measurement_point_data();
             populateSelects();
             populate_soundLimits();
         } else if (type == "update") {
             modalType = "update";
-            fetch_measurement_point_data(inputMeasurementPoint); 
+            fetch_measurement_point_data(inputMeasurementPoint);
             if (window.admin) {
                 console.log(window.admin);
                 populateSelects();
             }
             populate_soundLimits();
         }
-       
     } else if (modalName == "contactModal") {
         if (type == "create") {
             modalType = "create";

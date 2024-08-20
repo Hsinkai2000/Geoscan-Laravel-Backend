@@ -17,8 +17,8 @@
                 <td rowspan="2" class="w-10">Leq5 Max (dB)</td>
             </tr>
             <tr>
-                <td class='time_col'>05</td>
                 <td class='time_col'>00</td>
+                <td class='time_col'>05</td>
                 <td class='time_col'>10</td>
                 <td class='time_col'>15</td>
                 <td class='time_col'>20</td>
