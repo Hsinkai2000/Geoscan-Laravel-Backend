@@ -142,6 +142,7 @@ class MeasurementPoint extends Model
 
         [$leq_5mins_should_alert, $leq5limit] = $this->leq_5_mins_exceed_and_alert($last_noise_data);
 
+        debug_log('leq5 ',[$leq_5mins_should_alert, $leq5limit]);
         [$decision, $last_data_datetime] = $soundLimit->check_12_1_hour_limit_type($last_noise_data->received_at);
 
         if ($decision == '12h') {
@@ -149,10 +150,12 @@ class MeasurementPoint extends Model
             [$leq_12_should_alert, $leq12hlimit, $calculated12hLeq, $num_blanks] = $this->leq_12_hours_exceed_and_alert($last_noise_data, $last_data_datetime);
 
             $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated12hLeq, $leq12hlimit, $num_blanks, 144);
+            debug_log('leq12 ',[$leq_12_should_alert, $leq12hlimit, $calculated12hLeq, $num_blanks]);
 
         } else {
             [$leq_1_should_alert, $leq1hlimit, $calculated1hLeq, $num_blanks] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
             $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated1hLeq, $leq1hlimit, $num_blanks, 12);
+            debug_log('leq1 ',[$leq_1_should_alert, $leq1hlimit, $calculated1hLeq, $num_blanks]);
 
         }
 
@@ -215,27 +218,27 @@ class MeasurementPoint extends Model
 
     private function send_alert($data)
     {
-        [$phone_number, $email] = $this->project->get_contact_details();
+        $contacts = $this->project->get_contact_details();
 
-        [$email_messageid, $email_messagedebug] = $this->send_email($data, $email);
-        [$sms_messageid, $sms_status] = $this->send_sms($data, $phone_number);
-
-        DB::table('alert_logs')->insert([
-            'event_timestamp' => $data["exceeded_time"],
-            'email_messageId' => $email_messageid,
-            'email_debug' => $email_messagedebug,
-            'sms_messageId' => $sms_messageid,
-            'sms_status' => $sms_status,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        foreach ($contacts as $contact) { 
+            [$email_messageid, $email_messagedebug] = $this->send_email($data, $contact['email']);
+            [$sms_messageid, $sms_status] = $this->send_sms($data, $contact['phone_number']);
+    
+            DB::table('alert_logs')->insert([
+                'event_timestamp' => $data["exceeded_time"],
+                'email_messageId' => $email_messageid,
+                'email_debug' => $email_messagedebug,
+                'sms_messageId' => $sms_messageid,
+                'sms_status' => $sms_status,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
     }
 
     private function send_email($data, $email)
     {
-        $email = $this->project->contact->email;
-
         if (!empty($email)) {
             try {
                 $email_response = Mail::to($email)->send(new EmailAlert($data));
