@@ -142,7 +142,6 @@ class MeasurementPoint extends Model
 
         [$leq_5mins_should_alert, $leq5limit] = $this->leq_5_mins_exceed_and_alert($last_noise_data);
 
-        debug_log('leq5 ',[$leq_5mins_should_alert, $leq5limit]);
         [$decision, $last_data_datetime] = $soundLimit->check_12_1_hour_limit_type($last_noise_data->received_at);
 
         if ($decision == '12h') {
@@ -150,13 +149,9 @@ class MeasurementPoint extends Model
             [$leq_12_should_alert, $leq12hlimit, $calculated12hLeq, $num_blanks] = $this->leq_12_hours_exceed_and_alert($last_noise_data, $last_data_datetime);
 
             $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated12hLeq, $leq12hlimit, $num_blanks, 144);
-            debug_log('leq12 ',[$leq_12_should_alert, $leq12hlimit, $calculated12hLeq, $num_blanks]);
-
         } else {
             [$leq_1_should_alert, $leq1hlimit, $calculated1hLeq, $num_blanks] = $this->leq_1_hour_exceed_and_alert($last_noise_data, $last_data_datetime);
             $calculated_dose_percentage = $soundLimit->calculate_dose_perc($calculated1hLeq, $leq1hlimit, $num_blanks, 12);
-            debug_log('leq1 ',[$leq_1_should_alert, $leq1hlimit, $calculated1hLeq, $num_blanks]);
-
         }
 
         $dose_70_should_alert = $this->last_alert_allowed($this->dose_70_last_alert_at, $last_noise_data->received_at) && $calculated_dose_percentage >= 70 && $calculated_dose_percentage < 100;
@@ -166,7 +161,6 @@ class MeasurementPoint extends Model
             return $decision == '12h' ? [$calculated_dose_percentage, $num_blanks, $leq12hlimit, $decision] : [$calculated_dose_percentage, $num_blanks, $leq1hlimit, $decision];
         } else {
             $data = [
-                "client_name" => $this->project->contact[0]->contact_person_name,
                 "jobsite_location" => $this->project->jobsite_location,
                 "serial_number" => $this->noiseMeter->serial_number,
                 "leq_value" => null,
@@ -220,10 +214,11 @@ class MeasurementPoint extends Model
     {
         $contacts = $this->project->get_contact_details();
 
-        foreach ($contacts as $contact) { 
+        foreach ($contacts as $contact) {
+            $data["client_name"] = $contact['contact_person_name'];
             [$email_messageid, $email_messagedebug] = $this->send_email($data, $contact['email']);
             [$sms_messageid, $sms_status] = $this->send_sms($data, $contact['phone_number']);
-    
+
             DB::table('alert_logs')->insert([
                 'event_timestamp' => $data["exceeded_time"],
                 'email_messageId' => $email_messageid,

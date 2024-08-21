@@ -43,6 +43,7 @@ class Project extends Model
         $contacts = [];
         foreach ($this->contact as $contact) {
             $currContact = [
+                'contact_person_name' => $contact->contact_person_name,
                 'phone_number' => $contact->phone_number,
                 'email' => $contact->email,
             ];
