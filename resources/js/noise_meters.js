@@ -20,21 +20,25 @@ function set_tables(data) {
             {
                 title: "Serial Number",
                 field: "serial_number",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
                 title: "Label",
                 field: "noise_meter_label",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
                 title: "Brand",
                 field: "brand",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
                 title: "Last Calibration Date",
                 field: "last_calibration_date",
+                headerFilter: "date",
                 minWidth: 100,
             },
             {

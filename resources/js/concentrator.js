@@ -20,36 +20,43 @@ function set_tables(data) {
             {
                 title: "Device Id",
                 field: "device_id",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
                 title: "Label",
                 field: "concentrator_label",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
                 title: "CSQ",
                 field: "concentrator_csq",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
                 title: "Handphone Number",
                 field: "concentrator_hp",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
                 title: "Battery Voltage",
                 field: "battery_voltage",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
                 title: "Last Communication Packet Sent",
                 field: "last_communication_packet_sent",
+                headerFilter: "date",
                 minWidth: 100,
             },
             {
                 title: "Last Assigned Ip Address",
                 field: "last_assigned_ip_address",
+                headerFilter: "input",
                 minWidth: 100,
             },
             {
