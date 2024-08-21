@@ -150,7 +150,7 @@ class PagesController extends Controller
             $noise_data_value = $geoscanLib->noise_data_value();
             $noise_leq = empty($noise_data_value) ? -1 : round($noise_data_value['NoiseData'], 2);
 
-            $round_time = ceil($s_values['Timestamp'] / 300);
+            $round_time = floor($s_values['Timestamp'] / 300);
 
             $seconds = 300 * $round_time;
             $time = (new DateTime())->setTimestamp($seconds);

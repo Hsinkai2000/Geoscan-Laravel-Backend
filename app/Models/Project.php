@@ -40,7 +40,15 @@ class Project extends Model
 
     public function get_contact_details()
     {
-        return [$this->contact->phone_number, $this->contact->email];
+        $contacts = [];
+        foreach ($this->contact as $contact) {
+            $currContact = [
+                'phone_number' => $contact->phone_number,
+                'email' => $contact->email,
+            ];
+            array_push($contacts, $currContact);
+        }
+        return $contacts;
     }
 
     protected function serializeDate(\DateTimeInterface $date)
