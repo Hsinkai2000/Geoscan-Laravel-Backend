@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id='projectForm' action="{{ route('project.create') }}" method="POST">
+                <form id='projectForm'>
                     @csrf
                     <div>
                         <div class="mb-3 row">
@@ -105,9 +105,6 @@
                                 </ul>
                             </div>
                         </div>
-
-
-
                     </div>
 
 

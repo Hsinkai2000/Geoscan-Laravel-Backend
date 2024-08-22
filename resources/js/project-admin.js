@@ -3,6 +3,7 @@ var userList = [];
 var inputprojectId = null;
 var modalType = "";
 var inputUserId = null;
+var tab = 'rental';
 
 function settable(tabledata, project_type) {
     document.getElementById("table_pages").innerHTML = "";
@@ -174,12 +175,12 @@ function changeTab(event, project_type) {
     });
 
     event.currentTarget.classList.add("active");
-
+    tab == 'rental' ? tab = 'sales' : tab='rental';
     fetch_data(project_type);
 }
 
 function fetch_data(project_type) {
-    fetch("http://localhost:8000/projects", {
+    fetch("http://18.138.56.250/projects", {
         method: "post",
         headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -207,7 +208,7 @@ function fetch_data(project_type) {
 function create_users(projectId, csrfToken) {
     userList.forEach((user) => {
         user.project_id = projectId;
-        fetch("http://localhost:8000/user/", {
+        fetch("http://18.138.56.250/user/", {
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
@@ -216,11 +217,10 @@ function create_users(projectId, csrfToken) {
             },
             body: JSON.stringify(user),
         }).then((response) => {
-            if (response.ok) {
-                console.log(user.username + "added");
-            }
+            return true;
         });
     });
+    return true;
 }
 function handleCreate() {
     const form = document.getElementById("projectForm");
@@ -246,6 +246,7 @@ function handleCreate() {
         })
         .then((json) => {
             create_users(json.project_id, csrfToken);
+            fetch_data(tab);
             closeModal("projectModal");
         })
         .catch((error) => {
@@ -272,7 +273,7 @@ function deleteUser(event) {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
 
-    fetch("http://localhost:8000/users/" + inputUserId, {
+    fetch("http://18.138.56.250/users/" + inputUserId, {
         method: "DELETE",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -282,7 +283,6 @@ function deleteUser(event) {
     })
         .then((response) => {
             if (!response.ok) {
-                console.log("Error:", response);
                 throw new Error("Network response was not ok");
             }
             return response.json();
@@ -307,7 +307,7 @@ function handleDelete(event) {
     var confirmation = document.getElementById("inputDeleteConfirmation").value;
 
     if (confirmation == "DELETE") {
-        fetch("http://localhost:8000/project/" + inputprojectId, {
+        fetch("http://18.138.56.250/project/" + inputprojectId, {
             method: "DELETE",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
@@ -317,7 +317,6 @@ function handleDelete(event) {
         })
             .then((response) => {
                 if (!response.ok) {
-                    console.log("Error:", response);
                     throw new Error("Network response was not ok");
                 }
                 return response.json();
@@ -386,7 +385,7 @@ function handleUpdate() {
         formDataJson[key] = value;
     });
 
-    fetch("http://localhost:8000/project/" + inputprojectId, {
+    fetch("http://18.138.56.250/project/" + inputprojectId, {
         method: "PATCH",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -406,6 +405,7 @@ function handleUpdate() {
         })
         .then((json) => {
             create_users(inputprojectId, csrfToken);
+            fetch_data(tab);
             closeModal("projectModal");
         })
         .catch((error) => {
@@ -443,7 +443,7 @@ function handle_create_dummy_user() {
 function populateUser(element, project_id = null) {
     window.userselectList = document.getElementById(element);
     if (project_id) {
-        fetch("http://localhost:8000/users/" + project_id)
+        fetch("http://18.138.56.250/users/" + project_id)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
@@ -497,8 +497,6 @@ function handleSelection(item) {
 }
 
 function openModal(modalName, type) {
-    console.log("putsode: " + inputprojectId);
-
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
 
