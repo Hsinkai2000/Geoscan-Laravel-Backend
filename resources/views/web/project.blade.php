@@ -14,17 +14,21 @@
     <!-- Include Tabulator JS from CDN -->
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.4.3/dist/js/tabulator.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" integrity="sha512-aD9ophpFQ61nFZP6hXYu4Q/b/USW7rpLCQLX6Bi0WJHXNO7Js/fUENpBQf/+P4NtpzNX0jSgR5zVvPOJp+W2Kg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css"
+        integrity="sha512-aD9ophpFQ61nFZP6hXYu4Q/b/USW7rpLCQLX6Bi0WJHXNO7Js/fUENpBQf/+P4NtpzNX0jSgR5zVvPOJp+W2Kg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js" integrity="sha512-4MvcHwcbqXKUHB6Lx3Zb5CEAVoE9u84qN+ZSMM6s7z8IeJriExrV3ND5zRze9mxNlABJ6k864P/Vl8m0Sd3DtQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"
+        integrity="sha512-4MvcHwcbqXKUHB6Lx3Zb5CEAVoE9u84qN+ZSMM6s7z8IeJriExrV3ND5zRze9mxNlABJ6k864P/Vl8m0Sd3DtQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     @vite(['resources/scss/project.scss', 'resources/js/app.js', 'resources/js/project.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
- 
+
 </head>
 
 <body>
-    
+
     <x-nav.navbar projectId="{{ $project['id'] }}" />
 
     <div class="container-fluid pt-3 p-5">
@@ -92,22 +96,23 @@
             <div id="measurement_point_table"></div>
 
             <div class="d-flex flex-row mt-3 justify-content-between">
-                    @if(Auth::user()->isAdmin())
-                        <button class="btn btn-light text-danger border shadow-sm" id="deleteButton"
-                            onclick="openModal('deleteConfirmationModal','measurementPoints')">Delete</button>
-                    @endif
+                @if (Auth::user()->isAdmin())
+                    <button class="btn btn-light text-danger border shadow-sm" id="deleteButton"
+                        onclick="openModal('deleteConfirmationModal','measurementPoints')">Delete</button>
+                @endif
                 <div id="measurement_point_pages" class="ms-auto me-auto"></div>
                 <div>
                     <button class="btn btn-primary bg-light text-primary px-4 me-3 shadow-sm" id="editButton"
                         onclick='openModal("measurementPointModal", "update")'>Edit</button>
-                    @if(Auth::user()->isAdmin())
+                    @if (Auth::user()->isAdmin())
                         <button class="btn btn-primary text-light shadow-sm" id="createButton"
-                        onclick='openModal("measurementPointModal", "create")'>Create</button>
+                            onclick='openModal("measurementPointModal", "create")'>Create</button>
                     @endif
                 </div>
             </div>
         </div>
 
+        <x-confirmation-modal />
         <x-contacts.contact-modal />
         <x-delete-confirmation-modal />
         <x-delete-modal type='user' />
