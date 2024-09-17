@@ -74,7 +74,7 @@ class PagesController extends Controller
                 Log::info('Record Successfully updated', ['noise_data' => $noise_data]);
                 render_ok("Record Successfully updated");
             } catch (Exception $e) {
-                throw new Exception("Error processing noise data : " . $e->getMessage());
+                throw new Exception("Error processing noise data : " . $e);
             }
 
         } catch (Exception $e) {
@@ -150,7 +150,7 @@ class PagesController extends Controller
             $noise_data_value = $geoscanLib->noise_data_value();
             $noise_leq = empty($noise_data_value) ? -1 : round($noise_data_value['NoiseData'], 2);
 
-            $round_time = floor($s_values['Timestamp'] / 300);
+            $round_time = ceil($s_values['Timestamp'] / 300);
 
             $seconds = 300 * $round_time;
             $time = (new DateTime())->setTimestamp($seconds);
@@ -182,7 +182,7 @@ class PagesController extends Controller
             $this->measurement_point_empty($noise_meter);
             $this->concentrator_not_valid($concentrator);
             $this->measurement_point_no_project($noise_meter->measurementPoint);
-            $this->measurement_point_no_running_project($noise_meter->measurementPoint);
+            // $this->measurement_point_no_running_project($noise_meter->measurementPoint);
             $this->noise_meter_concentrator_same_measurement_point($noise_meter->measurementPoint, $concentrator->measurementPoint);
             $this->measurement_point_has_soundLimits($noise_meter->measurementPoint);
         } catch (Exception $e) {
@@ -237,7 +237,7 @@ class PagesController extends Controller
     {
         try {
             $this->concentrator_not_valid($concentrator);
-            $this->concentrator_not_running($concentrator);
+            // $this->concentrator_not_running($concentrator);
         } catch (Exception $e) {
             throw $e;
         }

@@ -231,21 +231,27 @@ class MeasurementPoint extends Model
         }
 
     }
-
-    private function send_email($data, $email)
+    private function send_email($data, $emails)
     {
-        if (!empty($email)) {
+        if (!empty($emails)) {
             try {
-                $email_response = Mail::to($email)->send(new EmailAlert($data));
+                // Convert a string of emails into an array, if necessary
+                $emailArray = is_string($emails) ? explode(';', $emails) : $emails;
+                
+                // Send the email to multiple recipients
+                $email_response = Mail::to($emailArray)->send(new EmailAlert($data));
+                
+                // Get message ID and debug information if needed
                 $email_messageid = $email_response->getSymfonySentMessage()->getMessageId();
                 $email_messagedebug = $email_response->getSymfonySentMessage()->getDebug();
             } catch (Exception $e) {
                 debug_log('error sending email', [$e->getMessage()]);
-                $email_messagedebug($e->getMessage());
+                $email_messagedebug = $e;
             }
         }
         return [$email_messageid, $email_messagedebug];
     }
+    
 
     private function send_sms($data, $phone_number)
     {

@@ -58,7 +58,7 @@ class ReportIndividualDataComponent extends Component
                 $noiseData = $noiseData[0];
             }
             [$calculated_dose_percentage, $num_blanks, $limit, $decision] = $this->measurementPoint->check_last_data_for_alert($noiseData);
-
+            
             $leq_data['leq_data'] = number_format($calculated_dose_percentage, 2);
 
             if ($calculated_dose_percentage >= 70) {
@@ -86,7 +86,7 @@ class ReportIndividualDataComponent extends Component
 
                     $sum = round(convert_to_db((1 - ($calculated_dose_percentage / 100)) * ((linearise_leq($limit) * $missingVal) / $num_blanks)), 1);
 
-                    $leq_data['leq_data'] = min([$sum, $leq5limit]);
+                    $leq_data['leq_data'] = $decision == '12h' ? min([$sum, $leq5limit]) : $sum;
                 } else {
                     $leq_data['leq_data'] = 'N.A.';
                 }
@@ -96,7 +96,7 @@ class ReportIndividualDataComponent extends Component
 
                 [$should_alert, $limit] = $this->measurementPoint->leq_5_mins_exceed_and_alert($noiseData[0]);
                 $leq_data['leq_data'] = number_format($noiseData[0]->leq, 1);
-                $leq_data['should_alert'] = $should_alert;
+                $leq_data['should_alert'] = number_format($noiseData[0]->leq, 1) >= $limit ? true : false;
             }
         }
 
