@@ -2,6 +2,10 @@ import AirDatepicker from "air-datepicker";
 import localeEn from "air-datepicker/locale/en";
 import "air-datepicker/air-datepicker.css";
 
+var baseUri = `${window.location.protocol}//${window.location.hostname}`;
+if (window.location.port) {
+    baseUri += `:${window.location.port}`;
+}
 var dpMin, dpMax;
 
 function set_tables(data) {
@@ -145,12 +149,11 @@ async function openPdf() {
     var select_end_date = document.getElementById("end_date");
 
     const newTab = window.open(
-        "http://localhost:8000/pdf/" +
-            new URLSearchParams({
-                id: window.measurementPointData.id,
-                start_date: select_start_date.value,
-                end_date: select_end_date.value,
-            }).toString(),
+        `${baseUri}/pdf/${new URLSearchParams({
+            id: window.measurementPointData.id,
+            start_date: select_start_date.value,
+            end_date: select_end_date.value,
+        }).toString()}`,
         "Report"
     );
     newTab.focus();

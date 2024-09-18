@@ -1,3 +1,7 @@
+var baseUri = `${window.location.protocol}//${window.location.hostname}`;
+if (window.location.port) {
+    baseUri += `:${window.location.port}`;
+}
 var inputprojectId = null;
 var userList = [];
 var modalType = "";
@@ -226,7 +230,7 @@ function populateConcentrator() {
         create_empty_option(selectConcentrator, "Choose Concentrator...");
     }
 
-    const url = "http://localhost:8000/concentrators/";
+    const url = `${baseUri}/concentrators/`;
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -281,7 +285,7 @@ function populateNoiseMeter() {
         create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
     }
 
-    const url = "http://localhost:8000/noise_meters";
+    const url = `${baseUri}/noise_meters`;
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -602,7 +606,7 @@ function getProjectId() {
 }
 
 function get_measurement_point_data() {
-    fetch("http://localhost:8000/measurement_points/" + inputprojectId, {
+    fetch(`${baseUri}/measurement_points/${inputprojectId}`, {
         method: "get",
         headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -633,8 +637,7 @@ async function update_sound_limits(formDataJson) {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
     return fetch(
-        "http://localhost:8000/soundlimits/" +
-            inputMeasurementPoint.soundLimit.id,
+        `${baseUri}/soundlimits/${inputMeasurementPoint.soundLimit.id}`,
         {
             method: "PATCH",
             headers: {
@@ -659,7 +662,7 @@ async function create_sound_limits(formDataJson) {
     var csrfToken = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-    return fetch("http://localhost:8000/soundlimits", {
+    return fetch(`${baseUri}/soundlimits`, {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -695,7 +698,7 @@ async function handle_create_measurement_point(confirmation) {
 
     formDataJson["confirmation"] = confirmation;
 
-    return fetch("http://localhost:8000/measurement_point", {
+    return fetch(`${baseUri}/measurement_point`, {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -764,19 +767,16 @@ async function handle_measurement_point_update(confirmation) {
 
     formDataJson["confirmation"] = confirmation;
 
-    return fetch(
-        "http://localhost:8000/measurement_points/" + inputMeasurementPointId,
-        {
-            method: "PATCH",
-            headers: {
-                "X-CSRF-TOKEN": csrfToken,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: JSON.stringify(formDataJson),
-        }
-    )
+    return fetch(`${baseUri}/measurement_points/${inputMeasurementPointId}`, {
+        method: "PATCH",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify(formDataJson),
+    })
         .then((response) => {
             if (response.status == 422) {
                 response.json().then((errorData) => {
@@ -836,7 +836,7 @@ function handleUpdateContact() {
         formDataJson[key] = value;
     });
 
-    fetch("http://localhost:8000/contacts/" + window.selectedContactid, {
+    fetch(`${baseUri}/contacts/${window.selectedContactid}`, {
         method: "PATCH",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -874,7 +874,7 @@ function handleCreateContact() {
         formDataJson[key] = value;
     });
 
-    fetch("http://localhost:8000/contacts/", {
+    fetch(`${baseUri}/contacts/`, {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -900,17 +900,14 @@ function handleCreateContact() {
 }
 
 async function handleMeasurementPointDelete(csrfToken) {
-    return fetch(
-        "http://localhost:8000/measurement_points/" + inputMeasurementPointId,
-        {
-            method: "DELETE",
-            headers: {
-                "X-CSRF-TOKEN": csrfToken,
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        }
-    )
+    return fetch(`${baseUri}/measurement_points/${inputMeasurementPointId}`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
         .then((response) => {
             if (!response.ok) {
                 console.log("Error:", response);
@@ -928,7 +925,7 @@ async function handleMeasurementPointDelete(csrfToken) {
 }
 
 async function handleContactDelete(csrfToken) {
-    return fetch("http://localhost:8000/contacts/" + window.selectedContactid, {
+    return fetch(`${baseUri}/contacts/${window.selectedContactid}`, {
         method: "DELETE",
         headers: {
             "X-CSRF-TOKEN": csrfToken,

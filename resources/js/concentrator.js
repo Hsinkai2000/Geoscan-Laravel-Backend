@@ -1,3 +1,9 @@
+var baseUri = `${window.location.protocol}//${window.location.hostname}`;
+
+if (window.location.port) {
+    baseUri += `:${window.location.port}`;
+}
+
 function set_tables(data) {
     var concentrator_table = new Tabulator("#concentrator_table", {
         layout: "fitColumns",
@@ -137,7 +143,7 @@ function handle_update() {
         formDataJson[key] = value;
     });
 
-    fetch(`http://localhost:8000/concentrators/${window.concentrator.id}`, {
+    fetch(`${baseUri}/concentrators/${window.concentrator.id}`, {
         method: "PATCH",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -167,7 +173,7 @@ function handle_create() {
     const form = document.getElementById("concentrator_form");
     const csrfToken = document.querySelector('input[name="_token"]').value;
     const formData = new FormData(form);
-    fetch("http://localhost:8000/concentrators/", {
+    fetch(`${baseUri}/concentrators/`, {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -211,7 +217,7 @@ function handleDelete(event) {
     var confirmation = document.getElementById("inputDeleteConfirmation").value;
 
     if (confirmation == "DELETE") {
-        fetch("http://localhost:8000/concentrators/" + window.concentrator.id, {
+        fetch(`${baseUri}/concentrators/${window.concentrator.id}`, {
             method: "DELETE",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,

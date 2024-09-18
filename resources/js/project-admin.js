@@ -1,9 +1,13 @@
+var baseUri = `${window.location.protocol}//${window.location.hostname}`;
+if (window.location.port) {
+    baseUri += `:${window.location.port}`;
+}
 var tabledata = null;
 var userList = [];
 var inputprojectId = null;
 var modalType = "";
 var inputUserId = null;
-var tab = 'rental';
+var tab = "rental";
 
 function settable(tabledata, project_type) {
     document.getElementById("table_pages").innerHTML = "";
@@ -175,12 +179,12 @@ function changeTab(event, project_type) {
     });
 
     event.currentTarget.classList.add("active");
-    tab == 'rental' ? tab = 'sales' : tab='rental';
+    tab == "rental" ? (tab = "sales") : (tab = "rental");
     fetch_data(project_type);
 }
 
 function fetch_data(project_type) {
-    fetch("http://18.138.56.250/projects", {
+    fetch(`${baseUri}/projects`, {
         method: "post",
         headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -208,7 +212,7 @@ function fetch_data(project_type) {
 function create_users(projectId, csrfToken) {
     userList.forEach((user) => {
         user.project_id = projectId;
-        fetch("http://18.138.56.250/user/", {
+        fetch(`${baseUri}/user/`, {
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
@@ -273,7 +277,7 @@ function deleteUser(event) {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
 
-    fetch("http://18.138.56.250/users/" + inputUserId, {
+    fetch(`${baseUri}/users/${inputUserId}`, {
         method: "DELETE",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -307,7 +311,7 @@ function handleDelete(event) {
     var confirmation = document.getElementById("inputDeleteConfirmation").value;
 
     if (confirmation == "DELETE") {
-        fetch("http://18.138.56.250/project/" + inputprojectId, {
+        fetch(`${baseUri}/project/${inputprojectId}`, {
             method: "DELETE",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
@@ -385,7 +389,7 @@ function handleUpdate() {
         formDataJson[key] = value;
     });
 
-    fetch("http://18.138.56.250/project/" + inputprojectId, {
+    fetch(`${baseUri}/project/${inputprojectId}`, {
         method: "PATCH",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -443,7 +447,7 @@ function handle_create_dummy_user() {
 function populateUser(element, project_id = null) {
     window.userselectList = document.getElementById(element);
     if (project_id) {
-        fetch("http://18.138.56.250/users/" + project_id)
+        fetch(`${baseUri}/users/${project_id}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");

@@ -1,3 +1,8 @@
+var baseUri = `${window.location.protocol}//${window.location.hostname}`;
+if (window.location.port) {
+    baseUri += `:${window.location.port}`;
+}
+
 function set_tables(data) {
     var noise_meter_table = new Tabulator("#noise_meter_table", {
         pagination: "local",
@@ -109,7 +114,7 @@ function handle_update() {
         formDataJson[key] = value;
     });
 
-    fetch(`http://localhost:8000/noise_meters/${window.noiseMeter.id}`, {
+    fetch(`${baseUri}/noise_meters/${window.noiseMeter.id}`, {
         method: "PATCH",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -140,7 +145,7 @@ function handle_create() {
     const csrfToken = document.querySelector('input[name="_token"]').value;
     const formData = new FormData(form);
 
-    fetch("http://localhost:8000/noise_meters/", {
+    fetch(`${baseUri}/noise_meters/`, {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -184,7 +189,7 @@ function handleDelete(event) {
     var confirmation = document.getElementById("inputDeleteConfirmation").value;
 
     if (confirmation == "DELETE") {
-        fetch("http://localhost:8000/noise_meters/" + window.noiseMeter.id, {
+        fetch(`${baseUri}/noise_meters/${window.noiseMeter.id} `, {
             method: "DELETE",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,

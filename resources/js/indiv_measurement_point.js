@@ -2,6 +2,10 @@ import AirDatepicker from "air-datepicker";
 import "air-datepicker/air-datepicker.css";
 import localeEn from "air-datepicker/locale/en";
 
+var baseUri = `${window.location.protocol}//${window.location.hostname}`;
+if (window.location.port) {
+    baseUri += `:${window.location.port}`;
+}
 var modalType = "";
 var dpMin, dpMax;
 
@@ -117,7 +121,7 @@ function populateConcentrator() {
         create_empty_option(selectConcentrator, "Choose Concentrator...");
     }
 
-    const url = "http://localhost:8000/concentrators/";
+    const url = `${baseUri}/concentrators/`;
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -170,7 +174,7 @@ function populateNoiseMeter() {
         create_empty_option(selectNoiseMeter, "Choose Noise Meter...");
     }
 
-    const url = "http://localhost:8000/noise_meters";
+    const url = `${baseUri}/noise_meters`;
     fetch(url)
         .then((response) => {
             if (!response.ok) {
@@ -233,20 +237,16 @@ function handle_measurement_point_update() {
         formDataJson[key] = value;
     });
 
-    fetch(
-        "http://localhost:8000/measurement_points/" +
-            window.measurementPointData.id,
-        {
-            method: "PATCH",
-            headers: {
-                "X-CSRF-TOKEN": csrfToken,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: JSON.stringify(formDataJson),
-        }
-    )
+    fetch(`${baseUri}/measurement_points/${window.measurementPointData.id}`, {
+        method: "PATCH",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify(formDataJson),
+    })
         .then((response) => {
             if (!response.ok) {
                 throw new Error(
@@ -363,7 +363,7 @@ function openPdf() {
         console.log("asdasd" + key + value);
     });
 
-    fetch("http://localhost:8000/pdf/" + window.measurementPointData.id, {
+    fetch(`${baseUri}/pdf/${window.measurementPointData.id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
