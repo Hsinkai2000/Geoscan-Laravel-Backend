@@ -1033,7 +1033,7 @@ function closeModal(modal) {
 }
 
 function check_contact_max() {
-    if (window.contacts.length == window.project.sms_count) {
+    if (window.contacts.length >= window.project.sms_count) {
         document.getElementById("createContactButton").disabled = true;
     }
 }
