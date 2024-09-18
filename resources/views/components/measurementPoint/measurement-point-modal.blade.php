@@ -72,27 +72,27 @@
                             </div>
                         </div>
 
-                        @if(Auth::user()->isAdmin())
-                        <div class="mb-3 row">
-                            <div class="col-6">
-                                <div class="col">
-                                    New Device Id:
+                        @if (Auth::user()->isAdmin())
+                            <div class="mb-3 row">
+                                <div class="col-6">
+                                    <div class="col">
+                                        New Device Id:
+                                    </div>
+                                    <div class="col">
+                                        <select id="selectConcentrator" name="concentrator_id" style="width: 80%">
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <select id="selectConcentrator" name="concentrator_id" style="width: 80%">
-                                    </select>
+                                <div class="col-6">
+                                    <div class="col">
+                                        New Noise Meter
+                                    </div>
+                                    <div class="col">
+                                        <select id="selectNoiseMeter" name="noise_meter_id" style="width: 80%">
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="col">
-                                    New Noise Meter
-                                </div>
-                                <div class="col">
-                                    <select id="selectNoiseMeter" name="noise_meter_id" style="width: 80%">
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         @endif
 
                         <input hidden name='project_id' value="{{ $project['id'] }}" />
@@ -125,10 +125,18 @@
                         </div>
                         </br>
 
-                        <span onclick="toggle_soundLimits()">Advanced Sound Limit Configuration > </span>
+                        <span onclick="toggle_soundLimits()" type='button'>Advanced Sound Limit Configuration > </span>
                         </br>
 
                         <div id="advanced_sound_limits" hidden>
+                            </br>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <button class="btn btn-primary bg-white text-primary" type="button"
+                                        onclick="populate_soundLimits(event, true)">Reset to
+                                        defaults</button>
+                                </div>
+                            </div>
                             </br>
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
