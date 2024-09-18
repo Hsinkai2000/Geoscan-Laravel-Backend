@@ -131,13 +131,18 @@
                         <div id="advanced_sound_limits" hidden>
                             </br>
                             <div class="row">
-                                <div class="col-md-6 col-sm-12">
+                                @if (Auth::user()->isAdmin())
                                     <button class="btn btn-primary bg-white text-primary" type="button"
                                         onclick="populate_soundLimits(event, true)">Reset to
                                         defaults</button>
-                                </div>
+                                @endif
                             </div>
                             </br>
+
+                            @php
+                                $isReadOnly = !Auth::user()->isAdmin() ? 'disabled' : '';
+                            @endphp
+
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group">
@@ -157,28 +162,28 @@
                                     <div class="form-group">
                                         <label>7am-7pm</label>
                                         <input type="text" class="form-control" id="inputmonsat7am7pmleq5"
-                                            name="mon_sat_7am_7pm_leq5min">
+                                            name="mon_sat_7am_7pm_leq5min" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>7pm-10pm</label>
                                         <input type="text" class="form-control" id="inputmonsat7pm10pmleq5"
-                                            name="mon_sat_7pm_10pm_leq5min">
+                                            name="mon_sat_7pm_10pm_leq5min" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>10pm-12am</label>
                                         <input type="text" class="form-control" id="inputmonsat10pm12amleq5"
-                                            name="mon_sat_10pm_12am_leq5min">
+                                            name="mon_sat_10pm_12am_leq5min" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>12am-7am</label>
                                         <input type="text" class="form-control" id="inputmonsat12am7amleq5"
-                                            name="mon_sat_12am_7am_leq5min">
+                                            name="mon_sat_12am_7am_leq5min" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                             </div>
@@ -194,28 +199,28 @@
                                     <div class="form-group">
                                         <label>7am-7pm</label>
                                         <input type="text" class="form-control" id="inputmonsat7am7pmleq12"
-                                            name="mon_sat_7am_7pm_leq12hr">
+                                            name="mon_sat_7am_7pm_leq12hr" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>7pm-10pm</label>
                                         <input type="text" class="form-control" id="inputmonsat7pm10pmleq12"
-                                            name="mon_sat_7pm_10pm_leq12hr">
+                                            name="mon_sat_7pm_10pm_leq12hr" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>10pm-12am</label>
                                         <input type="text" class="form-control" id="inputmonsat10pm12amleq12"
-                                            name="mon_sat_10pm_12am_leq12hr">
+                                            name="mon_sat_10pm_12am_leq12hr" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>12am-7am</label>
                                         <input type="text" class="form-control" id="inputmonsat12am7amleq12"
-                                            name="mon_sat_12am_7am_leq12hr">
+                                            name="mon_sat_12am_7am_leq12hr" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                             </div>
@@ -241,28 +246,28 @@
                                     <div class="form-group">
                                         <label>7am-7pm</label>
                                         <input type="text" class="form-control" id="inputsunph7am7pmleq5"
-                                            name="sun_ph_7am_7pm_leq5min">
+                                            name="sun_ph_7am_7pm_leq5min" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>7pm-10pm</label>
                                         <input type="text" class="form-control" id="inputsunph7pm10pmleq5"
-                                            name="sun_ph_7pm_10pm_leq5min">
+                                            name="sun_ph_7pm_10pm_leq5min" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>10pm-12am</label>
                                         <input type="text" class="form-control" id="inputsunph10pm12amleq5"
-                                            name="sun_ph_10pm_12am_leq5min">
+                                            name="sun_ph_10pm_12am_leq5min" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>12am-7am</label>
                                         <input type="text" class="form-control" id="inputsunph12am7amleq5"
-                                            name="sun_ph_12am_7am_leq5min">
+                                            name="sun_ph_12am_7am_leq5min" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                             </div>
@@ -278,28 +283,28 @@
                                     <div class="form-group">
                                         <label>7am-7pm</label>
                                         <input type="text" class="form-control" id="inputsunph7am7pmleq12"
-                                            name="sun_ph_7am_7pm_leq12hr">
+                                            name="sun_ph_7am_7pm_leq12hr" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>7pm-10pm</label>
                                         <input type="text" class="form-control" id="inputsunph7pm10pmleq12"
-                                            name="sun_ph_7pm_10pm_leq12hr">
+                                            name="sun_ph_7pm_10pm_leq12hr" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>10pm-12am</label>
                                         <input type="text" class="form-control" id="inputsunph10pm12amleq12"
-                                            name="sun_ph_10pm_12am_leq12hr">
+                                            name="sun_ph_10pm_12am_leq12hr" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label>12am-7am</label>
                                         <input type="text" class="form-control" id="inputsunph12am7amleq12"
-                                            name="sun_ph_12am_7am_leq12hr">
+                                            name="sun_ph_12am_7am_leq12hr" {{ $isReadOnly }}>
                                     </div>
                                 </div>
                             </div>
