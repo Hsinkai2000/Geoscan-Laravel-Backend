@@ -504,6 +504,9 @@ function openModal(modalName, type) {
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
     document.getElementById("error_message").innerHTML = "";
+    document.getElementById("inputEndUserName").value = "";
+    document.getElementById("projectTypeRental").checked = true;
+    toggleEndUserName();
 
     if (type == "update") {
         userList = [];
