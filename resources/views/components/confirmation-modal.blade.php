@@ -1,4 +1,4 @@
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModal" aria-hidden="true">
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="replacementModal" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -24,7 +24,7 @@
                     <!-- Submit button to delete the project -->
                     <button onclick="handleConfirmationSubmit(event)" id="deleteButton" type="button"
                         class="btn btn-primary text-white">Continue</button>
-                    <p id="deleteConfirmationError" class="d-inline text-danger" hidden>Confirmation Failed!</p>
+                    <p id="confirmationError" class="text-danger" hidden>Confirmation Failed!</p>
                 </form>
             </div>
         </div>

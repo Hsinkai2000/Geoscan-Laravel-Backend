@@ -951,6 +951,7 @@ async function handleContactDelete(csrfToken) {
 }
 
 async function handleDelete(event) {
+    console.log("in here");
     try {
         if (event) {
             event.preventDefault();
@@ -962,6 +963,8 @@ async function handleDelete(event) {
         var confirmation = document.getElementById(
             "inputDeleteConfirmation"
         ).value;
+        console.log(confirmation);
+        console.log("in here deep");
         if (confirmation == "DELETE") {
             if (window.deleteType == "measurementPoints") {
                 await handleMeasurementPointDelete(csrfToken);
@@ -969,8 +972,19 @@ async function handleDelete(event) {
                 await handleContactDelete(csrfToken);
             }
         } else {
+            console.log("here");
+            console.log(
+                document
+                    .getElementById("deleteConfirmationError")
+                    .checkVisibility()
+            );
             var error = document.getElementById("deleteConfirmationError");
             error.hidden = false;
+            console.log(
+                document
+                    .getElementById("deleteConfirmationError")
+                    .checkVisibility()
+            );
         }
     } catch (error) {
         console.log(error);
@@ -994,9 +1008,6 @@ async function handle_measurementpoint_submit(confirmation = false) {
 }
 
 function openModal(modalName, type = null) {
-    var modal = new bootstrap.Modal(document.getElementById(modalName));
-    modal.toggle();
-
     if (modalName == "measurementPointModal") {
         if (type == "create") {
             modalType = "create";
@@ -1020,10 +1031,14 @@ function openModal(modalName, type = null) {
         }
         fetch_contact_data();
     } else if (modalName == "deleteConfirmationModal") {
+        document.getElementById("deleteConfirmationError").hidden = true;
         type == "contact"
             ? (window.deleteType = "contact")
             : (window.deleteType = "measurementPoints");
     }
+
+    var modal = new bootstrap.Modal(document.getElementById(modalName));
+    modal.toggle();
 }
 
 function closeModal(modal) {
@@ -1040,6 +1055,7 @@ function check_contact_max() {
 }
 
 async function handleConfirmationSubmit(event) {
+    console.log("here");
     try {
         if (event) {
             event.preventDefault();
@@ -1055,7 +1071,7 @@ async function handleConfirmationSubmit(event) {
             await handle_measurementpoint_submit(true);
             location.reload();
         } else {
-            var error = document.getElementById("deleteConfirmationError");
+            var error = document.getElementById("confirmationError");
             error.hidden = false;
         }
     } catch (error) {
@@ -1066,6 +1082,10 @@ async function handleConfirmationSubmit(event) {
 }
 
 function openSecondModal(initialModal, newModal) {
+    if (newModal == "confirmationModal") {
+        document.getElementById("confirmationError").hidden = true;
+    }
+
     var firstModalEl = document.getElementById(initialModal);
     var firstModal = bootstrap.Modal.getInstance(firstModalEl);
 

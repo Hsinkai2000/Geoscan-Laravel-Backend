@@ -231,7 +231,7 @@ function handleCreate() {
     const csrfToken = document.querySelector('input[name="_token"]').value;
     const formData = new FormData(form);
 
-    fetch(form.action, {
+    fetch(`${baseUri}/project`, {
         method: form.method,
         headers: {
             "X-CSRF-TOKEN": csrfToken,
@@ -241,10 +241,11 @@ function handleCreate() {
         body: formData,
     })
         .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Network response was not ok " + response.statusText
-                );
+            if (response.status == 422) {
+                response.json().then((errorData) => {
+                    document.getElementById("error_message").innerHTML =
+                        errorData["Unprocessable Entity"];
+                });
             }
             return response.json();
         })
@@ -252,10 +253,6 @@ function handleCreate() {
             create_users(json.project_id, csrfToken);
             fetch_data(tab);
             closeModal("projectModal");
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert("There was an error: " + error.message);
         });
 }
 
@@ -501,8 +498,12 @@ function handleSelection(item) {
 }
 
 function openModal(modalName, type) {
+    if (modalName == "deleteConfirmationModal") {
+        document.getElementById("deleteConfirmationError").hidden = true;
+    }
     var modal = new bootstrap.Modal(document.getElementById(modalName));
     modal.toggle();
+    document.getElementById("error_message").innerHTML = "";
 
     if (type == "update") {
         userList = [];
