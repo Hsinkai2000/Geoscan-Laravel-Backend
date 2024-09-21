@@ -28,12 +28,12 @@ class ProjectController extends Controller
         try {
             $project_params = $request->only((new Project)->getFillable());
             debug_log('project params', [$project_params]);
-            $project_id = Project::insertGetId($project_params);
-            if (Project::find($project_id)) {
-                // return redirect()->route('project.show')->with(['project_id' => $project_id]);
+            try {
+
+                $project_id = Project::insertGetId($project_params);
                 return render_ok(['project_id' => $project_id]);
-            } else {
-                return back();
+            } catch (Exception $e) {
+                return render_unprocessable_entity('PJO Number already in use');
             }
 
         } catch (Exception $e) {

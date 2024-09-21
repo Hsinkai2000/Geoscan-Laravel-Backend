@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id='projectForm'>
+                <form id='projectForm' method="POST">
                     @csrf
                     <div>
                         <div class="mb-3 row">
@@ -109,6 +109,7 @@
 
 
                     <div class="modal-footer">
+                        <div id="error_message" class="text-danger me-auto"></div>
                         <button type="button" class="btn btn-primary bg-white text-primary"
                             data-bs-dismiss="modal">Discard</button>
                         <button type='button' onclick="submitClicked()"
